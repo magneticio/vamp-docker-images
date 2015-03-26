@@ -1,0 +1,79 @@
+#
+# Zookeeper
+#
+zk:
+  image: jplock/zookeeper:3.4.6
+
+#
+# Mesos
+#
+master:
+  image: breerly/mesos
+  command: mesos-master
+  ports:
+    - "5050:5050"
+  links:
+   - "zk:zookeeper"
+  environment:
+    MESOS_CLUSTER: breerly/fig-mesos
+    MESOS_HOSTNAME: 192.168.53.109
+    MESOS_WORK_DIR: /var/lib/mesos
+    MESOS_LOG_DIR: /var/log
+    MESOS_QUORUM: 1
+    MESOS_ZK: zk://zookeeper:2181/mesos
+
+slave1:
+  image: breerly/mesos
+  command: supervisord -n
+  privileged: true
+  links:
+    - "zk:zookeeper"
+  ports:
+    - "5051:5051"
+  environment:
+    MESOS_CONTAINERIZERS: "docker,mesos"
+    MESOS_HOSTNAME: 192.168.53.109
+    MESOS_MASTER: zk://zookeeper:2181/mesos
+
+slave2:
+  image: breerly/mesos
+  command: supervisord -n
+  privileged: true
+  links:
+    - "zk:zookeeper"
+  ports:
+    - "5052:5052"
+  environment:
+    MESOS_CONTAINERIZERS: "docker,mesos"
+    MESOS_HOSTNAME: 192.168.53.109
+    MESOS_MASTER: zk://zookeeper:2181/mesos
+    MESOS_PORT: "5052"
+
+#
+# Marathon
+#
+marathon:
+  image: superguenter/marathon
+  ports:
+    - "8080:8080"
+  links:
+    - "zk:zookeeper"
+  command: "--master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon"
+
+#
+# Vamp
+#
+vamp:
+  image: magneticio/vamp:0.7.0-RC1
+  ports:
+    - "8081:8080"
+    - "8083:8083"
+    - "10001:10001"
+    - "9300:9300"
+    - "80:80"
+    - "81:81"
+  links:
+    - "marathon"
+  environment:
+    VAMP_MARATHON_URL: http://marathon:8080
+  command: "/usr/bin/supervisord"
