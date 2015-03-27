@@ -21,14 +21,14 @@ If you have the prerequisites sorted, execute the following commands
 
 ### Start Vamp with a Mesos and Marathon cluster
 
-    $ git clone https://github.com/magneticio/vamp-docker.git && cd vamp-docker/docker-compositions/vamp-marathon-mesos/ && docker-compose up    
+    git clone https://github.com/magneticio/vamp-docker.git && cd vamp-docker/docker-compositions/vamp-marathon-mesos/ && docker-compose up    
 *Note 1: grab a coffee while everything gets installed on the first run.*
 *Note 2: This runs all of Vamp's components in one container. This is not ideal, but works fine for testing stuff out.*
 
 
 ### Build the all-in-one Vamp container, run it with an external Mesos/Marathon
 
-    $ git clone https://github.com/magneticio/vamp-docker.git && docker build -t my_vamp_image vamp-docker/dockerfiles/vamp-all-in-one/    
+    git clone https://github.com/magneticio/vamp-docker.git && docker build -t my_vamp_image vamp-docker/dockerfiles/vamp-all-in-one/    
 
 With this image, you should provide the Marathon endpoint on startup by setting the `VAMP_MARATHON_URL` enviroment variable, like this:
 
