@@ -34,3 +34,6 @@ With this image, you should provide the Marathon endpoint on startup by setting 
 
     docker run -i -t -p 81:80 -p 8081:8080 -p 10002:10001 -p 8084:8083 -e VAMP_MARATHON_URL=http://10.143.22.49:8080 my_vamp_image
 
+Not so secret tip: Set up a full Mesos/Marathon stack on Google Compute Engine or Digital Ocean really easily using 
+these wizards at [Mesosphere.com](https://mesosphere.com/downloads/). After the wizard is finished, just copy & paste the 
+Marathon endpoint...
