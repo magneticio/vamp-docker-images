@@ -17,9 +17,9 @@ that's a two-liner:
 
 ## Run it
 
-If you have the prerequisites sorted, execute the following commands
+If you have the prerequisites sorted, pick the thing you want to do...
 
-### Start Vamp with a Mesos and Marathon cluster
+### Run Vamp with a Mesos and Marathon cluster
 
     git clone https://github.com/magneticio/vamp-docker.git && cd vamp-docker/docker-compositions/vamp-marathon-mesos/ && docker-compose up    
 *Note 1: grab a coffee while everything gets installed on the first run.*
