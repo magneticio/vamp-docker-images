@@ -1,4 +1,8 @@
 #
+# Maintainer: tim@magnetic.io
+# This docker-compose sets up a Mesos cluster with Marathon and runs all Vamp components in one container.
+# Ideal for testing and kicking the tires. Not ideal for production...
+#
 # Zookeeper
 #
 zk:
