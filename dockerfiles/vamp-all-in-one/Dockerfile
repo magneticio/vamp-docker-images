@@ -28,9 +28,6 @@ RUN add-apt-repository -y ppa:vbernat/haproxy-1.5 && \
     apt-get update && \
     apt-get install -y haproxy supervisor
 
-# expose the Vamp-core, Vamp-pulse, Vamp-router, Haproxy and Elasticsearch
-EXPOSE 8080 8083 10001 1980 9300
-
 
 #
 # More dynamic stuff
@@ -38,20 +35,25 @@ EXPOSE 8080 8083 10001 1980 9300
 
 
 # Get Vamp-Core
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/core-assembly-0.7.0-RC1.jar
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/core-assembly-0.7.0-RC2.jar
 
 # Get Vamp-Pulse
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.0-RC1.jar
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.0-RC2.jar
 
 # Get Vamp-Router
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.1-RC1_linux_386.zip && \
-    unzip vamp-router_0.7.1-RC1_linux_386.zip
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.0-RC2_linux_386.zip && \
+    unzip vamp-router_0.7.0-RC2_linux_386.zip
 
 COPY logback.xml /root/logback.xml
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY vamp-core.conf /root/vamp-core.conf
+
+# expose the Vamp-core, Vamp-pulse, Vamp-router, Haproxy and Elasticsearch
+EXPOSE 8080 8083 10001 1980 9300
+# expose lower part of Vamp dynamic port range for initial test
+EXPOSE 33000 33001 33003 33004 33005
 
 # Run all parts using a single supervisor command
 CMD ["/usr/bin/supervisord"]
