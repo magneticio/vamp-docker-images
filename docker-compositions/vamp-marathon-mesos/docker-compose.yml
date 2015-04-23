@@ -68,7 +68,7 @@ marathon:
 # Vamp
 #
 vamp:
-  image: magneticio/vamp:0.7.0-RC3
+  image: magneticio/vamp:0.7.5
   ports:
     - "8081:8080"
     - "8083:8083"

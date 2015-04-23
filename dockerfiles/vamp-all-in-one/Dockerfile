@@ -35,10 +35,10 @@ RUN add-apt-repository -y ppa:vbernat/haproxy-1.5 && \
 
 
 # Get Vamp-Core
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/core-assembly-0.7.0-RC3.jar
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/core-assembly-0.7.5.jar
 
 # Get Vamp-Pulse
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.0-RC3.jar
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.5.jar
 
 # Get Vamp-Router
 RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.0-RC3_linux_386.zip && \
