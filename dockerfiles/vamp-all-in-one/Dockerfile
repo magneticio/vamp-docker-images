@@ -41,8 +41,8 @@ RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/c
 RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.5.jar
 
 # Get Vamp-Router
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.0-RC3_linux_386.zip && \
-    unzip vamp-router_0.7.0-RC3_linux_386.zip
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.5_linux_386.zip && \
+    unzip vamp-router_0.7.5_linux_386.zip
 
 COPY logback.xml /root/logback.xml
 
