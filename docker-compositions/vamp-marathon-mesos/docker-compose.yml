@@ -12,14 +12,14 @@ zk:
 # Mesos
 #
 master:
-  image: breerly/mesos
+  image: magneticio/mesos:0.22.0
   command: mesos-master
   ports:
     - "5050:5050"
   links:
    - "zk:zookeeper"
   environment:
-    MESOS_CLUSTER: breerly/fig-mesos
+    MESOS_CLUSTER: magneticio/mesos
     MESOS_HOSTNAME: 192.168.53.109
     MESOS_WORK_DIR: /var/lib/mesos
     MESOS_LOG_DIR: /var/log
@@ -27,7 +27,7 @@ master:
     MESOS_ZK: zk://zookeeper:2181/mesos
 
 slave1:
-  image: breerly/mesos
+  image: magneticio/mesos:0.22.0
   command: supervisord -n
   privileged: true
   links:
@@ -36,11 +36,12 @@ slave1:
     - "5051:5051"
   environment:
     MESOS_CONTAINERIZERS: "docker,mesos"
+    MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "10mins"    
     MESOS_HOSTNAME: 192.168.53.109
     MESOS_MASTER: zk://zookeeper:2181/mesos
 
 slave2:
-  image: breerly/mesos
+  image: magneticio/mesos:0.22.0
   command: supervisord -n
   privileged: true
   links:
@@ -49,6 +50,7 @@ slave2:
     - "5052:5052"
   environment:
     MESOS_CONTAINERIZERS: "docker,mesos"
+    MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "10mins"
     MESOS_HOSTNAME: 192.168.53.109
     MESOS_MASTER: zk://zookeeper:2181/mesos
     MESOS_PORT: "5052"
