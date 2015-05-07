@@ -16,9 +16,18 @@ and then pass it into the `STORAGE_PATH` environment variable.
     $ docker run -d -v /mnt/docker_registry:/mnt/docker_registry -p 5000:5000 --name docker-registry -e     STORAGE_PATH=/mnt/docker_registry registry:2.0
 
 
-## 3. Run the Nginx proxy
+## 3. Run the insecure Nginx proxy
 
-Now start the Nginx proxy with SSL and basic authentication enabled. For this to work, you need to have some things in place:
+Now start the Nginx proxy.
+
+    $ docker run -d -p 80:80 -e REGISTRY_HOST="docker-registry" -e REGISTRY_PORT="5000" \
+    -e SERVER_NAME="localhost" --link docker-registry:docker-registry \
+    --name registry-proxy magneticio/registry-proxy-insecure:0.1.0    
+
+
+## 4. Run the secure Nginx proxy
+
+If you want to lock things up, start an Nginx proxy with SSL and basic authentication enabled. For this to work, you need to have some things in place:
 
 - an SSL certificate and private key. See [the docker docs](https://docs.docker.com/registry/deploying/) for details, or just use:
 ```
