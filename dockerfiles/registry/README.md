@@ -13,7 +13,7 @@ Boot up a machine (on GCE or AWS) and a nicely sized disk (say 2TB). Format and 
 Now start the a `registry:2.0` container with right settings. Notice we mount the `/mnt/docker_images` volume
 and then pass it into the `STORAGE_PATH` environment variable.
 
-    $ docker run -d -v /mnt/docker_registry:/mnt/docker_registry -p 5000:5000 --name docker-registry -e     STORAGE_PATH=/mnt/docker_registry registry:2.0
+    $ docker run -d -v /mnt/docker_registry:/mnt/docker_registry -p 5000:5000 --name docker-registry -e STORAGE_PATH=/mnt/docker_registry registry:2.0
 
 
 ## 3. Run the insecure Nginx proxy
