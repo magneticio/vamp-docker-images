@@ -1,4 +1,4 @@
-FROM dockerfile/ubuntu
+FROM ubuntu
 
 MAINTAINER tim@magnetic.io
 
@@ -10,6 +10,9 @@ MAINTAINER tim@magnetic.io
 #
 # First the mostly stable stuff to optimize cache usage
 #
+
+RUN apt-get install software-properties-common -y
+RUN apt-get install zip -y
 
 # Install Java 8
 RUN \
@@ -35,20 +38,20 @@ RUN add-apt-repository -y ppa:vbernat/haproxy-1.5 && \
 
 
 # Get Vamp-Core
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/core-assembly-0.7.5.jar
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/core-assembly-0.7.6.jar
 
 # Get Vamp-Pulse
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.5.jar
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.6.jar
 
 # Get Vamp-Router
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.5_linux_386.zip && \
-    unzip vamp-router_0.7.5_linux_386.zip
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.6_linux_386.zip && \
+    unzip vamp-router_0.7.6_linux_386.zip
 
-COPY logback.xml /root/logback.xml
+COPY logback.xml /logback.xml
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-COPY vamp-core.conf /root/vamp-core.conf
+COPY vamp-core.conf /vamp-core.conf
 
 # expose the Vamp-core, Vamp-pulse, Vamp-router, Haproxy and Elasticsearch
 EXPOSE 8080 8083 10001 1980 9300
