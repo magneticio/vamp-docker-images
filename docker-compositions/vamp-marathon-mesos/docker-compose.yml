@@ -20,7 +20,7 @@ master:
    - "zk:zookeeper"
   environment:
     MESOS_CLUSTER: magneticio/mesos
-    MESOS_HOSTNAME: 192.168.53.109
+    MESOS_HOSTNAME: 192.168.59.103
     MESOS_WORK_DIR: /var/lib/mesos
     MESOS_LOG_DIR: /var/log
     MESOS_QUORUM: 1
@@ -37,7 +37,7 @@ slave1:
   environment:
     MESOS_CONTAINERIZERS: "docker,mesos"
     MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "10mins"    
-    MESOS_HOSTNAME: 192.168.53.109
+    MESOS_HOSTNAME: 192.168.59.103
     MESOS_MASTER: zk://zookeeper:2181/mesos
 
 slave2:
@@ -51,7 +51,7 @@ slave2:
   environment:
     MESOS_CONTAINERIZERS: "docker,mesos"
     MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "10mins"
-    MESOS_HOSTNAME: 192.168.53.109
+    MESOS_HOSTNAME: 192.168.59.103
     MESOS_MASTER: zk://zookeeper:2181/mesos
     MESOS_PORT: "5052"
 
