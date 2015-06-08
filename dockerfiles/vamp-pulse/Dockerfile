@@ -27,7 +27,7 @@ RUN apt-get update && \
 
 
 # Get Vamp-Pulse
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-server-assembly-0.7.7-rc1.jar
+RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.7.jar
 
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
