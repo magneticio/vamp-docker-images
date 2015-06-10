@@ -19,21 +19,31 @@ that's a two-liner:
 
 If you have the prerequisites sorted, pick the thing you want to do...
 
-### Run Vamp with a Mesos and Marathon cluster
+### Option 1: Run Vamp on Docker
+
+This setup will run Vamp inside a Docker container with Vamp's Docker driver. This allows you to test drive Vamp really easily.
+
+A typical command on Macbook running Boot2Docker would be:
+
+```
+docker run --net=host -v /Users/tim/.boot2docker/certs/boot2docker-vm:/certs -e "DOCKER_TLS_VERIFY=1" -e "DOCKER_HOST=tcp://`boot2docker ip`:2376" -e "DOCKER_CERT_PATH=/certs" magneticio/vamp-docker:latest
+```
+
+**Please notice** the mounting (`-v /Users/tim/...`) of the boot2docker certificates. Please set this to your specific environment. You can get this info by running `boot2docker config`.
+
+If you don't use Boot2Docker, set the `DOCKER_HOST` variable to whatever is relevant to your system.
+
+## Option 2: Run Vamp with a Mesos and Marathon cluster
 
     git clone https://github.com/magneticio/vamp-docker.git && cd vamp-docker/docker-compositions/vamp-marathon-mesos/ && docker-compose up    
 *Note 1: grab a coffee while everything gets installed on the first run.*
 *Note 2: This runs all of Vamp's components in one container. This is not ideal, but works fine for testing stuff out.*
 
 
-### Build the all-in-one Vamp container, run it with an external Mesos/Marathon
+## Option 3: Build the all-in-one Vamp container, run it with an external Mesos/Marathon
 
-    git clone https://github.com/magneticio/vamp-docker.git && docker build -t my_vamp_image vamp-docker/dockerfiles/vamp-all-in-one/    
+    git clone https://github.com/magneticio/vamp-docker.git && docker build -t my_vamp_image vamp-docker/dockerfiles/vamp-mesosphere/    
 
 With this image, you should provide the Marathon endpoint on startup by setting the `VAMP_MARATHON_URL` enviroment variable, like this:
 
     docker run -i -t -p 81:80 -p 8081:8080 -p 10002:10001 -p 8084:8083 -e VAMP_MARATHON_URL=http://10.143.22.49:8080 my_vamp_image
-
-**Not so secret tip**: Set up a full Mesos/Marathon stack on Google Compute Engine or Digital Ocean really easily using 
-these wizards at [Mesosphere.com](https://mesosphere.com/downloads/). After the wizard is finished, just copy & paste the 
-Marathon endpoint...
