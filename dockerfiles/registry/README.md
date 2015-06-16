@@ -69,4 +69,8 @@ In the end, you should be able to pull an image:
     0.1.34: Pulling from registry.magnetic.io/dm_tomcat
     3cb35ae859e7: Pull complete 
     ...
-    status: Downloaded newer image for registry.magnetic.io/dm_tomcat:0.1.34  
+    status: Downloaded newer image for registry.magnetic.io/dm_tomcat:0.1.34
+
+Or check which versions you have of a specific image using `curl`
+
+    $ curl -v -k --user <user>:<password> https://registry.magnetic.io/v2/dm_tomcat/tags/list      
