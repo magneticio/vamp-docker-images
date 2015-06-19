@@ -70,7 +70,7 @@ marathon:
 # Vamp
 #
 vamp:
-  image: magneticio/vamp-mesosphere:latest
+  image: magneticio/vamp-mesosphere:0.7.7
   ports:
     - "8081:8080"
     - "8083:8083"
