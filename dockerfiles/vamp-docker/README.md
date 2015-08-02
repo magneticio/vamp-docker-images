@@ -6,7 +6,7 @@ A typical command on Macbook running Boot2Docker would be:
 
 
 ```
-docker run --net=host -v /Users/tim/.boot2docker/certs/boot2docker-vm:/certs -e "DOCKER_TLS_VERIFY=1" -e "DOCKER_HOST=tcp://`boot2docker ip`:2376" -e "DOCKER_CERT_PATH=/certs" magneticio/vamp-with-docker:experimental
+docker run --net=host -v /Users/tim/.boot2docker/certs/boot2docker-vm:/certs -e "DOCKER_TLS_VERIFY=1" -e "DOCKER_HOST=tcp://`boot2docker ip`:2376" -e "DOCKER_CERT_PATH=/certs" magneticio/vamp-docker:latest
 ```
 
 **Please notice** the mounting (`-v /Users/tim/...`) of the boot2docker certificates. Please set this to your specific environment.

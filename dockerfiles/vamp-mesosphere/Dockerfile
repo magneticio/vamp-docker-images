@@ -25,11 +25,9 @@ RUN \
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# Install Haproxy & Supervisor
+# Install Supervisor
 
-RUN add-apt-repository -y ppa:vbernat/haproxy-1.5 && \
-    apt-get update && \
-    apt-get install -y haproxy supervisor
+RUN apt-get update && apt-get install -y haproxy supervisor
 
 
 #
@@ -37,21 +35,22 @@ RUN add-apt-repository -y ppa:vbernat/haproxy-1.5 && \
 #
 
 
+# Add bintray key
+RUN curl https://bintray.com/user/downloadSubjectPublicKey?username=bintray | apt-key add -
+
+RUN echo "deb https://dl.bintray.com/magnetic-io/upstart trusty main" >> /etc/apt/sources.list && \
+    apt-get update
+
 # Get Vamp-Core
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-core/core-assembly-0.7.7.jar
+RUN apt-get install -y vamp-core
 
 # Get Vamp-Pulse
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-pulse/pulse-assembly-0.7.7.jar
+RUN apt-get install -y vamp-pulse
 
-# Get Vamp-Router
-RUN wget https://bintray.com/artifact/download/magnetic-io/downloads/vamp-router/vamp-router_0.7.7_linux_386.zip && \
-    unzip vamp-router_0.7.7_linux_386.zip
-
-COPY logback.xml /logback.xml
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-COPY vamp-core.conf /vamp-core.conf
+COPY vamp-core.conf /usr/share/vamp-core/conf/application.conf
 
 # expose the Vamp-core, Vamp-pulse, Vamp-router, Haproxy and Elasticsearch
 EXPOSE 8080 8083 10001 1980 9300
