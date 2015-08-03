@@ -4,36 +4,25 @@ MAINTAINER tim@magnetic.io
 
 # This Dockerfile packages all Vamp components in one container. The resulting container can be used for basic testing
 # kicking the tires. It is not meant for production or any other serious work.
-# For more info, see the accompanying README.md and mesos_bootstrap.sh script
 
-
-#
-# First the mostly stable stuff to optimize cache usage
-#
-
-RUN apt-get install software-properties-common -y
-RUN apt-get install zip -y
+RUN apt-get -y install software-properties-common apt-transport-https curl zip
 
 # Install Java 8
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+ add-apt-repository -y ppa:webupd8team/java && \
+ apt-get update && \
+ apt-get install -y oracle-java8-installer && \
+ rm -rf /var/lib/apt/lists/* && \
+ rm -rf /var/cache/oracle-jdk8-installer
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
-# Install Supervisor
+# Install Haproxy & Supervisor
 
-RUN apt-get update && apt-get install -y haproxy supervisor
+RUN sudo apt-get update && \
+    sudo apt-get install -y supervisor
 
-
-#
 # More dynamic stuff
-#
-
 
 # Add bintray key
 RUN curl https://bintray.com/user/downloadSubjectPublicKey?username=bintray | apt-key add -
@@ -49,13 +38,11 @@ RUN apt-get install -y vamp-pulse
 
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 COPY vamp-core.conf /usr/share/vamp-core/conf/application.conf
+COPY vamp-pulse.conf /usr/share/vamp-pulse/conf/application.conf
 
 # expose the Vamp-core, Vamp-pulse, Vamp-router, Haproxy and Elasticsearch
-EXPOSE 8080 8083 10001 1980 9300
-# expose lower part of Vamp dynamic port range for initial test
-EXPOSE 9050 9051 9052 9053 9054 9055 33000 33001 33003 33004 33005
+EXPOSE 8080 8083 9200 9300
 
 # Run all parts using a single supervisor command
 CMD ["/usr/bin/supervisord"]

@@ -4,7 +4,7 @@ MAINTAINER tim@magnetic.io
 
 # This Dockerfile packages all Vamp components in one container. The resulting container can be used for basic testing
 # kicking the tires. It is not meant for production or any other serious work.
-# For more info, see the accompanying README.md and mesos_bootstrap.sh script
+
 
 RUN apt-get -y install software-properties-common apt-transport-https curl zip
 

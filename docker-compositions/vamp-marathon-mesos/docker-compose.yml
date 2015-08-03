@@ -7,7 +7,6 @@
 #
 zk:
   image: jplock/zookeeper:3.4.6
-
 #
 # Mesos
 #
@@ -66,14 +65,14 @@ marathon:
     - "zk:zookeeper"
   command: "--master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon"
 
+
 #
-# Vamp
+# Vamp Router
 #
-vamp:
-  image: magneticio/vamp-mesosphere:latest
+vamprouter:
+  image: magneticio/vamp-router:0.7.9
   ports:
-    - "8081:8080"
-    - "8083:8083"
+    - "1988:1988"
     - "10001:10001"
     - "9050:9050"
     - "9051:9051"
@@ -89,8 +88,21 @@ vamp:
     - "33004:33004"
     - "33005:33005"
 
+#
+# Vamp Core and Pulse
+#
+vampcorepulse:
+  image: magneticio/vamp-mesosphere:0.7.9
+  ports:
+    - "8081:8080"
+    - "8084:8083"
+    - "9201:9200"
+    - "9301:9300"
   links:
+    - "vamprouter"
     - "marathon"
   environment:
     VAMP_MARATHON_URL: http://marathon:8080
+    VAMP_ROUTER_URL: http://vamprouter:10001
+    VAMP_ROUTER_HOST: vamprouter
   command: "/usr/bin/supervisord"
