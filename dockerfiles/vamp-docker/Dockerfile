@@ -42,6 +42,7 @@ RUN apt-get install -y vamp-pulse
 RUN apt-get install -y vamp-router
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY vamp-core.conf /usr/share/vamp-core/conf/application.conf
 
 # expose the Vamp-core, Vamp-pulse, Vamp-router, Haproxy and Elasticsearch
 # expose lower part of Vamp dynamic port range for initial test

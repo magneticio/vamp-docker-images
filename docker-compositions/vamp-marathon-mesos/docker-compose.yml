@@ -70,7 +70,7 @@ marathon:
 # Vamp Router
 #
 vamprouter:
-  image: magneticio/vamp-router:0.7.9
+  image: magneticio/vamp-router:0.7.10
   ports:
     - "1988:1988"
     - "10001:10001"
@@ -92,7 +92,7 @@ vamprouter:
 # Vamp Core and Pulse
 #
 vampcorepulse:
-  image: magneticio/vamp-mesosphere:0.7.9
+  image: magneticio/vamp-mesosphere:0.7.10
   ports:
     - "8081:8080"
     - "8084:8083"
