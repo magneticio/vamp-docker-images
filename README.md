@@ -26,10 +26,10 @@ This setup will run Vamp inside a Docker container with Vamp's Docker driver. Th
 A typical command on Macbook running Boot2Docker would be:
 
 ```
-docker run --net=host -v /Users/tim/.boot2docker/certs/boot2docker-vm:/certs -e "DOCKER_TLS_VERIFY=1" -e "DOCKER_HOST=tcp://`boot2docker ip`:2376" -e "DOCKER_CERT_PATH=/certs" magneticio/vamp-docker:latest
+docker run --net=host -v ~/.boot2docker/certs/boot2docker-vm:/certs -e "DOCKER_TLS_VERIFY=1" -e "DOCKER_HOST=tcp://`boot2docker ip`:2376" -e "DOCKER_CERT_PATH=/certs" magneticio/vamp-docker:latest
 ```
 
-**Please notice** the mounting (`-v /Users/tim/...`) of the boot2docker certificates. Please set this to your specific environment. You can get this info by running `boot2docker config`.
+**Please notice** the mounting of the boot2docker certificates. Please set this to your specific environment. You can get this info by running `boot2docker config`.
 
 If you don't use Boot2Docker, set the `DOCKER_HOST` variable to whatever is relevant to your system.
 
