@@ -16,7 +16,7 @@ logstash:
   container_name: vamp-logstash
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
-    - ./logstash/logstash.conf:/etc/logstash/conf.d/logstash.conf
+    - ../logstash/logstash.conf:/etc/logstash/conf.d/logstash.conf
   ports:
     - "10001:10001/udp"
   links:
@@ -26,7 +26,7 @@ kibana:
   image: magneticio/vamp-kibana:${VAMP_VERSION}
   container_name: vamp-kibana
   volumes:
-    - ./kibana/kibana.yml:/opt/kibana/config/kibana.yml
+    - ../kibana/kibana.yml:/opt/kibana/config/kibana.yml
   ports:
     - "5601:5601"
   links:

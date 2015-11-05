@@ -22,31 +22,42 @@ Usage of ./build.sh:
 
 For instance run `./build.sh -b`
 
-## Run Vamp with Docker driver
+## Running Vamp
 
-`./run-vamp-docker-driver.sh`
+Vamp with Docker driver: `./run.sh docker`
 
 This will run the following containers:
 
+- vamp-zookeeper, based on [jplock/zookeeper:3.4.6](https://hub.docker.com/r/jplock/zookeeper/)
 - vamp-elasticsearch, based on official [elasticsearch](https://hub.docker.com/_/elasticsearch):2.0
 - vamp-kibana, based on official [kibana](https://hub.docker.com/_/kibana):4.2
 - vamp-logstash, based on official [logstash](https://hub.docker.com/_/logstash):2.0
-- vamp-zookeeper, based on [jplock/zookeeper:3.4.6](https://hub.docker.com/r/jplock/zookeeper/)
 - [vamp-gateway-agent](https://github.com/magneticio/vamp-gateway-agent)
 
-## Run Vamp with Marathon driver
-
-TODO
-
-## Exposed Services
+Exposed services:
 
 - HAProxy (Vamp Gateway Agent) statistics [http://localhost:1988](http://localhost:1988)
 - Elasticsearch HTTP [http://localhost:9200](http://localhost:9200)
-- Kibana UI [http://localhost:5601](http://localhost:5601)
+- Kibana [http://localhost:5601](http://localhost:5601)
 - Marvel [http://localhost:5601/app/marvel](http://localhost:5601/app/marvel)
 - Sense [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
 
-If you are using Docker Toolbox, you should use docker-machine IP address instead of localhost, e.g.:
+Vamp with Marathon driver: `./run.sh marathon`
+
+- vamp-zookeeper, based on [jplock/zookeeper:3.4.6](https://hub.docker.com/r/jplock/zookeeper/)
+- vamp-mesos-master, vamp-mesos-slave1 and vamp-mesos-slave2
+- vamp-marathon
+- vamp-elasticsearch, based on official [elasticsearch](https://hub.docker.com/_/elasticsearch):2.0
+- vamp-kibana, based on official [kibana](https://hub.docker.com/_/kibana):4.2
+- vamp-logstash, based on official [logstash](https://hub.docker.com/_/logstash):2.0
+- [vamp-gateway-agent](https://github.com/magneticio/vamp-gateway-agent)
+
+Additional services:
+
+- Mesos [http://localhost:5050](http://localhost:5050), based on version 0.24.1
+- Marathon [http://localhost:8080](http://localhost:8080), based on version 0.14.0-SNAPSHOT
+
+NOTE: If you are using Docker Toolbox, you should use docker-machine IP address instead of localhost, e.g.:
 ```
 docker-machine ip default
 ```
