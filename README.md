@@ -1,49 +1,39 @@
-# Vamp-docker
+# Vamp Docker
 
-This repo contains a number of `Dockerfile` files and `docker-compose.yml` to help setup Vamp in 
-different situations. They should run anywhere Docker runs, but most situations will probably be on your laptop. 
-Probably a recent Macbook.
+This repo contains a number of `Dockerfile` files and bash scripts to help setting up Vamp in different situations. 
 
 ## Prerequisites
 
-1. You should have Docker installed which, on a Macbook with OSX, means [Boot2Docker](http://boot2docker.io/) and its dependencies.
-2. For Docker compositions, you should have [Docker compose](https://docs.docker.com/compose/install/) installed. Luckily,
-that's a two-liner:
+1. [Docker](https://docs.docker.com/) installed.
+2. [Docker Compose](https://docs.docker.com/compose/) installed.
 
-        curl -L https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-        chmod +x /usr/local/bin/docker-compose
-3. Some patience, as some of the container are somewhat big due to Java dependencies.
-4. You are most probably on Github. You should have git.
-
-## Run it
-
-If you have the prerequisites sorted, pick the thing you want to do...
-
-### Option 1: Run Vamp on Docker
-
-This setup will run Vamp inside a Docker container with Vamp's Docker driver. This allows you to test drive Vamp really easily.
-
-A typical command on Macbook running Boot2Docker would be:
+## Building Vamp Docker Images Locally
 
 ```
-docker run --net=host -v ~/.boot2docker/certs/boot2docker-vm:/certs -e "DOCKER_TLS_VERIFY=1" -e "DOCKER_HOST=tcp://`boot2docker ip`:2376" -e "DOCKER_CERT_PATH=/certs" magneticio/vamp-docker:latest
+./build.sh
+
+Usage of ./build.sh:
+  -h|--help   Help.
+  -l|--list   List all available images.
+  -c|--clean  Remove all available images.
+  -m|--make   Copy all available Docker files to 'target/docker' directory.
+  -b|--build  Build all available images.
 ```
 
-**Please notice** the mounting of the boot2docker certificates. Please set this to your specific environment. You can get this info by running `boot2docker config`.
+For instance run `./build.sh -b`
 
-If you don't use Boot2Docker, set the `DOCKER_HOST` variable to whatever is relevant to your system.
+## Run Vamp with Docker driver
 
-## Option 2: Run Vamp with a Mesos and Marathon cluster
+`./run-vamp-docker-driver.sh`
 
-    git clone https://github.com/magneticio/vamp-docker.git && cd vamp-docker/docker-compositions/vamp-marathon-mesos/ && docker-compose up    
-*Note 1: grab a coffee while everything gets installed on the first run.*
-*Note 2: This runs all of Vamp's components in one container. This is not ideal, but works fine for testing stuff out.*
+This will run the following containers:
 
+- vamp-elasticsearch, based on official elasticsearch:2.0
+- vamp-kibana, based on official kibana:4.2
+- vamp-logstash, based on official logstash:2.0
+- vamp-zookeeper, based on jplock/zookeeper:3.4.6
+- vamp-gateway-agent
 
-## Option 3: Build the all-in-one Vamp container, run it with an external Mesos/Marathon
+## Run Vamp with Marathon driver
 
-    git clone https://github.com/magneticio/vamp-docker.git && docker build -t my_vamp_image vamp-docker/dockerfiles/vamp-mesosphere/    
-
-With this image, you should provide the Marathon endpoint on startup by setting the `VAMP_MARATHON_URL` enviroment variable, like this:
-
-    docker run -i -t -p 81:80 -p 8081:8080 -p 10002:10001 -p 8084:8083 -e VAMP_MARATHON_URL=http://10.143.22.49:8080 my_vamp_image
+TODO

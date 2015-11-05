@@ -1,0 +1,55 @@
+zookeeper:
+  image: magneticio/vamp-zookeeper:${VAMP_VERSION}
+  container_name: vamp-zookeeper
+  ports:
+    - "2181:2181"
+
+elasticsearch:
+  image: magneticio/vamp-elasticsearch:${VAMP_VERSION}
+  container_name: vamp-elasticsearch
+  command: elasticsearch -Des.network.host=0.0.0.0
+  ports:
+    - "9200:9200"
+
+logstash:
+  image: magneticio/vamp-logstash:${VAMP_VERSION}
+  container_name: vamp-logstash
+  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  volumes:
+    - ./logstash/logstash.conf:/etc/logstash/conf.d/logstash.conf
+  ports:
+    - "10001:10001/udp"
+  links:
+    - elasticsearch
+
+kibana:
+  image: magneticio/vamp-kibana:${VAMP_VERSION}
+  container_name: vamp-kibana
+  volumes:
+    - ./kibana/kibana.yml:/opt/kibana/config/kibana.yml
+  ports:
+    - "5601:5601"
+  links:
+    - elasticsearch
+
+vamp-gateway-agent:
+  image: magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:${VAMP_VERSION}
+  container_name: vamp-gateway-agent
+  command: "-zooKeeperServers=zookeeper:2181 -logstashHost=logstash"
+  links:
+    - zookeeper
+    - logstash
+  ports:
+    - "1988:1988"
+    - "9050:9050"
+    - "9051:9051"
+    - "9052:9052"
+    - "9053:9053"
+    - "9054:9054"
+    - "9055:9055"
+    - "33000:33000"
+    - "33001:33001"
+    - "33002:33002"
+    - "33003:33003"
+    - "33004:33004"
+    - "33005:33005"
