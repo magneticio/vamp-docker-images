@@ -2,7 +2,10 @@ FROM ubuntu:14.04
 
 # Based on docker:1.9-dind
 
-RUN apt-get update -qq && apt-get install -qqy curl wget btrfs-tools e2fsprogs iptables xz-utils
+RUN apt-get update -qq && \
+		apt-get install -qqy curl wget btrfs-tools e2fsprogs iptables xz-utils supervisor && \
+		apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV DOCKER_BUCKET get.docker.com
 ENV DOCKER_VERSION 1.9.0
@@ -22,8 +25,9 @@ RUN wget "https://raw.githubusercontent.com/docker/docker/${DIND_COMMIT}/hack/di
 COPY dockerd.sh /usr/local/bin/
 RUN chmod u+x /usr/local/bin/dockerd.sh
 
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
 VOLUME /var/lib/docker
 EXPOSE 2375
 
-ENTRYPOINT ["dockerd.sh"]
-CMD []
+CMD ["supervisord", "-n"]
