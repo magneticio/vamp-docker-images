@@ -1,0 +1,21 @@
+vamp-gateway-agent:
+  image: magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:${VAMP_VERSION}
+  container_name: vamp-gateway-agent
+  command: "-zooKeeperServers=zookeeper:2181 -logstashHost=logstash"
+  links:
+    - zookeeper
+    - logstash
+  ports:
+    - "1988:1988"
+    - "9050:9050"
+    - "9051:9051"
+    - "9052:9052"
+    - "9053:9053"
+    - "9054:9054"
+    - "9055:9055"
+    - "33000:33000"
+    - "33001:33001"
+    - "33002:33002"
+    - "33003:33003"
+    - "33004:33004"
+    - "33005:33005"

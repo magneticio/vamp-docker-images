@@ -18,12 +18,28 @@ echo "${green}
                        by magnetic.io
 ${reset}"
 
+target_dir=${dir}/"target"
+compose_file=${target_dir}/compose.yml
+
 case "$1" in
     docker)
-    docker-compose -f ${dir}/compose/vamp-docker-driver.yml -p vamp up
+    rm -f ${compose_file} 2> /dev/null && mkdir -p ${target_dir} 2> /dev/null && touch ${compose_file}
+
+    cat ${dir}/compose/zookeeper.yml >> ${compose_file}
+    cat ${dir}/compose/elk.yml >> ${compose_file}
+    cat ${dir}/compose/vamp-gateway-agent.yml >> ${compose_file}
+
+    docker-compose -f ${compose_file} -p vamp up
     ;;
     marathon)
-    docker-compose -f ${dir}/compose/vamp-marathon-driver.yml -p vamp up
+    rm -f ${compose_file} 2> /dev/null && mkdir -p ${target_dir} 2> /dev/null && touch ${compose_file}
+
+    cat ${dir}/compose/zookeeper.yml >> ${compose_file}
+    cat ${dir}/compose/marathon.yml >> ${compose_file}
+    cat ${dir}/compose/elk.yml >> ${compose_file}
+    cat ${dir}/compose/vamp-gateway-agent.yml >> ${compose_file}
+
+    docker-compose -f ${compose_file} -p vamp up
     ;;
     *)
     echo "${green}Usage: run.sh docker|marathon

@@ -1,0 +1,6 @@
+zookeeper:
+  image: magneticio/vamp-zookeeper:${VAMP_VERSION}
+  container_name: vamp-zookeeper
+  ports:
+    - "2181:2181"
+
