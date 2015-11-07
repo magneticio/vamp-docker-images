@@ -58,8 +58,15 @@ function docker_rmi {
 }
 
 function docker_make {
-    echo "${green}copying files from: $1 ${reset}"
-    cp -R ${dir}/$1 ${target} 2> /dev/null
+    make_file=${dir}/$1/make.sh
+    if [ -f "${make_file}" ]
+    then
+        echo "${green}executing make.sh from $1 ${reset}"
+        bash ${dir}/$1/make.sh ${dir}/${target}/$1
+    else
+        echo "${green}copying files from: $1 ${reset}"
+        cp -R ${dir}/$1 ${target} 2> /dev/null
+    fi
 }
 
 function docker_build {
