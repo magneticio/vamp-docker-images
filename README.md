@@ -14,7 +14,7 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 
 Usage of ./build.sh:
   -h|--help   Help.
-  -l|--list   List all available images.
+  -l|--list   List all available and built images.
   -c|--clean  Remove all available images.
   -m|--make   Copy all available Docker files to 'target/docker' directory.
   -b|--build  Build all available images.

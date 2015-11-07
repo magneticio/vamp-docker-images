@@ -31,4 +31,3 @@ VOLUME /var/lib/docker
 EXPOSE 2375
 
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
-c

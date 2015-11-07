@@ -1,4 +1,4 @@
-FROM magneticio/vamp-dind:0.8.0
+FROM magneticio/vamp-dind-1.9:0.8.0
 
 RUN echo "deb http://repos.mesosphere.io/ubuntu/ trusty main" > /etc/apt/sources.list.d/mesosphere.list && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF && \

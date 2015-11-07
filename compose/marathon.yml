@@ -1,5 +1,5 @@
 marathon:
-  image: magneticio/vamp-marathon:${VAMP_VERSION}
+  image: magneticio/vamp-marathon-0.11.1:${VAMP_VERSION}
   container_name: vamp-marathon
   privileged: true
   ports:

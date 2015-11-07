@@ -1,4 +1,4 @@
-FROM magneticio/vamp-dind:0.8.0
+FROM magneticio/vamp-dind-1.9:0.8.0
 
 # Installing Java 8, based on nimmis/java:openjdk-8-jdk
 

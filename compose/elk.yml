@@ -1,12 +1,12 @@
 elasticsearch:
-  image: magneticio/vamp-elasticsearch:${VAMP_VERSION}
+  image: magneticio/vamp-elasticsearch-2.0:${VAMP_VERSION}
   container_name: vamp-elasticsearch
   command: elasticsearch -Des.network.host=0.0.0.0
   ports:
     - "9200:9200"
 
 logstash:
-  image: magneticio/vamp-logstash:${VAMP_VERSION}
+  image: magneticio/vamp-logstash-2.0:${VAMP_VERSION}
   container_name: vamp-logstash
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   volumes:
@@ -17,7 +17,7 @@ logstash:
     - elasticsearch
 
 kibana:
-  image: magneticio/vamp-kibana:${VAMP_VERSION}
+  image: magneticio/vamp-kibana-4.2:${VAMP_VERSION}
   container_name: vamp-kibana
   volumes:
     - ../kibana/kibana.yml:/opt/kibana/config/kibana.yml
