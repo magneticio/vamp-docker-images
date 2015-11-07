@@ -1,5 +1,5 @@
 vamp-gateway-agent:
-  image: magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:${VAMP_VERSION}
+  image: magneticio/vamp-gateway-agent_1.5.14-alpine-3.2:${VAMP_VERSION}
   container_name: vamp-gateway-agent
   command: "-zooKeeperServers=zookeeper:2181 -logstashHost=logstash"
   links:
