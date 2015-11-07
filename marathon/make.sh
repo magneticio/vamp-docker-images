@@ -6,11 +6,18 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 
 target=$1
+tmp=${target}/tmp
+marathon_version=v0.11.1
 
-echo "${green}cloning mesosphere/marathon to ${target}...${reset}"
-git clone https://github.com/mesosphere/marathon.git ${target}
-cd ${target} && git checkout tags/v0.11.1
+echo "${green}cloning mesosphere/marathon ${marathon_version} to ${target}...${reset}"
+git clone https://github.com/mesosphere/marathon.git ${tmp}
+cd ${tmp} && git checkout tags/${marathon_version}
+
+echo "${green}building...${reset}"
+sbt -Dsbt.log.format=false assembly
+cp $(find "${tmp}" -name 'marathon-assembly-*.jar' | sort | tail -1) ${target}/marathon.jar
+rm -Rf ${tmp} 2> /dev/null
 
 echo "${green}copying files...${reset}"
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
-cp -f ${dir}/start.sh ${target}/start.sh
+cp -f ${dir}/start ${target}/start

@@ -76,6 +76,7 @@ function docker_make {
     else
         echo "${green}copying files from: $1 ${reset}"
         cp -R ${dir}/$1 ${target} 2> /dev/null
+        rm -f ${target}/$1/version 2> /dev/null
     fi
 }
 
@@ -139,6 +140,7 @@ function process() {
 }
 
 parse_command_line $@
+
 echo "${green}
 ██╗   ██╗ █████╗ ███╗   ███╗██████╗
 ██║   ██║██╔══██╗████╗ ████║██╔══██╗
@@ -155,6 +157,6 @@ if [ ${flag_help} -eq 1 ] || [[ $# -eq 0 ]]; then
 fi
 
 if [ ${flag_list} -eq 1 ] || [ ${flag_clean} -eq 1 ] || [ ${flag_make} -eq 1 ] || [ ${flag_build} -eq 1 ]; then
-    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${target}
+    #rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${target}
     process
 fi

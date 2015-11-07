@@ -4,8 +4,9 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 
 ## Prerequisites
 
-1. [Docker](https://docs.docker.com/) installed.
-2. [Docker Compose](https://docs.docker.com/compose/) installed.
+1. [Docker](https://docs.docker.com/)
+2. [Docker Compose](https://docs.docker.com/compose/)
+3. Git, JDK 8, sbt
 
 ## Building Vamp Docker Images Locally
 
