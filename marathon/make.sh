@@ -7,7 +7,7 @@ green=`tput setaf 2`
 
 target=$1
 tmp=${target}/tmp
-marathon_version=v0.11.1
+marathon_version=v0.13.0
 
 echo "${green}cloning mesosphere/marathon ${marathon_version} to ${target}...${reset}"
 git clone https://github.com/mesosphere/marathon.git ${tmp}

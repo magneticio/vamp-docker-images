@@ -48,7 +48,7 @@ ${reset}"
 
 error=0
 
-if [[ ${flag_docker} -eq 0 && ${flag_marathon} -eq 0 ]]; then
+if [[ ${flag_help} -eq 0 && ${flag_docker} -eq 0 && ${flag_marathon} -eq 0 ]]; then
     error=1
     echo "${red}No task ${yellow}docker${red} or ${yellow}marathon${red} specified.${reset}"
     echo
