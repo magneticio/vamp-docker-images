@@ -51,7 +51,6 @@ Exposed services:
 - HAProxy (Vamp Gateway Agent) statistics [http://localhost:1988](http://localhost:1988)
 - Elasticsearch HTTP [http://localhost:9200](http://localhost:9200)
 - Kibana [http://localhost:5601](http://localhost:5601)
-- Marvel [http://localhost:5601/app/marvel](http://localhost:5601/app/marvel)
 - Sense [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
 
 Vamp with Marathon driver: `./run.sh marathon`, additional containers:
