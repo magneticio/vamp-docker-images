@@ -62,7 +62,7 @@ fi
 if [ ${flag_help} -eq 1 ] || [[ ${error} -ne 0 ]]; then
     echo "${green}Usage: $0 docker|marathon [options] ${reset}"
     echo "${yellow}  docker            ${green}Running Vamp using Docker driver.${reset}"
-    echo "${yellow}  marathon          ${green}Running Vamp using Marathon driver..${reset}"
+    echo "${yellow}  marathon          ${green}Running Vamp using Marathon driver.${reset}"
     echo "${yellow}  -h  |--help       ${green}Help.${reset}"
     echo "${yellow}  -v=*|--version=*  ${green}Specifying Vamp version, e.g. -v=0.8.0${reset}"
     echo
