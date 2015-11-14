@@ -6,47 +6,31 @@ mesos-master:
     - "5050:5050"
   links:
     - zookeeper
+    - mesos-slave
   environment:
     MESOS_CLUSTER: magneticio/mesos
     MESOS_LOG_DIR: /var/log
     MESOS_QUORUM: 1
     MESOS_ZK: zk://zookeeper:2181/mesos
     MESOS_WORK_DIR: /var/lib/mesos
+    MESOS_HOSTNAME: 192.168.99.100
 
-mesos-slave-1:
+mesos-slave:
   image: magneticio/vamp-mesos-slave-0.25.0:${VAMP_VERSION}
-  container_name: vamp-mesos-slave-1
-  command: "supervisord -n"
+  container_name: vamp-mesos-slave
   privileged: true
+  command: "--containerizers=docker,mesos --executor_registration_timeout=5mins --docker_stop_timeout=10secs"
   links:
     - zookeeper
   ports:
     - "5051:5051"
   environment:
-    MESOS_CONTAINERIZERS: "docker,mesos"
     MESOS_ISOLATOR: "cgroups/cpu,cgroups/mem"
-    MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "10mins"
     MESOS_HOSTNAME: 192.168.99.100
     MESOS_MASTER: zk://zookeeper:2181/mesos
     MESOS_LOG_DIR: /var/log
     MESOS_PORT: "5051"
-
-mesos-slave-2:
-  image: magneticio/vamp-mesos-slave-0.25.0:${VAMP_VERSION}
-  container_name: vamp-mesos-slave-2
-  command: "supervisord -n"
-  privileged: true
-  links:
-    - zookeeper
-  ports:
-    - "5052:5052"
-  environment:
-    MESOS_CONTAINERIZERS: "docker,mesos"
-    MESOS_ISOLATOR: "cgroups/cpu,cgroups/mem"
-    MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "10mins"
-    MESOS_MASTER: zk://zookeeper:2181/mesos
-    MESOS_LOG_DIR: /var/log
-    MESOS_PORT: "5052"
+    MESOS_HOSTNAME: 192.168.99.100
 
 marathon:
   image: magneticio/vamp-marathon-0.13.0:${VAMP_VERSION}
