@@ -7,7 +7,7 @@ green=`tput setaf 2`
 
 target=$1
 tmp=${target}/tmp
-marathon_version=v0.13.0
+marathon_version=v0.13.0-RC3
 
 echo "${green}cloning mesosphere/marathon ${marathon_version} to ${target}...${reset}"
 git clone https://github.com/mesosphere/marathon.git ${tmp}
@@ -20,4 +20,4 @@ rm -Rf ${tmp} 2> /dev/null
 
 echo "${green}copying files...${reset}"
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
-cp -f ${dir}/start ${target}/start
+cp -f ${dir}/start.sh ${target}/start.sh

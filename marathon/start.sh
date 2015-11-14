@@ -64,4 +64,4 @@ fi
 
 supervisord -n -c /etc/supervisor/supervisord.conf &
 
-exec java "${java_args[@]}" -jar "marathon.jar" "${app_args[@]}"
+exec java "${java_args[@]}" -jar "/usr/local/marathon/marathon.jar" "${app_args[@]}"

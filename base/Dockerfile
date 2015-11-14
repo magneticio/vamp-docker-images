@@ -13,7 +13,8 @@ ADD dockerd.sh /usr/local/bin/
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 86F44E2A && \
 		echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" > /etc/apt/sources.list.d/openjdk.list && \
     apt-get update -qq && \
-		apt-get install -qqy --no-install-recommends --force-yes curl wget btrfs-tools e2fsprogs iptables xz-utils supervisor openjdk-8-jdk && \
+		apt-get install -qqy curl wget btrfs-tools e2fsprogs iptables xz-utils supervisor && \
+		apt-get install -qqy --no-install-recommends openjdk-8-jdk && \
 		apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
 		curl -fSL "https://${DOCKER_BUCKET}/builds/Linux/x86_64/docker-$DOCKER_VERSION" -o /usr/local/bin/docker && \
