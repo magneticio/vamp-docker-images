@@ -1,4 +1,4 @@
-FROM magneticio/vamp-base:0.8.0
+FROM magneticio/vamp-dind-jdk:0.8.0
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 
