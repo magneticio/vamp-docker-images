@@ -6,8 +6,13 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 
 1. [Docker](https://docs.docker.com/)
 2. [Docker Compose](https://docs.docker.com/compose/)
-3. Git, JDK 8, sbt (for building Marathon image)
+3. Git, JDK 8, sbt, Go
 
+## Distinctive Images
+
+- vamp-clique - HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent. Suitable for Vamp development (alternative to `./run.sh docker`).
+- vamp-quick-start - vamp-clique + Vamp. Suitable for trying out Vamp.
+ 
 ## Building Vamp Docker Images Locally
 
 ```
@@ -55,7 +60,7 @@ Exposed services:
 
 Vamp with Marathon driver: `./run.sh marathon`, additional containers:
 
-- vamp-mesos-master, vamp-mesos-slave1 and vamp-mesos-slave2, Apache Mesos 0.25.0
+- vamp-mesos-master and vamp-mesos-slave, Apache Mesos 0.25.0
 - vamp-marathon, Marathon 0.13.0
 
 Additional services:
