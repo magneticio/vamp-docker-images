@@ -11,12 +11,12 @@ target=$1
 
 echo "${green}Cloning Vamp to ${target}...${reset}"
 mkdir -p ${target} && cd ${target}
-git clone -b develop --recursive git@github.com:magneticio/vamp.git
+git clone -b develop --recursive --depth=1 git@github.com:magneticio/vamp.git
 cd ${target}/vamp
 #git checkout ${vamp_revision} .
 
 echo "${green}Building Vamp...${reset}"
-sbt compile assembly
+./build-ui.sh && sbt test assembly
 
 echo "${green}Copying files...${reset}"
 cp $(find "${target}/vamp/bootstrap/target/scala-2.11" -name 'vamp-assembly-*.jar' | sort | tail -1) ${target}/vamp.jar
