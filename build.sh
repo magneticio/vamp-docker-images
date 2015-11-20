@@ -43,6 +43,11 @@ function parse_command_line() {
         ;;
         -i=*|--image=*)
         target_image="${key#*=}"
+        length=${#target_image}
+        ((length--))
+        if [ "${target_image:$length:1}" == "/" ]; then
+            target_image="${target_image%?}"
+        fi
         shift
         ;;
         *)

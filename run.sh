@@ -2,15 +2,18 @@
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+vamp_version=0.8.0
+
 reset=`tput sgr0`
 red=`tput setaf 1`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
 flag_help=0
-flag_docker=0
-flag_marathon=0
-vamp_version=0.8.0
+flag_clique=0
+flag_clique_marathon=0
+flag_quick_start=0
+flag_quick_start_marathon=0
 
 for key in "$@"
 do
@@ -18,11 +21,29 @@ case ${key} in
     -h|--help)
     flag_help=1
     ;;
-    docker)
-    flag_docker=1
+    clique)
+    flag_clique=1
     ;;
-    marathon)
-    flag_marathon=1
+    clique/)
+    flag_clique=1
+    ;;
+    clique-marathon)
+    flag_clique_marathon=1
+    ;;
+    clique-marathon/)
+    flag_clique_marathon=1
+    ;;
+    quick-start)
+    flag_quick_start=1
+    ;;
+    quick-start/)
+    flag_quick_start=1
+    ;;
+    quick-start-marathon)
+    flag_quick_start_marathon=1
+    ;;
+    quick-start-marathon/)
+    flag_quick_start_marathon=1
     ;;
     -v=*|--version=*)
     vamp_version="${key#*=}"
@@ -48,23 +69,27 @@ ${reset}"
 
 error=0
 
-if [[ ${flag_help} -eq 0 && ${flag_docker} -eq 0 && ${flag_marathon} -eq 0 ]]; then
+if [[ ${flag_help} -eq 0 && ${flag_clique} -eq 0 && ${flag_clique_marathon} -eq 0 && ${flag_quick_start} -eq 0 && ${flag_quick_start_marathon} -eq 0 ]]; then
     error=1
     echo "${red}No task ${yellow}docker${red} or ${yellow}marathon${red} specified.${reset}"
     echo
 fi
-if [[ ${flag_docker} -eq 1 && ${flag_marathon} -eq 1 ]]; then
+
+task_count=$((${flag_clique} + ${flag_clique_marathon} + ${flag_quick_start} + ${flag_quick_start_marathon}))
+if [[ ${task_count} -gt 1 ]]; then
     error=1
-    echo "${red}Not allowed both ${yellow}docker${red} and ${yellow}marathon${red} to be specified.${reset}"
+    echo "${green}Must be specified only one task.${reset}"
     echo
 fi
 
 if [ ${flag_help} -eq 1 ] || [[ ${error} -ne 0 ]]; then
-    echo "${green}Usage: $0 docker|marathon [options] ${reset}"
-    echo "${yellow}  docker            ${green}Running Vamp using Docker driver.${reset}"
-    echo "${yellow}  marathon          ${green}Running Vamp using Marathon driver.${reset}"
-    echo "${yellow}  -h  |--help       ${green}Help.${reset}"
-    echo "${yellow}  -v=*|--version=*  ${green}Specifying Vamp version, e.g. -v=0.8.0${reset}"
+    echo "${green}Usage: $0 clique|clique-marathon|quick-start|quick-start-marathon [options] ${reset}"
+    echo "${yellow}  clique               ${green}Run ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
+    echo "${yellow}  clique-marathon      ${green}Run ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent, Mesos and Marathon.${reset}"
+    echo "${yellow}  quick-start          ${green}Vamp without Marathon (i.e. Docker driver).${reset}"
+    echo "${yellow}  quick-start-marathon ${green}Vamp with Marathon.${reset}"
+    echo "${yellow}  -h  |--help          ${green}Help.${reset}"
+    echo "${yellow}  -v=*|--version=*     ${green}Specifying Vamp version, e.g. -v=0.8.0${reset}"
     echo
     if [[ ${error} -ne 0 ]]; then
         exit ${error}
@@ -74,26 +99,53 @@ fi
 target_dir=${dir}/"target"
 compose_file=${target_dir}/compose.yml
 
-if [[ ${flag_docker} -eq 1 ]]; then
-    echo "${green}Running: docker${reset}"
-
-    rm -f ${compose_file} 2> /dev/null && mkdir -p ${target_dir} 2> /dev/null && touch ${compose_file}
-
-    cat ${dir}/compose/zookeeper.yml >> ${compose_file}
-    cat ${dir}/compose/elk.yml >> ${compose_file}
-    cat ${dir}/compose/vamp-gateway-agent.yml >> ${compose_file}
-
-    docker-compose -f ${compose_file} -p vamp up
+if [[ ${flag_clique} -eq 1 ]]; then
+    echo "${green}Running: clique${reset}"
+    docker run --net=host magneticio/vamp-clique:${vamp_version}
 fi
 
-if [[ ${flag_marathon} -eq 1 ]]; then
-    echo "${green}Running: marathon${reset}"
-    rm -f ${compose_file} 2> /dev/null && mkdir -p ${target_dir} 2> /dev/null && touch ${compose_file}
+if [[ ${flag_clique_marathon} -eq 1 ]]; then
+    echo "${green}Running: clique-marathon${reset}"
 
-    cat ${dir}/compose/zookeeper.yml >> ${compose_file}
-    cat ${dir}/compose/marathon.yml >> ${compose_file}
-    cat ${dir}/compose/elk.yml >> ${compose_file}
-    cat ${dir}/compose/vamp-gateway-agent.yml >> ${compose_file}
+    if command_exists docker-machine; then
+        DOCKER_HOST_IP=$(docker-machine ip default)
+    else
+        DOCKER_HOST_IP=$(hostname --ip-address)
+    fi
 
-    docker-compose -f ${compose_file} -p vamp up
+    docker run --net=host \
+               -v /var/run/docker.sock:/var/run/docker.sock \
+               -v $(which docker):/bin/docker \
+               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+               -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
+               magneticio/vamp-clique-marathon:0.8.0
+fi
+
+if [[ ${flag_quick_start} -eq 1 ]]; then
+    echo "${green}Running: quick-start${reset}"
+
+    if command_exists docker-machine; then
+        docker run --net=host \
+                   -v ~/.docker/machine/machines/default:/certs \
+                   -e "DOCKER_TLS_VERIFY=1" \
+                   -e "DOCKER_HOST=`docker-machine url default`" \
+                   -e "DOCKER_CERT_PATH=/certs" \
+                   magneticio/vamp-quick-start:${vamp_version}
+    else
+        docker run --net=host \
+                   -v /var/run/docker.sock:/var/run/docker.sock \
+                   -v $(which docker):/bin/docker \
+                   magneticio/vamp-quick-start:${vamp_version}
+    fi
+fi
+
+if [[ ${flag_quick_start_marathon} -eq 1 ]]; then
+    echo "${green}Running: quick-start-marathon${reset}"
+
+    docker run --net=host \
+               -v /var/run/docker.sock:/var/run/docker.sock \
+               -v $(which docker):/bin/docker \
+               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+               -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
+               magneticio/vamp-quick-start-marathon:${vamp_version}
 fi

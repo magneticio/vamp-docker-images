@@ -1,4 +1,4 @@
-FROM magneticio/vamp-java-1.8:0.8.0
+FROM java:openjdk-8-jre
 
 # ZooKeeper, Elasticsearch, Logstash and Kibana
 
