@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Wait for Mesos master to be ready.
 while true; do
     sleep 1
     status=$(curl -s --head -w %{http_code} http://0.0.0.0:5050 -o /dev/null)

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# Wait for the Elasticsearch container to be ready before starting Kibana.
-echo "Stalling for Elasticsearch"
+# Wait for Elasticsearch to be ready before starting Kibana.
 while true; do
     sleep 1
     status=$(curl -s --head -w %{http_code} http://0.0.0.0:9200 -o /dev/null)
@@ -10,5 +9,4 @@ while true; do
     fi
 done
 
-echo "Starting Kibana"
 gosu kibana kibana

@@ -84,8 +84,8 @@ fi
 
 if [ ${flag_help} -eq 1 ] || [[ ${error} -ne 0 ]]; then
     echo "${green}Usage: $0 clique|clique-marathon|quick-start|quick-start-marathon [options] ${reset}"
-    echo "${yellow}  clique               ${green}Run ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
-    echo "${yellow}  clique-marathon      ${green}Run ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent, Mesos and Marathon.${reset}"
+    echo "${yellow}  clique               ${green}Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
+    echo "${yellow}  clique-marathon      ${green}Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent, Mesos and Marathon.${reset}"
     echo "${yellow}  quick-start          ${green}Vamp without Marathon (i.e. Docker driver).${reset}"
     echo "${yellow}  quick-start-marathon ${green}Vamp with Marathon.${reset}"
     echo "${yellow}  -h  |--help          ${green}Help.${reset}"

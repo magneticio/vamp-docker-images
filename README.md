@@ -5,15 +5,16 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 ## Prerequisites
 
 1. [Docker](https://docs.docker.com/)
-2. [Docker Compose](https://docs.docker.com/compose/)
-3. Git, JDK 8, sbt, Go
+2. Git, JDK 8, sbt, Go
 
-## Distinctive Images
+## Images
 
-- vamp-clique - HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent. Suitable for Vamp development (alternative to `./run.sh docker`).
-- vamp-quick-start - vamp-clique + Vamp. Suitable for trying out Vamp.
+- **vamp-clique**: HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent. Suitable for Vamp development.
+- **vamp-clique-marathon**: vamp-clique + Mesos (1 master, 1 slave) and Marathon. Suitable for Vamp development.
+- **vamp-quick-start**: vamp-clique + Vamp. Suitable for trying out Vamp without Marathon (i.e. Docker driver).
+- **vamp-quick-start-marathon**: vamp-clique-marathon + Vamp. Suitable for trying out Vamp with Marathon.
  
-## Building Vamp Docker Images Locally
+## Building Vamp Docker Images
 
 ```
 ./build.sh
@@ -33,42 +34,28 @@ Usage of ./build.sh:
 ```
 ./run.sh
 
-Usage: ./run.sh docker|marathon [options] 
-  docker            Running Vamp using Docker driver.
-  marathon          Running Vamp using Marathon driver..
-  -h  |--help       Help.
-  -v=*|--version=*  Specifying Vamp version, e.g. -v=0.8.0
-
+Usage: ./run.sh clique|clique-marathon|quick-start|quick-start-marathon [options] 
+  clique               Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
+  clique-marathon      Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent, Mesos and Marathon.
+  quick-start          Vamp without Marathon (i.e. Docker driver).
+  quick-start-marathon Vamp with Marathon.
+  -h  |--help          Help.
+  -v=*|--version=*     Specifying Vamp version, e.g. -v=0.8.0
 ```
 
-Vamp with Docker driver: `./run.sh docker`
-
-This will run the following containers:
-
-- vamp-zookeeper, version 3.4.6
-- vamp-elasticsearch, based on official [elasticsearch](https://hub.docker.com/_/elasticsearch):2.0
-- vamp-kibana, based on official [kibana](https://hub.docker.com/_/kibana):4.2
-- vamp-logstash, based on official [logstash](https://hub.docker.com/_/logstash):2.0
-- [vamp-gateway-agent](https://github.com/magneticio/vamp-gateway-agent)
-
-Exposed services:
+Exposed services depending on the image type:
 
 - HAProxy (Vamp Gateway Agent) statistics [http://localhost:1988](http://localhost:1988)
 - Elasticsearch HTTP [http://localhost:9200](http://localhost:9200)
 - Kibana [http://localhost:5601](http://localhost:5601)
 - Sense [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
 
-Vamp with Marathon driver: `./run.sh marathon`, additional containers:
-
-- vamp-mesos-master and vamp-mesos-slave, Apache Mesos 0.25.0
-- vamp-marathon, Marathon 0.13.0
-
-Additional services:
-
 - Mesos [http://localhost:5050](http://localhost:5050)
-- Marathon [http://localhost:8080](http://localhost:8080)
+- Marathon [http://localhost:9090](http://localhost:9090)
 
-NOTE: If you are using Docker Toolbox, you should use docker-machine IP address instead of localhost, for instance to get the IP:
+- Vamp [http://localhost:8080](http://localhost:8080)
+
+NOTE: If you are using Docker Toolbox (Mac OS X or Windows), you should use docker-machine IP address instead of localhost, for instance to get the IP:
 ```
 docker-machine ip default
 ```
