@@ -7,13 +7,10 @@ green=`tput setaf 2`
 
 target=$1
 
-#vamp_revision=2f48fb8
-
 echo "${green}Cloning Vamp to ${target}...${reset}"
 mkdir -p ${target} && cd ${target}
-git clone -b develop --recursive --depth=1 git@github.com:magneticio/vamp.git
+git clone --recursive --depth=1 git@github.com:magneticio/vamp.git
 cd ${target}/vamp
-#git checkout ${vamp_revision} .
 
 echo "${green}Building Vamp...${reset}"
 ./build-ui.sh && sbt test assembly
