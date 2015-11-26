@@ -99,6 +99,11 @@ fi
 target_dir=${dir}/"target"
 compose_file=${target_dir}/compose.yml
 
+
+function command_exists() {
+	command -v "$@" > /dev/null 2>&1
+}
+
 if [[ ${flag_clique} -eq 1 ]]; then
     echo "${green}Running: clique${reset}"
     docker run --net=host magneticio/vamp-clique:${vamp_version}
