@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique-marathon:0.8.0
+FROM magneticio/vamp-clique-marathon:0.8.1
 
 RUN mkdir -p /usr/local/vamp
 
