@@ -2,8 +2,8 @@ FROM java:openjdk-8-jre
 
 # HAProxy, ZooKeeper, Elasticsearch, Logstash and Kibana
 
-ENV HAPROXY_MAJOR 1.5
-ENV HAPROXY_VERSION 1.5.15
+ENV HAPROXY_MAJOR 1.6
+ENV HAPROXY_VERSION 1.6.3
 
 ENV ZOOKEEPER_VERSION 3.4.7
 
