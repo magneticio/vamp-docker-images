@@ -2,7 +2,7 @@
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-vamp_version=0.8.1
+vamp_version=0.8.2
 
 reset=`tput sgr0`
 red=`tput setaf 1`
@@ -89,7 +89,7 @@ if [ ${flag_help} -eq 1 ] || [[ ${error} -ne 0 ]]; then
     echo "${yellow}  quick-start          ${green}Vamp without Marathon (i.e. Docker driver).${reset}"
     echo "${yellow}  quick-start-marathon ${green}Vamp with Marathon.${reset}"
     echo "${yellow}  -h  |--help          ${green}Help.${reset}"
-    echo "${yellow}  -v=*|--version=*     ${green}Specifying Vamp version, e.g. -v=0.8.1${reset}"
+    echo "${yellow}  -v=*|--version=*     ${green}Specifying Vamp version, e.g. -v=0.8.2${reset}"
     echo
     if [[ ${error} -ne 0 ]]; then
         exit ${error}
@@ -123,7 +123,7 @@ if [[ ${flag_clique_marathon} -eq 1 ]]; then
                -v $(which docker):/bin/docker \
                -v "/sys/fs/cgroup:/sys/fs/cgroup" \
                -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
-               magneticio/vamp-clique-marathon:0.8.1
+               magneticio/vamp-clique-marathon:0.8.2
 fi
 
 if [[ ${flag_quick_start} -eq 1 ]]; then

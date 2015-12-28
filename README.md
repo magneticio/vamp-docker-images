@@ -26,7 +26,7 @@ Usage of ./build.sh:
   -c  |--clean      Remove image(s).
   -m  |--make       Copy Docker file(s) to 'target/docker' directory.
   -b  |--build      Build image(s).
-  -v=*|--version=*  Specifying Vamp version, e.g. -v=0.8.1
+  -v=*|--version=*  Specifying Vamp version, e.g. -v=0.8.2
   -i=*|--image=*    Specifying single image to be processed, e.g. `-i=marathon` otherwise all.
 ```
 
@@ -44,7 +44,7 @@ Usage: ./run.sh clique|clique-marathon|quick-start|quick-start-marathon [options
   quick-start          Vamp without Marathon (i.e. Docker driver).
   quick-start-marathon Vamp with Marathon.
   -h  |--help          Help.
-  -v=*|--version=*     Specifying Vamp version, e.g. -v=0.8.1
+  -v=*|--version=*     Specifying Vamp version, e.g. -v=0.8.2
 ```
 
 Exposed services depending on the image type:

@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique:0.8.1
+FROM magneticio/vamp-clique:0.8.2
 
 RUN mkdir -p /usr/local/vamp
 
