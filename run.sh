@@ -10,7 +10,8 @@ green=`tput setaf 2`
 yellow=`tput setaf 3`
 
 flag_help=0
-flag_clique=0
+flag_clique_etcd=0
+flag_clique_zookeeper=0
 flag_clique_marathon=0
 flag_quick_start=0
 flag_quick_start_marathon=0
@@ -21,11 +22,17 @@ case ${key} in
     -h|--help)
     flag_help=1
     ;;
-    clique)
+    clique-etcd)
+    flag_clique_etcd=1
+    ;;
+    clique-etcd/)
+    flag_clique_etcd=1
+    ;;
+    clique-zookeeper)
     flag_clique=1
     ;;
-    clique/)
-    flag_clique=1
+    clique-zookeeper/)
+    flag_clique_zookeeper=1
     ;;
     clique-marathon)
     flag_clique_marathon=1
@@ -69,13 +76,13 @@ ${reset}"
 
 error=0
 
-if [[ ${flag_help} -eq 0 && ${flag_clique} -eq 0 && ${flag_clique_marathon} -eq 0 && ${flag_quick_start} -eq 0 && ${flag_quick_start_marathon} -eq 0 ]]; then
+if [[ ${flag_help} -eq 0 && ${flag_clique_etcd} -eq 0 && ${flag_clique_zookeeper} -eq 0 && ${flag_clique_marathon} -eq 0 && ${flag_quick_start} -eq 0 && ${flag_quick_start_marathon} -eq 0 ]]; then
     error=1
-    echo "${red}No task ${yellow}docker${red} or ${yellow}marathon${red} specified.${reset}"
+    echo "${red}No task specified.${reset}"
     echo
 fi
 
-task_count=$((${flag_clique} + ${flag_clique_marathon} + ${flag_quick_start} + ${flag_quick_start_marathon}))
+task_count=$((${flag_clique_etcd} + ${flag_clique_zookeeper} + ${flag_clique_marathon} + ${flag_quick_start} + ${flag_quick_start_marathon}))
 if [[ ${task_count} -gt 1 ]]; then
     error=1
     echo "${green}Must be specified only one task.${reset}"
@@ -84,7 +91,8 @@ fi
 
 if [ ${flag_help} -eq 1 ] || [[ ${error} -ne 0 ]]; then
     echo "${green}Usage: $0 clique|clique-marathon|quick-start|quick-start-marathon [options] ${reset}"
-    echo "${yellow}  clique               ${green}Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
+    echo "${yellow}  clique-etcd          ${green}Run HAProxy, etcd, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
+    echo "${yellow}  clique-zookeeper     ${green}Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
     echo "${yellow}  clique-marathon      ${green}Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent, Mesos and Marathon.${reset}"
     echo "${yellow}  quick-start          ${green}Vamp without Marathon (i.e. Docker driver).${reset}"
     echo "${yellow}  quick-start-marathon ${green}Vamp with Marathon.${reset}"
@@ -104,9 +112,14 @@ function command_exists() {
 	command -v "$@" > /dev/null 2>&1
 }
 
-if [[ ${flag_clique} -eq 1 ]]; then
-    echo "${green}Running: clique${reset}"
-    docker run --net=host magneticio/vamp-clique:${vamp_version}
+if [[ ${flag_clique_etcd} -eq 1 ]]; then
+    echo "${green}Running: clique-etcd${reset}"
+    docker run --net=host -p 4001:4001 magneticio/vamp-clique-etcd:${vamp_version}
+fi
+
+if [[ ${flag_clique_zookeeper} -eq 1 ]]; then
+    echo "${green}Running: clique-zookeeper${reset}"
+    docker run --net=host magneticio/vamp-clique-zookeeper:${vamp_version}
 fi
 
 if [[ ${flag_clique_marathon} -eq 1 ]]; then
