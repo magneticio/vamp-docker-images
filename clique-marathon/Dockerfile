@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique:0.8.2
+FROM magneticio/vamp-clique-zookeeper:0.8.2
 
 RUN set -ex && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF && \

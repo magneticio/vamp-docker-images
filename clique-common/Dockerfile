@@ -1,11 +1,9 @@
 FROM java:openjdk-8-jre
 
-# HAProxy, ZooKeeper, Elasticsearch, Logstash and Kibana
+# HAProxy, Elasticsearch, Logstash and Kibana
 
 ENV HAPROXY_MAJOR 1.6
 ENV HAPROXY_VERSION 1.6.3
-
-ENV ZOOKEEPER_VERSION 3.4.7
 
 ENV ELASTICSEARCH_MAJOR 2.1
 ENV ELASTICSEARCH_VERSION 2.1.1
@@ -40,12 +38,7 @@ RUN set -ex && \
     make install-bin && \
     cd .. && \
     rm -rf /usr/src/haproxy-$HAPROXY_VERSION && \
-		wget -q -O - http://apache.mirrors.pair.com/zookeeper/zookeeper-$ZOOKEEPER_VERSION/zookeeper-$ZOOKEEPER_VERSION.tar.gz | tar -xzf - -C /usr/local && \
-		mv /usr/local/zookeeper-$ZOOKEEPER_VERSION /usr/local/zookeeper && \
-		mv /usr/local/zookeeper/bin/zkServer.sh /usr/local/zookeeper/bin/zookeeper && \
-		cp /usr/local/zookeeper/conf/zoo_sample.cfg /usr/local/zookeeper/conf/zoo.cfg && \
-		mkdir -p /tmp/zookeeper && \
-	  apt-get install -y --no-install-recommends elasticsearch=$ELASTICSEARCH_VERSION logstash=$LOGSTASH_VERSION && \
+		apt-get install -y --no-install-recommends elasticsearch=$ELASTICSEARCH_VERSION logstash=$LOGSTASH_VERSION && \
 	  for path in \
 		  /usr/share/elasticsearch/data \
 		  /usr/share/elasticsearch/logs \
@@ -70,7 +63,7 @@ RUN set -ex && \
 	  apt-get purge -y gcc make && \
 	  apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
-ENV PATH /usr/local/zookeeper/bin:/usr/share/elasticsearch/bin:/usr/share/logstash/bin:/usr/share/kibana/bin:$PATH
+ENV PATH /usr/share/elasticsearch/bin:/usr/share/logstash/bin:/usr/share/kibana/bin:$PATH
 
 ADD elasticsearch/elasticsearch.yml elasticsearch/logging.yml /usr/share/elasticsearch/config/
 ADD logstash/logstash.conf /etc/logstash/conf.d/logstash.conf
@@ -78,7 +71,6 @@ ADD kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 ADD kibana/start.sh /usr/share/kibana/bin/kibana-start
 ADD vamp-gateway-agent haproxy/haproxy.cfg /opt/vamp/
 
-EXPOSE 2181 2888 3888
 EXPOSE 9200 9300
 EXPOSE 5601
 EXPOSE 1988
