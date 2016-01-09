@@ -9,7 +9,7 @@ yellow=`tput setaf 3`
 target=$1
 go_dir=${target}/go
 
-revision=574f4a370312a636947e086d119d306fb8eab8a3
+revision=215bfe22e1c6cabe5c4c5a27063731a0fd638b31
 
 bin='vamp-gateway-agent'
 export GOOS='linux'
