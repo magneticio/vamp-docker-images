@@ -10,5 +10,8 @@ RUN set -ex && \
 
 EXPOSE 2379 2380 4001 7001
 
+# workaround, etcd will parse ETCD_VERSION as boolean
+ENV ETCD_VERSION true
+
 ADD supervisord.conf /etc/supervisor/supervisord.conf
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
