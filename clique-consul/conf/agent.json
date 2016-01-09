@@ -1,0 +1,12 @@
+{
+  "bind_addr": "127.0.0.1",
+  "client_addr": "0.0.0.0",
+  "data_dir": "/data",
+  "leave_on_terminate": true,
+  "ui_dir": "/ui",
+  "server": true,
+  "bootstrap": true,
+  "dns_config": {
+    "allow_stale": false
+  }
+}
