@@ -3,6 +3,7 @@
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 reset=`tput sgr0`
+red=`tput setaf 1`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
@@ -78,6 +79,11 @@ function docker_make {
     then
         echo "${green}executing make.sh from $1 ${reset}"
         bash ${dir}/$1/make.sh ${dir}/${target}/$1
+        exit_code=$?
+        if [ ${exit_code} != 0 ]; then
+            echo "${red}make.sh failed with code: ${exit_code}${reset}"
+            exit ${exit_code}
+        fi
     else
         echo "${green}copying files from: $1 ${reset}"
         cp -R ${dir}/$1 ${target} 2> /dev/null
