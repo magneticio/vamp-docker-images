@@ -2,8 +2,9 @@ FROM magneticio/vamp-clique-base:0.8.2
 
 ENV ETCD_VERSION 2.2.3
 
+ADD https://github.com/coreos/etcd/releases/download/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz /
+
 RUN set -ex && \
-    wget https://github.com/coreos/etcd/releases/download/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz && \
     tar xzvf etcd-v$ETCD_VERSION-linux-amd64.tar.gz && \
     mv etcd-v$ETCD_VERSION-linux-amd64/etcd* /bin/ && \
     rm -Rf etcd-v$ETCD_VERSION-linux-amd64* /var/cache/apk/*
