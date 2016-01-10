@@ -136,7 +136,7 @@ if [[ ${flag_clique_zookeeper} -eq 1 ]]; then
 fi
 
 if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
-    echo "${green}Running: clique-marathon${reset}"
+    echo "${green}Running: clique-zookeeper-marathon${reset}"
 
     if command_exists docker-machine; then
         DOCKER_HOST_IP=$(docker-machine ip default)
@@ -149,7 +149,7 @@ if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
                -v $(which docker):/bin/docker \
                -v "/sys/fs/cgroup:/sys/fs/cgroup" \
                -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
-               magneticio/vamp-clique-marathon:0.8.2
+               magneticio/vamp-clique-zookeeper-marathon:0.8.2
 fi
 
 if [[ ${flag_quick_start} -eq 1 ]]; then
