@@ -173,6 +173,12 @@ fi
 if [[ ${flag_quick_start_marathon} -eq 1 ]]; then
     echo "${green}Running: quick-start-marathon${reset}"
 
+    if command_exists docker-machine; then
+        DOCKER_HOST_IP=$(docker-machine ip default)
+    else
+        DOCKER_HOST_IP=$(hostname --ip-address)
+    fi
+
     docker run --net=host \
                -v /var/run/docker.sock:/var/run/docker.sock \
                -v $(which docker):/bin/docker \
