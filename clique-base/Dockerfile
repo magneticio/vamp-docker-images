@@ -69,7 +69,7 @@ ADD elasticsearch/elasticsearch.yml elasticsearch/logging.yml /usr/share/elastic
 ADD logstash/logstash.conf /etc/logstash/conf.d/logstash.conf
 ADD kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 ADD kibana/start.sh /usr/share/kibana/bin/kibana-start
-ADD vamp-gateway-agent haproxy/haproxy.cfg /opt/vamp/
+ADD vamp-gateway-agent haproxy/haproxy.basic.cfg /opt/vamp/
 
 EXPOSE 9200 9300
 EXPOSE 5601
