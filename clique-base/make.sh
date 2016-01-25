@@ -26,7 +26,7 @@ echo "${green}Building ${GOOS}:${GOARCH} ${yellow}${bin}${reset}"
 go get github.com/tools/godep
 godep restore
 go install
-go build
+CGO_ENABLED=0 go build -v -a -installsuffix cgo
 
 echo "${green}copying files...${reset}"
 cp ./${bin} ${target}/ && chmod u+x ${target}/${bin}
