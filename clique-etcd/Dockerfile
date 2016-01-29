@@ -1,6 +1,6 @@
 FROM magneticio/vamp-clique-base:0.8.2
 
-ENV ETCD_VERSION 2.2.3
+ENV ETCD_VERSION 2.2.4
 
 ADD https://github.com/coreos/etcd/releases/download/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz /
 
