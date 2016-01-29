@@ -1,7 +1,7 @@
 FROM magneticio/vamp-clique-base:0.8.2
 
-ENV CONSUL_VERSION 0.6.1
-ENV CONSUL_SHA256 dbb3c348fdb7cdfc03e5617956b243c594a399733afee323e69ef664cdadb1ac
+ENV CONSUL_VERSION 0.6.3
+ENV CONSUL_SHA256 b0532c61fec4a4f6d130c893fd8954ec007a6ad93effbe283a39224ed237e250
 
 ENV DNS_RESOLVES consul
 ENV DNS_PORT 8600
@@ -11,7 +11,7 @@ ADD https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERS
 ADD https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_web_ui.zip /tmp/webui.zip
 
 RUN set -ex && \
-    echo "${CONSUL_SHA256}  /tmp/consul.zip" > /tmp/consul.sha256 && \
+    echo "${CONSUL_SHA256} /tmp/consul.zip" > /tmp/consul.sha256 && \
     sha256sum -c /tmp/consul.sha256 && \
     cd /bin && \
     unzip /tmp/consul.zip && \
