@@ -36,7 +36,7 @@ case ${key} in
     flag_clique_consul=1
     ;;
     clique-zookeeper)
-    flag_clique=1
+    flag_clique_zookeeper=1
     ;;
     clique-zookeeper/)
     flag_clique_zookeeper=1
