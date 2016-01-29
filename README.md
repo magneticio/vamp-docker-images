@@ -55,6 +55,7 @@ Exposed services depending on the image type:
 - Sense [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
 - Mesos [http://localhost:5050](http://localhost:5050)
 - Marathon [http://localhost:9090](http://localhost:9090)
+- Consul UI [http://localhost:8500](http://localhost:8500)
 - Vamp [http://localhost:8080](http://localhost:8080)
 
 NOTE: If you are using Docker Toolbox (Mac OS X or Windows), you should use docker-machine IP address instead of localhost, for instance to get the IP:
