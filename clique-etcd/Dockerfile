@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique-base:0.8.2
+FROM magneticio/vamp-clique-base:0.8.3
 
 ENV ETCD_VERSION 2.2.4
 
