@@ -9,8 +9,9 @@ while true; do
   fi
 done
 
-marathon --no-logger \
-         --master zk://127.0.0.1:2181/mesos \
-         --zk zk://127.0.0.1:2181/marathon \
-         --task_launch_timeout 300000 \
-         --http_port 9090
+echo "starting Chronos"
+
+chronos run_jar \
+        --http_port 4400 \
+        --zk_hosts localhost:2181 \
+        --master zk://127.0.0.1:2181/mesos
