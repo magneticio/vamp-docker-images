@@ -134,6 +134,10 @@ function process() {
                 image=magneticio/vamp-${image_dir}
             fi
 
+            if [ "$image_dir" == "vamp" ]; then
+                image=magneticio/vamp
+            fi
+
             images+=(${image})
             image_name=${image}:${vamp_version}
 
