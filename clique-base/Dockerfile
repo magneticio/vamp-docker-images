@@ -1,20 +1,20 @@
-FROM java:openjdk-8-jre
+FROM ubuntu:15.10
 
 # HAProxy, Elasticsearch, Logstash and Kibana
 
 ENV HAPROXY_MAJOR 1.6
 ENV HAPROXY_VERSION 1.6.3
 
-ENV ELASTICSEARCH_MAJOR 2.1
-ENV ELASTICSEARCH_VERSION 2.1.1
+ENV ELASTICSEARCH_MAJOR 2.2
+ENV ELASTICSEARCH_VERSION 2.2.0
 ENV ELASTICSEARCH_REPO_BASE http://packages.elasticsearch.org/elasticsearch/2.x/debian
 
-ENV LOGSTASH_MAJOR 2.1
-ENV LOGSTASH_VERSION 1:2.1.1-1
+ENV LOGSTASH_MAJOR 2.2
+ENV LOGSTASH_VERSION 1:2.2.0-1
 ENV LOGSTASH_REPO_BASE http://packages.elasticsearch.org/logstash/${LOGSTASH_MAJOR}/debian
 
-ENV KIBANA_VERSION 4.3.1
-ENV KIBANA_SHA1 115ba22882df75eb5f07330b7ad8781a57569b00
+ENV KIBANA_VERSION 4.4.0
+ENV KIBANA_SHA1 82fa06e11942e13bba518655c1d34752ca259bab
 
 RUN set -ex && \
     groupadd -r elasticsearch && useradd -r -m -g elasticsearch elasticsearch && \
@@ -22,7 +22,9 @@ RUN set -ex && \
     groupadd -r kibana && useradd -r -m -g kibana kibana && \
 		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
     arch="$(dpkg --print-architecture)" && \
-	  curl -o /usr/local/bin/gosu -fSL "https://github.com/tianon/gosu/releases/download/1.3/gosu-$arch" && \
+	  apt-get update && \
+    apt-get install -y curl && \
+    curl -o /usr/local/bin/gosu -fSL "https://github.com/tianon/gosu/releases/download/1.3/gosu-$arch" && \
 	  curl -o /usr/local/bin/gosu.asc -fSL "https://github.com/tianon/gosu/releases/download/1.3/gosu-$arch.asc" && \
 	  gpg --verify /usr/local/bin/gosu.asc && \
 	  rm /usr/local/bin/gosu.asc && \
@@ -31,7 +33,7 @@ RUN set -ex && \
     echo "deb $ELASTICSEARCH_REPO_BASE stable main" > /etc/apt/sources.list.d/elasticsearch.list && \
     echo "deb $LOGSTASH_REPO_BASE stable main" > /etc/apt/sources.list.d/logstash.list && \
 	  apt-get update && \
-	  apt-get install -y wget supervisor gcc make libpcre3-dev zlib1g-dev && \
+	  apt-get install -y wget supervisor gcc make libpcre3-dev zlib1g-dev openjdk-8-jre unzip && \
 	  curl -fL http://www.haproxy.org/download/$HAPROXY_MAJOR/src/haproxy-$HAPROXY_VERSION.tar.gz | tar xzf - -C /usr/src && \
     cd /usr/src/haproxy-$HAPROXY_VERSION && \
     make TARGET=linux26 USE_PCRE=1 USE_ZLIB=1 USE_LINUX_SPLICE=1 USE_LINUX_TPROXY=1 && \

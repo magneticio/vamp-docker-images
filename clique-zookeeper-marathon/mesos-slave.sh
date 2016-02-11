@@ -14,7 +14,8 @@ echo "starting Mesos slave: $1"
 mkdir -p /var/run/mesos/slave$1 2> /dev/null
 mkdir -p /var/log/mesos/slave$1 2> /dev/null
 
-mesos-slave --containerizers="docker,mesos" \
+mesos-slave --launcher=posix \
+            --containerizers="docker,mesos" \
             --executor_registration_timeout=5mins \
             --docker_stop_timeout=10secs \
             --isolation="cgroups/cpu,cgroups/mem" \
