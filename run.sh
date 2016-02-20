@@ -166,6 +166,7 @@ if [[ ${flag_quick_start} -eq 1 ]]; then
         docker run --net=host \
                    -v /var/run/docker.sock:/var/run/docker.sock \
                    -v $(which docker):/bin/docker \
+                   -e "DOCKER_HOST_IP=localhost" \
                    magneticio/vamp-quick-start:${vamp_version}
     fi
 fi
