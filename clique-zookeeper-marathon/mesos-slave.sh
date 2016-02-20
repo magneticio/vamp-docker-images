@@ -22,4 +22,5 @@ mesos-slave --containerizers="docker,mesos" \
             --work_dir=/var/run/mesos/slave$1 \
             --log_dir=/var/log/mesos/slave$1 \
             --port=505$1 \
-            --resources="cpus(*):2; mem(*):4096; disk(*):65536; ports(*):[31000-32000]"
+            --resources="cpus(*):2; mem(*):4096; disk(*):65536; ports(*):[31000-32000]" \
+            --hostname=${DOCKER_HOST_IP}
