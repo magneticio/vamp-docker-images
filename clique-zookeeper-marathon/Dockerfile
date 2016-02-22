@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique-zookeeper:0.8.3
+FROM magneticio/vamp-clique-zookeeper:VAMP_VERSION
 
 RUN set -ex && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF && \

@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique-consul:0.8.3
+FROM magneticio/vamp-clique-consul:VAMP_VERSION
 
 RUN mkdir -p /usr/local/vamp
 

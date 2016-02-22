@@ -7,7 +7,7 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-vamp_version="0.8.3"
+vamp_version=`cat ${dir}/version 2> /dev/null`
 target='target/docker'
 
 cd ${dir}
@@ -64,7 +64,7 @@ function print_help() {
     echo "${yellow}  -c  |--clean      ${green}Remove all available images.${reset}"
     echo "${yellow}  -m  |--make       ${green}Copy all available Docker files to '${target}' directory.${reset}"
     echo "${yellow}  -b  |--build      ${green}Build all available images.${reset}"
-    echo "${yellow}  -v=*|--version=*  ${green}Specifying Vamp version, e.g. -v=0.8.3${reset}"
+    echo "${yellow}  -v=*|--version=*  ${green}Specifying Vamp version, e.g. -v=${vamp_version}${reset}"
     echo "${yellow}  -i=*|--image=*    ${green}Specifying single image to be processed, e.g. -i=marathon${reset}"
 }
 
@@ -89,6 +89,8 @@ function docker_make {
         cp -R ${dir}/$1 ${target} 2> /dev/null
         rm -f ${target}/$1/version 2> /dev/null
     fi
+
+    sed -i "" "s/VAMP_VERSION/${vamp_version}/g" ${target}/$1/Dockerfile
 }
 
 function docker_build {

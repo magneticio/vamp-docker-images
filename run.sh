@@ -2,7 +2,7 @@
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-vamp_version=0.8.3
+vamp_version=`cat ${dir}/version 2> /dev/null`
 
 reset=`tput sgr0`
 red=`tput setaf 1`
@@ -68,8 +68,6 @@ case ${key} in
 esac
 done
 
-export VAMP_VERSION=${vamp_version}
-
 echo "${green}
 ██╗   ██╗ █████╗ ███╗   ███╗██████╗
 ██║   ██║██╔══██╗████╗ ████║██╔══██╗
@@ -77,7 +75,7 @@ echo "${green}
 ╚██╗ ██╔╝██╔══██║██║╚██╔╝██║██╔═══╝
  ╚████╔╝ ██║  ██║██║ ╚═╝ ██║██║
   ╚═══╝  ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝
-                       version ${VAMP_VERSION}
+                       version ${vamp_version}
                        by magnetic.io
 ${reset}"
 
@@ -105,7 +103,7 @@ if [ ${flag_help} -eq 1 ] || [[ ${error} -ne 0 ]]; then
     echo "${yellow}  quick-start                ${green}Vamp without Marathon (i.e. Docker driver).${reset}"
     echo "${yellow}  quick-start-marathon       ${green}Vamp with Marathon.${reset}"
     echo "${yellow}  -h  |--help                ${green}Help.${reset}"
-    echo "${yellow}  -v=*|--version=*           ${green}Specifying Vamp version, e.g. -v=0.8.3${reset}"
+    echo "${yellow}  -v=*|--version=*           ${green}Specifying Vamp version, e.g. -v=${vamp_version}${reset}"
     echo
     if [[ ${error} -ne 0 ]]; then
         exit ${error}
@@ -149,7 +147,7 @@ if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
                -v $(which docker):/bin/docker \
                -v "/sys/fs/cgroup:/sys/fs/cgroup" \
                -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
-               magneticio/vamp-clique-zookeeper-marathon:0.8.3
+               magneticio/vamp-clique-zookeeper-marathon:${vamp_version}
 fi
 
 if [[ ${flag_quick_start} -eq 1 ]]; then

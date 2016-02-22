@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique-base:0.8.3
+FROM magneticio/vamp-clique-base:VAMP_VERSION
 
 ENV ZOOKEEPER_VERSION 3.4.6
 

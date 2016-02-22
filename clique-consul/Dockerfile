@@ -1,4 +1,4 @@
-FROM magneticio/vamp-clique-base:0.8.3
+FROM magneticio/vamp-clique-base:VAMP_VERSION
 
 ENV CONSUL_VERSION 0.6.3
 ENV CONSUL_SHA256 b0532c61fec4a4f6d130c893fd8954ec007a6ad93effbe283a39224ed237e250
