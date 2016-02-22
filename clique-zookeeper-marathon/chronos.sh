@@ -14,4 +14,5 @@ echo "starting Chronos"
 chronos run_jar \
         --http_port 4400 \
         --zk_hosts localhost:2181 \
-        --master zk://127.0.0.1:2181/mesos
+        --master zk://127.0.0.1:2181/mesos \
+        --hostname ${DOCKER_HOST_IP}
