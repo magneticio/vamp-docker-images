@@ -17,6 +17,7 @@ ENV KIBANA_VERSION 4.4.0
 ENV KIBANA_SHA1 82fa06e11942e13bba518655c1d34752ca259bab
 
 RUN set -ex && \
+    locale-gen en_US.UTF-8 && \
     groupadd -r elasticsearch && useradd -r -m -g elasticsearch elasticsearch && \
     groupadd -r logstash && useradd -r -m -g logstash logstash && \
     groupadd -r kibana && useradd -r -m -g kibana kibana && \
@@ -64,6 +65,10 @@ RUN set -ex && \
 	  mkdir -p /opt/vamp && \
 	  apt-get purge -y gcc make && \
 	  apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 ENV PATH /usr/share/elasticsearch/bin:/usr/share/logstash/bin:/usr/share/kibana/bin:$PATH
 
