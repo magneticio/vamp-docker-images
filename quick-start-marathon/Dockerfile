@@ -1,6 +1,8 @@
 FROM magneticio/vamp-clique-zookeeper-marathon:VAMP_VERSION
 
-RUN mkdir -p /usr/local/vamp
+RUN mkdir -p /usr/local/vamp/conf
+
+VOLUME /usr/local/vamp/conf
 
 ADD start.sh /usr/local/vamp/start
 ADD vamp.jar conf /usr/local/vamp/
