@@ -9,7 +9,7 @@ yellow=`tput setaf 3`
 target=$1
 go_dir=${target}/go
 
-revision=c9c6496
+revision=f57fe6c
 
 bin='vamp-gateway-agent'
 export GOOS='linux'
@@ -30,7 +30,9 @@ CGO_ENABLED=0 go build -v -a -installsuffix cgo
 
 echo "${green}copying files...${reset}"
 mkdir -p ${target}/haproxy
-cp ./docker/1.6.3/haproxy.basic.cfg ${target}/haproxy/
+cp ./haproxy/1.6.4/haproxy.basic.cfg ${target}/haproxy/
+cp ./reload.sh ${target}/haproxy/
+cp ./validate.sh ${target}/haproxy/
 cp ./${bin} ${target}/ && chmod u+x ${target}/${bin}
 cd ${dir} && rm -Rf ${go_dir}
 cp -f ${dir}/Dockerfile ${target}/Dockerfile

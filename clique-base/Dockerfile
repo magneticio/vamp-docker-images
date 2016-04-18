@@ -3,7 +3,7 @@ FROM ubuntu:15.10
 # HAProxy, Elasticsearch, Logstash and Kibana
 
 ENV HAPROXY_MAJOR 1.6
-ENV HAPROXY_VERSION 1.6.3
+ENV HAPROXY_VERSION 1.6.4
 
 ENV ELASTICSEARCH_MAJOR 2.2
 ENV ELASTICSEARCH_VERSION 2.2.0
@@ -76,7 +76,7 @@ ADD elasticsearch/elasticsearch.yml elasticsearch/logging.yml /usr/share/elastic
 ADD logstash/logstash.conf /etc/logstash/conf.d/logstash.conf
 ADD kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 ADD kibana/start.sh /usr/share/kibana/bin/kibana-start
-ADD vamp-gateway-agent haproxy/haproxy.basic.cfg /opt/vamp/
+ADD vamp-gateway-agent haproxy/haproxy.basic.cfg haproxy/validate.sh haproxy/reload.sh /opt/vamp/
 
 EXPOSE 9200 9300
 EXPOSE 5601
