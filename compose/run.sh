@@ -36,10 +36,10 @@ done
 
 
 if [ ${flag_marathon} -eq 1 ]; then
-    echo "${green}running vamp-marathon.${reset}"
+    echo "${green}running vamp-marathon${reset}"
     docker-compose -f vamp-marathon.yml -p vamp up
 fi
 
 if [ ${flag_marathon} -eq 0 ]; then
-    echo "${red}usage: ./run.sh marathon..${reset}"
+    echo "${red}usage: ./run.sh marathon${reset}"
 fi

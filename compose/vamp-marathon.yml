@@ -35,8 +35,20 @@ marathon:
   container_name: marathon
   ports:
     - "5050:5050"
+    - "5051:5051"
+    - "5052:5052"
     - "8080:8080"
     - "4400:4400"
+    - "31000:31000"
+    - "31001:31001"
+    - "31002:31002"
+    - "31003:31003"
+    - "31004:31004"
+    - "31005:31005"
+    - "31006:31006"
+    - "31007:31007"
+    - "31008:31008"
+    - "31009:31009"
   environment:
     ZOOKEEPER: zookeeper
     DOCKER_HOST_IP: 192.168.99.100
@@ -69,23 +81,23 @@ vamp-gateway-agent:
     - "33004:33004"
     - "33005:33005"
 
-#vamp:
-#  image: magneticio/vamp-compose:0.8.5
-#  container_name: vamp
-#  links:
-#    - elasticsearch
-#    - logstash
-#    - kibana
-#    - zookeeper
-#    - marathon
-#  ports:
-#    - "9090:9090"
-#  environment:
-#    DOCKER_HOST_IP: 192.168.99.100
-#    VAMP_REST_API_PORT": '9090'
-#    VAMP_PERSISTENCE_KEY_VALUE_STORE_ZOOKEEPER_SERVERS: zookeeper:2181
-#    VAMP_CONTAINER_DRIVER_MESOS_URL: http://marathon:5050
-#    VAMP_CONTAINER_DRIVER_MARATHON_URL: http://marathon:8080
-#    VAMP_GATEWAY_DRIVER_LOGSTASH_HOST: logstash
-#    VAMP_PULSE_ELASTICSEARCH_URL: http://elasticsearch:9200
-#    VAMP_LIFTER_VAMP_GATEWAY_AGENT_ENABLED: 'false'
+vamp:
+  image: magneticio/vamp-compose:0.8.5
+  container_name: vamp
+  links:
+    - elasticsearch
+    - logstash
+    - kibana
+    - zookeeper
+    - marathon
+  ports:
+    - "9090:9090"
+  environment:
+    DOCKER_HOST_IP: 192.168.99.100
+    VAMP_REST_API_PORT: '9090'
+    VAMP_PERSISTENCE_KEY_VALUE_STORE_ZOOKEEPER_SERVERS: zookeeper:2181
+    VAMP_CONTAINER_DRIVER_MESOS_URL: http://marathon:5050
+    VAMP_CONTAINER_DRIVER_MARATHON_URL: http://marathon:8080
+    VAMP_GATEWAY_DRIVER_LOGSTASH_HOST: logstash
+    VAMP_PULSE_ELASTICSEARCH_URL: http://elasticsearch:9200
+    VAMP_LIFTER_VAMP_GATEWAY_AGENT_ENABLED: 'false'

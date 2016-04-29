@@ -26,7 +26,6 @@ function docker_rmi {
 
 function parse_command_line() {
     flag_help=0
-    flag_list=0
     flag_clean=0
     flag_build=0
 
@@ -36,14 +35,8 @@ function parse_command_line() {
         -h|--help)
         flag_help=1
         ;;
-        -l|--list)
-        flag_list=1
-        ;;
         -c|--clean)
         flag_clean=1
-        ;;
-        -m|--make)
-        flag_make=1
         ;;
         -b|--build)
         flag_make=1
@@ -58,7 +51,6 @@ function parse_command_line() {
 function print_help() {
     echo "${green}Usage of $0:${reset}"
     echo "${yellow}  -h  |--help       ${green}Help.${reset}"
-    echo "${yellow}  -l  |--list       ${green}List all available and built images.${reset}"
     echo "${yellow}  -c  |--clean      ${green}Remove all available images.${reset}"
     echo "${yellow}  -b  |--build      ${green}Build all available images.${reset}"
 }
