@@ -22,4 +22,5 @@ cp $(find "${target}/vamp/cli/target/scala-2.11" -name 'vamp-cli-*.jar' | sort |
 rm -Rf ${target}/vamp
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
 cp -fR ${dir}/conf ${target}/
+cp -f ${dir}/start.sh ${target}/
 cp -f ${dir}/vamp-cli.sh ${target}/vamp-cli.sh
