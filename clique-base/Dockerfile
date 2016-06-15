@@ -3,18 +3,17 @@ FROM ubuntu:15.10
 # HAProxy, Elasticsearch, Logstash and Kibana
 
 ENV HAPROXY_MAJOR 1.6
-ENV HAPROXY_VERSION 1.6.4
+ENV HAPROXY_VERSION 1.6.5
 
-ENV ELASTICSEARCH_MAJOR 2.2
-ENV ELASTICSEARCH_VERSION 2.2.0
+ENV ELASTICSEARCH_MAJOR 2.3
+ENV ELASTICSEARCH_VERSION 2.3.3
 ENV ELASTICSEARCH_REPO_BASE http://packages.elasticsearch.org/elasticsearch/2.x/debian
 
-ENV LOGSTASH_MAJOR 2.2
-ENV LOGSTASH_VERSION 1:2.2.0-1
+ENV LOGSTASH_MAJOR 2.3
+ENV LOGSTASH_VERSION 1:2.3.2-1
 ENV LOGSTASH_REPO_BASE http://packages.elasticsearch.org/logstash/${LOGSTASH_MAJOR}/debian
 
-ENV KIBANA_VERSION 4.4.0
-ENV KIBANA_SHA1 82fa06e11942e13bba518655c1d34752ca259bab
+ENV KIBANA_VERSION 4.5.1
 
 RUN set -ex && \
     locale-gen en_US.UTF-8 && \
@@ -53,7 +52,6 @@ RUN set -ex && \
 	  done && \
 	  mv /opt/logstash /usr/share/ && \
 		curl -fSL "https://download.elastic.co/kibana/kibana/kibana-${KIBANA_VERSION}-linux-x64.tar.gz" -o kibana.tar.gz && \
-	  echo "${KIBANA_SHA1} kibana.tar.gz" | sha1sum -c - && \
 	  mkdir -p /usr/share/kibana && \
 	  tar -xz --strip-components=1 -C /usr/share/kibana -f kibana.tar.gz && \
 	  chown -R kibana:kibana /usr/share/kibana && \
