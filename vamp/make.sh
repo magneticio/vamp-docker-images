@@ -6,21 +6,29 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 
 target=$1
+mkdir -p ${target} && cd ${target}
+
+echo "${green}Cloning Vamp UI to ${target}...${reset}"
+git clone -b develop --depth=1 git@github.com:magneticio/revamp-ui.git
+cd ${target}/revamp-ui
+echo "${green}Building Vamp UI...${reset}"
+npm install -g gulp && npm install && bower install && gulp build
+mv dist ui && tar -cvjSf ui.tar.bz2 ui
+cd ${target}
 
 echo "${green}Cloning Vamp to ${target}...${reset}"
-mkdir -p ${target} && cd ${target}
-git clone --recursive --depth=1 git@github.com:magneticio/vamp.git
+git clone -b develop --depth=1 git@github.com:magneticio/vamp.git
 cd ${target}/vamp
-
 echo "${green}Building Vamp...${reset}"
-./build-ui.sh && sbt test assembly
+sbt test assembly
 
 echo "${green}Copying files...${reset}"
 cp $(find "${target}/vamp/bootstrap/target/scala-2.11" -name 'vamp-assembly-*.jar' | sort | tail -1) ${target}/vamp.jar
 cp $(find "${target}/vamp/cli/target/scala-2.11" -name 'vamp-cli-*.jar' | sort | tail -1) ${target}/vamp-cli.jar
+cp -f ${target}/revamp-ui/ui.tar.bz2 ${target}/ui.tar.bz2
 
-rm -Rf ${target}/vamp
+rm -Rf ${target}/vamp && rm -Rf ${target}/revamp-ui
+
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
-cp -fR ${dir}/conf ${target}/
 cp -f ${dir}/start.sh ${target}/
 cp -f ${dir}/vamp-cli.sh ${target}/vamp-cli.sh
