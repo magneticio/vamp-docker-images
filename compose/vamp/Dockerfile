@@ -1,4 +1,4 @@
-FROM magneticio/vamp:0.8.5
+FROM magneticio/vamp:0.9.0
 
 ADD start.sh /start.sh
 

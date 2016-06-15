@@ -50,7 +50,7 @@ marathon:
     - zookeeper
 
 vamp-gateway-agent:
-  image: magneticio/vamp-gateway-agent:1.6.4-0.8.5
+  image: magneticio/vamp-gateway-agent:1.6.4-0.9.0
   container_name: vamp-gateway-agent
   command: "--logo=false --storeType=zookeeper --storeConnection=zookeeper:2181 --logstashHost=logstash"
   links:
@@ -61,7 +61,7 @@ vamp-gateway-agent:
     - "9050-9089:9050-9089"
 
 vamp:
-  image: magneticio/vamp-compose:0.8.5
+  image: magneticio/vamp-compose:0.9.0
   container_name: vamp
   links:
     - elasticsearch

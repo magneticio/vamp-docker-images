@@ -9,7 +9,7 @@ yellow=`tput setaf 3`
 
 cd ${dir}
 
-VAMP=0.8.5
+VAMP=0.9.0
 LOGSTASH=2.3.2
 KIBANA=4.5.0
 MARATHON=0.15.3
