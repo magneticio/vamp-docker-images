@@ -27,8 +27,6 @@ cp $(find "${target}/vamp/bootstrap/target/scala-2.11" -name 'vamp-assembly-*.ja
 cp $(find "${target}/vamp/cli/target/scala-2.11" -name 'vamp-cli-*.jar' | sort | tail -1) ${target}/vamp-cli.jar
 cp -f ${target}/revamp-ui/ui.tar.bz2 ${target}/ui.tar.bz2
 
-rm -Rf ${target}/vamp && rm -Rf ${target}/revamp-ui
+rm -Rf ${target}/vamp ${target}/revamp-ui
 
-cp -f ${dir}/Dockerfile ${target}/Dockerfile
-cp -f ${dir}/start.sh ${target}/
-cp -f ${dir}/vamp-cli.sh ${target}/vamp-cli.sh
+cp -f ${dir}/Dockerfile ${dir}/vamp.sh ${dir}/vamp-cli.sh ${dir}/logback.xml ${target}/
