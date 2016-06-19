@@ -136,8 +136,8 @@ function process() {
                 image=magneticio/vamp-${image_dir}
             fi
 
-            if [ "$image_dir" == "vamp" ]; then
-                image=magneticio/vamp
+            if [[ "$image_dir" == vamp* ]]; then
+                image=magneticio/vamp${image_dir:4}
             fi
 
             images+=(${image})

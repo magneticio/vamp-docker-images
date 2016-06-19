@@ -7,6 +7,9 @@ ADD vamp-cli.sh /usr/local/bin/vamp
 
 RUN chmod +x /usr/local/bin/vamp && chmod +x /usr/local/vamp/vamp.sh
 
+ENV VAMP_REST_API_UI_DIRECTORY /usr/local/vamp/ui
+ENV VAMP_REST_API_UI_INDEX     /usr/local/vamp/ui/index.html
+
 VOLUME /usr/local/vamp/log
 VOLUME /usr/local/vamp/conf
 
