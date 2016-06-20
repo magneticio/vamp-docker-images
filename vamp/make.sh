@@ -8,13 +8,21 @@ green=`tput setaf 2`
 target=$1
 mkdir -p ${target} && cd ${target}
 
-echo "${green}Cloning Vamp UI to ${target}...${reset}"
-git clone -b develop --depth=1 git@github.com:magneticio/revamp-ui.git
+#echo "${green}Cloning Vamp UI to ${target}...${reset}"
+#git clone -b develop --depth=1 git@github.com:magneticio/revamp-ui.git
+#cd ${target}/revamp-ui
+#echo "${green}Building Vamp UI...${reset}"
+#npm install -g gulp && npm install && bower install && gulp build
+#mv dist ui && tar -cvjSf ui.tar.bz2 ui
+#cd ${target}
+
+# Remove after UI is added back
+mkdir -p ${target}/revamp-ui/ui
 cd ${target}/revamp-ui
-echo "${green}Building Vamp UI...${reset}"
-npm install -g gulp && npm install && bower install && gulp build
-mv dist ui && tar -cvjSf ui.tar.bz2 ui
+echo "No 0.9.0 UI yet!" > ${target}/revamp-ui/ui/index.html
+tar -cvjSf ui.tar.bz2 ui
 cd ${target}
+#
 
 echo "${green}Cloning Vamp to ${target}...${reset}"
 git clone -b develop --depth=1 git@github.com:magneticio/vamp.git
