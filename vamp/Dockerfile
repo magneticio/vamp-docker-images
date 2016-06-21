@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre-alpine
+FROM java:openjdk-8-jre
 
 RUN mkdir -p /usr/local/vamp/conf
 
