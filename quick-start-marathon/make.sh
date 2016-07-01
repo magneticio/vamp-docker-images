@@ -9,7 +9,7 @@ target=$1
 mkdir -p ${target} && cd ${target}
 
 echo "${green}Cloning Vamp UI to ${target}...${reset}"
-git clone -b develop --depth=1 git@github.com:magneticio/revamp-ui.git
+git clone --depth=1 git@github.com:magneticio/revamp-ui.git
 cd ${target}/revamp-ui
 echo "${green}Building Vamp UI...${reset}"
 npm install -g gulp && npm install && bower install && gulp build
