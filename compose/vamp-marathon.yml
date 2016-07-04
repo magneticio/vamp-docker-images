@@ -50,7 +50,7 @@ marathon:
     - zookeeper
 
 vamp-gateway-agent:
-  image: magneticio/vamp-gateway-agent:1.6.4-0.9.0
+  image: magneticio/vamp-gateway-agent:0.9.0
   container_name: vamp-gateway-agent
   command: "--logo=false --storeType=zookeeper --storeConnection=zookeeper:2181 --logstashHost=logstash"
   links:

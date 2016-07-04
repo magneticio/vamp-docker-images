@@ -1,11 +1,9 @@
 FROM magneticio/vamp-clique-zookeeper-marathon:VAMP_VERSION
 
-RUN mkdir -p /usr/local/vamp/conf
+RUN mkdir -p /usr/local/vamp
 
-VOLUME /usr/local/vamp/conf
-
-ADD start.sh /usr/local/vamp/start
-ADD ui.tar.bz2 vamp.jar conf /usr/local/vamp/
+ADD ui.tar.bz2 vamp.jar application.conf logback.xml vamp.sh /usr/local/vamp/
+RUN chmod +x /usr/local/vamp/vamp.sh
 
 ADD supervisord.conf /etc/supervisor/supervisord.conf
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

@@ -15,7 +15,7 @@
         <file>/usr/local/vamp/vamp.log</file>
 
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>TRACE</level>
+            <level>INFO</level>
         </filter>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -28,14 +28,14 @@
         </encoder>
     </appender>
 
-    <logger name="io.vamp" level="TRACE"/>
-
-    <logger name="scala.slick" level="WARN"/>
-    <logger name="io.vamp.persistence.slick.components" level="INFO" />
+    <logger name="io.vamp" level="INFO"/>
 
     <root level="INFO">
+
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE" />
+
+        <!--  Disabling file appender -->
+        <!--  <appender-ref ref="FILE" />-->
     </root>
 
 </configuration>
