@@ -61,7 +61,7 @@ vamp {
 
 ```
 
-Good examples can be found in `../vamp-kubernetes` and `../vamp-rancher` directories.
+Good examples can be found in `../vamp-compose`, `../vamp-dcos`, `../vamp-kubernetes` and `../vamp-rancher` directories.
 These images are configured for use in our Vamp quick start tutorials.
 
 A part of using `application.conf` file it is also possible to use environment variables.
