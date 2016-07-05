@@ -9,10 +9,8 @@ yellow=`tput setaf 3`
 
 cd ${dir}
 
-VAMP=0.9.0
-LOGSTASH=2.3.2
-KIBANA=4.5.0
-MARATHON=0.15.3
+LOGSTASH=2.3.3
+KIBANA=4.5.1
 
 function docker_build {
     echo "${green}building docker image: $1 ${reset}"
@@ -74,13 +72,9 @@ fi
 if [ ${flag_clean} -eq 1 ]; then
     docker_rmi magneticio/logstash:${LOGSTASH}
     docker_rmi magneticio/kibana:${KIBANA}
-    docker_rmi magneticio/marathon:${MARATHON}
-    docker_rmi magneticio/vamp-compose:${VAMP}
 fi
 
 if [ ${flag_build} -eq 1 ]; then
     docker_build magneticio/logstash:${LOGSTASH} ${dir}/logstash
     docker_build magneticio/kibana:${KIBANA} ${dir}/kibana
-    docker_build magneticio/marathon:${MARATHON} ${dir}/marathon
-    docker_build magneticio/vamp-compose:${VAMP} ${dir}/vamp
 fi

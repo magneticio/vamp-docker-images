@@ -132,16 +132,20 @@ function process() {
 
             if [ "$target_version" ]; then
                 image=magneticio/vamp-${image_dir}-${target_version}
+                images+=(${image})
+                image_name=${image}:${vamp_version}
             else
                 image=magneticio/vamp-${image_dir}
             fi
 
             if [[ "$image_dir" == vamp* ]]; then
-                image=magneticio/vamp${image_dir:4}
+                image=magneticio/vamp
+                images+=(${image})
+                image_name=${image}:${vamp_version}${image_dir:4}
+            else
+                images+=(${image})
+                image_name=${image}:${vamp_version}
             fi
-
-            images+=(${image})
-            image_name=${image}:${vamp_version}
 
             if [ ${flag_make} -eq 1 ]; then
                 docker_make ${image_dir}

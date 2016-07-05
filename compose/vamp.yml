@@ -1,0 +1,58 @@
+zookeeper:
+  image: jplock/zookeeper:3.4.8
+  container_name: zookeeper
+  ports:
+    - "2181:2181"
+
+elasticsearch:
+  image: elasticsearch:2.3.3
+  container_name: elasticsearch
+  command: elasticsearch -Des.network.host=0.0.0.0
+  ports:
+    - "9200:9200"
+
+logstash:
+  image: magneticio/logstash:2.3.3
+  container_name: logstash
+  command: logstash -f /etc/logstash/conf.d/logstash.conf
+  ports:
+    - "10001:10001/udp"
+  links:
+    - elasticsearch
+
+kibana:
+  image: magneticio/kibana:4.5.1
+  container_name: kibana
+  ports:
+    - "5601:5601"
+  environment:
+    ELASTICSEARCH: elasticsearch
+  links:
+    - elasticsearch
+
+vamp-gateway-agent:
+  image: magneticio/vamp-gateway-agent:0.9.0
+  container_name: vamp-gateway-agent
+  command: "--logo=false --storeType=zookeeper --storeConnection=zookeeper:2181 --logstash=logstash:10001"
+  links:
+    - zookeeper
+    - logstash
+  ports:
+    - "1988:1988"
+    - "9050-9089:9050-9089"
+
+vamp:
+  image: magneticio/vamp:0.9.0-docker
+  container_name: vamp
+  privileged: true
+  links:
+    - elasticsearch
+    - logstash
+    - kibana
+    - zookeeper
+  ports:
+    - "8080:8080"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/local/bin/docker:/bin/docker
+    - /sys/fs/cgroup:/sys/fs/cgroup
