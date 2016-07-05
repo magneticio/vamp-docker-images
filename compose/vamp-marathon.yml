@@ -5,14 +5,14 @@ zookeeper:
     - "2181:2181"
 
 elasticsearch:
-  image: elasticsearch:2.3.2
+  image: elasticsearch:2.3.3
   container_name: elasticsearch
   command: elasticsearch -Des.network.host=0.0.0.0
   ports:
     - "9200:9200"
 
 logstash:
-  image: magneticio/logstash:2.3.2
+  image: magneticio/logstash:2.3.3
   container_name: logstash
   command: logstash -f /etc/logstash/conf.d/logstash.conf
   ports:
@@ -21,7 +21,7 @@ logstash:
     - elasticsearch
 
 kibana:
-  image: magneticio/kibana:4.5.0
+  image: magneticio/kibana:4.5.1
   container_name: kibana
   ports:
     - "5601:5601"
