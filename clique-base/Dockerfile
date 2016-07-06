@@ -60,7 +60,7 @@ RUN set -ex && \
 	  chown -R elasticsearch:elasticsearch /usr/share/elasticsearch && \
 	  chown -R logstash:logstash /usr/share/logstash && \
 	  chown -R kibana:kibana /usr/share/kibana && \
-	  mkdir -p /opt/vamp && \
+	  mkdir -p /usr/local/vamp && \
 	  apt-get purge -y gcc make && \
 	  apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
@@ -74,7 +74,7 @@ ADD elasticsearch/elasticsearch.yml elasticsearch/logging.yml /usr/share/elastic
 ADD logstash/logstash.conf /etc/logstash/conf.d/logstash.conf
 ADD kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 ADD kibana/start.sh /usr/share/kibana/bin/kibana-start
-ADD vamp-gateway-agent haproxy/haproxy.basic.cfg haproxy/validate.sh haproxy/reload.sh /opt/vamp/
+ADD vamp-gateway-agent haproxy/haproxy.basic.cfg haproxy/validate.sh haproxy/reload.sh /usr/local/vamp/
 
 EXPOSE 9200 9300
 EXPOSE 5601
