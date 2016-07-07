@@ -1,8 +1,5 @@
-FROM magneticio/vamp:VAMP_VERSION
+FROM magneticio/vamp:VAMP_VERSION-showcase
 
-ADD vamp.sh /usr/local/vamp/
 ADD application.conf /usr/local/vamp/conf/
 
-RUN chmod +x /usr/local/vamp/vamp.sh
-
-EXPOSE 8080
+ENV VAMP_WAIT_FOR http://elastic:9200/.kibana

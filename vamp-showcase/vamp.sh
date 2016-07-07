@@ -2,13 +2,15 @@
 
 export LANG=en_US.UTF-8
 
-# Wait for Elasticsearch before starting Vamp.
+# Wait for dependency before starting Vamp.
 while true; do
-    sleep 1
-    status=$(curl -s --head -w %{http_code} http://elasticsearch-executor.elasticsearch.mesos:9200 -o /dev/null)
-    if [ ${status} -eq 200 ]; then
-        break
-    fi
+  sleep 5
+  status=$(curl -s --head -w %{http_code} ${VAMP_WAIT_FOR} -o /dev/null)
+  if [ ${status} -eq 200 ]; then
+    break
+  else
+    echo "waiting for ${VAMP_WAIT_FOR}"
+  fi
 done
 
 LOG_CONFIG=/usr/local/vamp/logback.xml
