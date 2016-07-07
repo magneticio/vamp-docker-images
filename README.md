@@ -37,14 +37,14 @@ Usage of ./build.sh:
 ```
 ./run.sh
 
-Usage: ./run.sh clique|clique-marathon|quick-start|quick-start-marathon [options] 
-
-  clique               Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
-  clique-marathon      Run everything from `clique` + Mesos and Marathon.
-  quick-start          Vamp without Marathon (i.e. Docker driver).
-  quick-start-marathon Vamp with Marathon.
-  -h  |--help          Help.
-  -v=*|--version=*     Specifying Vamp version, e.g. -v=0.9.0
+Usage: ./run.sh clique-*|quick-start [options]
+  clique-etcd                Run HAProxy, etcd, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
+  clique-consul              Run HAProxy, Consul, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
+  clique-zookeeper           Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
+  clique-zookeeper-marathon  Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent, Mesos and Marathon.
+  quick-start                Vamp quick start with Marathon.
+  -h  |--help                Help.
+  -v=*|--version=*           Specifying Vamp version, e.g. -v=0.9.0
 ```
 
 Exposed services depending on the image type:
