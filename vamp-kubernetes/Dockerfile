@@ -1,4 +1,4 @@
-FROM magneticio/vamp:VAMP_VERSION-showcase
+FROM magneticio/vamp:VAMP_VERSION-custom
 
 ADD application.conf /usr/local/vamp/conf/
 
