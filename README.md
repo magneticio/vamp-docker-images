@@ -16,7 +16,7 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
  
 ## Building
 
-```
+```bash
 ./build.sh
 
 Usage of ./build.sh:
@@ -32,9 +32,15 @@ Usage of ./build.sh:
 
 **Note:** depending on the Vamp image, the image dependency (Dockerfile `FROM`) won't be built automatically. 
 
+For example to build Vamp base image (`vamp` directory) and all tutorial showcase images (DC/OS, Kubernetes and Rancher):
+
+```bash
+./build.sh -b -i=vamp=*
+```
+
 ## Running
 
-```
+```bash
 ./run.sh
 
 Usage: ./run.sh clique-*|quick-start [options]
