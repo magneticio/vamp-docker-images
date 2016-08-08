@@ -19,7 +19,7 @@ export GOPATH=${go_dir}
 
 echo "${green}Cloning Vamp Gateway Agent to ${target}...${reset}"
 mkdir -p ${go_dir}/src/github.com && cd ${go_dir}/src/github.com
-git clone git@github.com:magneticio/vamp-gateway-agent.git
+git clone http://github.com/magneticio/vamp-gateway-agent.git
 cd ${go_dir}/src/github.com/vamp-gateway-agent && git checkout ${revision} .
 
 echo "${green}Building ${GOOS}:${GOARCH} ${yellow}${bin}${reset}"
