@@ -1,6 +1,6 @@
 FROM magneticio/vamp-clique-base:VAMP_VERSION
 
-ENV ZOOKEEPER_VERSION 3.4.8
+ENV ZOOKEEPER_VERSION 3.4.6
 
 RUN set -ex && \
     wget -q -O - http://apache.mirrors.pair.com/zookeeper/zookeeper-$ZOOKEEPER_VERSION/zookeeper-$ZOOKEEPER_VERSION.tar.gz | tar -xzf - -C /usr/local && \
