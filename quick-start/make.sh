@@ -9,8 +9,9 @@ target=$1
 mkdir -p ${target} && cd ${target}
 
 echo "${green}Cloning Vamp UI to ${target}...${reset}"
-git clone --depth=1 https://github.com/magneticio/vamp-ui.git
+git clone --depth=10 https://github.com/magneticio/vamp-ui.git
 cd ${target}/vamp-ui
+git reset --hard 9640ae93649c138713ef9c8dfb30dd20861aef7c
 echo "${green}Building Vamp UI...${reset}"
 npm install -g gulp gulp-cli && npm install && bower install && ./setEnvironment.sh && gulp build
 mv dist ui && tar -cvjSf ui.tar.bz2 ui
