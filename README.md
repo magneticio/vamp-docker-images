@@ -64,6 +64,12 @@ Usage: ./run.sh clique-*|quick-start [options]
   -v=*|--version=*           Specifying Vamp version, e.g. -v=0.9.0
 ```
 
+For instance to run Vamp quick start:
+
+```bash
+./run.sh quick-start
+```
+
 Exposed services depending on the image type:
 
 - HAProxy statistics [http://localhost:1988](http://localhost:1988)
