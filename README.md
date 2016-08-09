@@ -9,10 +9,12 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 
 ## Images
 
-- **vamp-clique**: HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent. Suitable for Vamp development.
-- **vamp-clique-marathon**: `vamp-clique` + Mesos (1 master, 1 slave) and Marathon. Suitable for Vamp development.
-- **vamp-quick-start**: `vamp-clique` + Vamp. Suitable for trying out Vamp without Marathon (i.e. Docker driver).
-- **vamp-quick-start-marathon**: `vamp-clique-marathon` + Vamp. Suitable for trying out Vamp with Marathon.
+- **clique-base**: HAProxy, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent
+- **clique-zookeeper**: `clique-base` + ZooKeeper
+- **clique-etcd**: `clique-base` + etcd
+- **clique-consul**: `clique-base` + Consul
+- **clique-zookeeper-marathon**: `clique-zookeeper` + Mesos (1 master, 2 slaves), Marathon and Chronos. Suitable for Vamp development.
+- **quick-start**: `clique-zookeeper-marathon` + Vamp. Suitable for trying out Vamp with Marathon.
  
 ## Building
 
@@ -32,10 +34,19 @@ Usage of ./build.sh:
 
 **Note:** depending on the Vamp image, the image dependency (Dockerfile `FROM`) won't be built automatically. 
 
-For example to build Vamp base image (`vamp` directory) and all tutorial showcase images (DC/OS, Kubernetes and Rancher):
+#### Example 1: building Vamp Quick Start
 
 ```bash
-./build.sh -b -i=vamp=*
+./build.sh -b -i=clique-base
+./build.sh -b -i=clique-zookeeper
+./build.sh -b -i=clique-zookeeper-marathon
+./build.sh -b -i=quick-start
+```
+
+#### Example 2: building all tutorial images (DC/OS, Kubernetes and Rancher)
+
+```bash
+./build.sh -b -i=vamp-*
 ```
 
 ## Running
@@ -61,6 +72,7 @@ Exposed services depending on the image type:
 - Sense [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
 - Mesos [http://localhost:5050](http://localhost:5050)
 - Marathon [http://localhost:9090](http://localhost:9090)
+- Chronos [http://localhost:4400](http://localhost:4400)
 - Consul UI [http://localhost:8500](http://localhost:8500)
 - Vamp [http://localhost:8080](http://localhost:8080)
 
