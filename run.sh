@@ -92,7 +92,7 @@ if [ ${flag_help} -eq 1 ] || [[ ${error} -ne 0 ]]; then
     echo "${yellow}  clique-etcd                ${green}Run HAProxy, etcd, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
     echo "${yellow}  clique-consul              ${green}Run HAProxy, Consul, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
     echo "${yellow}  clique-zookeeper           ${green}Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.${reset}"
-    echo "${yellow}  clique-zookeeper-marathon  ${green}Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana, Vamp Gateway Agent, Mesos and Marathon.${reset}"
+    echo "${yellow}  clique-zookeeper-marathon  ${green}Run all from 'clique-zookeeper' and Mesos, Marathon and Chronos.${reset}"
     echo "${yellow}  quick-start                ${green}Vamp quick start with Marathon.${reset}"
     echo "${yellow}  -h  |--help                ${green}Help.${reset}"
     echo "${yellow}  -v=*|--version=*           ${green}Specifying Vamp version, e.g. -v=${vamp_version}${reset}"
