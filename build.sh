@@ -101,20 +101,21 @@ function docker_build {
 function docker_images {
     arr=$1[@]
     images=("${!arr}")
-    pattern=$(printf "\|%s" "${images[@]}")
-    pattern=${pattern:2}
+
     echo "${green}available images:${yellow}"
     for image in "${images[@]}"
     do
       echo ${image}:${vamp_version}
     done
+
     echo "${green}built images    :${yellow}"
-    docker images | grep 'magneticio/vamp' | grep ${pattern} | grep ${vamp_version}
+    docker images | grep 'magneticio/vamp' | grep ${vamp_version}
 }
 
 function process() {
     regex="^${dir}\/(.+)\/Dockerfile$"
     images=()
+    image_names=()
 
     find_in=${dir}
     if [ -n "${target_image}" ]; then
@@ -147,6 +148,8 @@ function process() {
                 image_name=${image}:${vamp_version}
             fi
 
+            image_names+=(${image_name})
+
             if [ ${flag_make} -eq 1 ]; then
                 docker_make ${image_dir}
             fi
@@ -160,7 +163,7 @@ function process() {
     done
 
     if [ ${flag_list} -eq 1 ]; then
-        docker_images images
+        docker_images image_names
     fi
 
     echo "${green}done.${reset}"

@@ -19,7 +19,6 @@ cd ${target}
 echo "${green}Cloning Vamp to ${target}...${reset}"
 git clone --depth=200 https://github.com/magneticio/vamp.git
 cd ${target}/vamp
-git reset --hard 1d8809f779557ade561da8057e618ae39c57de32
 echo "${green}Building Vamp...${reset}"
 sbt test assembly
 
