@@ -3,7 +3,7 @@
 # Wait for Elasticsearch before starting Vamp.
 while true; do
     sleep 1
-    status=$(curl -s -w %{http_code} http://0.0.0.0:9200/_template/logstash -o /dev/null)
+    status=$(curl -s -w %{http_code} http://0.0.0.0:9200/_cluster/health -o /dev/null)
     if [ ${status} -eq 200 ]; then
         break
     fi
