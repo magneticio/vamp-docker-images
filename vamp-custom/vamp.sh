@@ -5,7 +5,7 @@ export LANG=en_US.UTF-8
 # Wait for dependency before starting Vamp.
 while true; do
   sleep 5
-  status=$(curl -s --head -w %{http_code} ${VAMP_WAIT_FOR} -o /dev/null)
+  status=$(curl -s -w %{http_code} ${VAMP_WAIT_FOR} -o /dev/null)
   if [ ${status} -eq 200 ]; then
     break
   else
