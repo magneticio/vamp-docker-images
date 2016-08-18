@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Wait for Kibana before starting Vamp.
+# Wait for Elasticsearch before starting Vamp.
 while true; do
     sleep 1
-    status=$(curl -s --head -w %{http_code} http://0.0.0.0:9200/.kibana -o /dev/null)
+    status=$(curl -s -w %{http_code} http://0.0.0.0:9200/_template/logstash -o /dev/null)
     if [ ${status} -eq 200 ]; then
         break
     fi
