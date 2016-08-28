@@ -2,10 +2,12 @@
 
 # Wait for Elasticsearch before starting Vamp.
 while true; do
-    sleep 1
-    status=$(curl -s -w %{http_code} http://0.0.0.0:9200/_template/logstash -o /dev/null)
+    sleep 3
+    status=$(curl -s -w %{http_code} http://0.0.0.0:9200/.kibana -o /dev/null)
     if [ ${status} -eq 200 ]; then
         break
+    else
+        echo "********* Waiting for ElasticSearch to be ready before starting Vamp... *********"
     fi
 done
 

@@ -1,8 +1,8 @@
-es.logger.level: WARN
+es.logger.level: ERROR
 rootLogger: ${es.logger.level}, console
 logger:
-  action: WARN
-  com.amazonaws: WARN
+  action: ERROR
+  com.amazonaws: ERROR
 
 appender:
   console:

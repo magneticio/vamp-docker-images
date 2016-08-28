@@ -10,6 +10,7 @@ RUN set -ex && \
 		mkdir -p /tmp/zookeeper
 
 ENV PATH /usr/local/zookeeper/bin:$PATH
+ADD log4j.properties usr/local/zookeeper/conf/
 
 EXPOSE 2181 2888 3888
 
