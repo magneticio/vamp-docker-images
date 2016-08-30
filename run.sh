@@ -152,8 +152,7 @@ if [[ ${flag_quick_start} -eq 1 ]]; then
         DOCKER_HOST_IP=$(hostname --ip-address)
     fi
 
-    docker run --privileged \
-               --net=host \
+    docker run --net=host \
                --security-opt=seccomp:unconfined \
                -v /var/run/docker.sock:/var/run/docker.sock \
                -v $(which docker):/bin/docker \

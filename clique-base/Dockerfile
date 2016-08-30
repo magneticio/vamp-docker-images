@@ -1,9 +1,6 @@
 FROM ubuntu:15.10
 
-# HAProxy, Elasticsearch, Logstash and Kibana
-
-ENV HAPROXY_MAJOR 1.6
-ENV HAPROXY_VERSION 1.6.6
+# Elasticsearch, Logstash and Kibana
 
 ENV ELASTICSEARCH_MAJOR 2.3
 ENV ELASTICSEARCH_VERSION 2.3.3
@@ -33,13 +30,7 @@ RUN set -ex && \
     echo "deb $ELASTICSEARCH_REPO_BASE stable main" > /etc/apt/sources.list.d/elasticsearch.list && \
     echo "deb $LOGSTASH_REPO_BASE stable main" > /etc/apt/sources.list.d/logstash.list && \
 	  apt-get update && \
-	  apt-get install -y wget supervisor gcc make libpcre3-dev zlib1g-dev openjdk-8-jre unzip && \
-	  curl -fL http://www.haproxy.org/download/$HAPROXY_MAJOR/src/haproxy-$HAPROXY_VERSION.tar.gz | tar xzf - -C /usr/src && \
-    cd /usr/src/haproxy-$HAPROXY_VERSION && \
-    make TARGET=linux26 USE_PCRE=1 USE_ZLIB=1 USE_LINUX_SPLICE=1 USE_LINUX_TPROXY=1 && \
-    make install-bin && \
-    cd .. && \
-    rm -rf /usr/src/haproxy-$HAPROXY_VERSION && \
+	  apt-get install -y wget supervisor openjdk-8-jre unzip && \
 		apt-get install -y --no-install-recommends elasticsearch=$ELASTICSEARCH_VERSION logstash=$LOGSTASH_VERSION && \
 	  for path in \
 		  /usr/share/elasticsearch/data \
@@ -74,11 +65,9 @@ ADD elasticsearch/elasticsearch.yml elasticsearch/logging.yml /usr/share/elastic
 ADD logstash/logstash.conf /etc/logstash/conf.d/logstash.conf
 ADD kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 ADD kibana/start.sh /usr/share/kibana/bin/kibana-start
-ADD vamp-gateway-agent haproxy/haproxy.basic.cfg haproxy/validate.sh haproxy/reload.sh /usr/local/vamp/
 
 EXPOSE 9200 9300
 EXPOSE 5601
-EXPOSE 1988
 
 ADD supervisord.conf /etc/supervisor/supervisord.conf
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

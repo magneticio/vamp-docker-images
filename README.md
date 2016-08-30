@@ -9,7 +9,7 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 
 ## Images
 
-- **clique-base**: HAProxy, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent
+- **clique-base**: Elasticsearch, Logstash, Kibana and Vamp Gateway Agent
 - **clique-zookeeper**: `clique-base` + ZooKeeper
 - **clique-etcd**: `clique-base` + etcd
 - **clique-consul**: `clique-base` + Consul
@@ -55,9 +55,9 @@ Usage of ./build.sh:
 ./run.sh
 
 Usage: ./run.sh clique-*|quick-start [options]
-  clique-etcd                Run HAProxy, etcd, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
-  clique-consul              Run HAProxy, Consul, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
-  clique-zookeeper           Run HAProxy, ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
+  clique-etcd                Run etcd, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
+  clique-consul              Run Consul, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
+  clique-zookeeper           Run ZooKeeper, Elasticsearch, Logstash, Kibana and Vamp Gateway Agent.
   clique-zookeeper-marathon  Run all from 'clique-zookeeper' and Mesos, Marathon and Chronos.
   quick-start                Vamp quick start with Marathon.
   -h  |--help                Help.
@@ -72,7 +72,6 @@ For instance to run Vamp quick start:
 
 Exposed services depending on the image type:
 
-- HAProxy statistics [http://localhost:1988](http://localhost:1988)
 - Elasticsearch HTTP [http://localhost:9200](http://localhost:9200)
 - Kibana [http://localhost:5601](http://localhost:5601)
 - Sense [http://localhost:5601/app/sense](http://localhost:5601/app/sense)
