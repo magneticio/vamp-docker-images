@@ -9,7 +9,7 @@ target=$1
 mkdir -p ${target} && cd ${target}
 
 echo "${green}Cloning Vamp UI to ${target}...${reset}"
-git clone --branch mesoscon --depth=1 https://github.com/magneticio/vamp-ui.git
+git clone --depth=1 https://github.com/magneticio/vamp-ui.git
 cd ${target}/vamp-ui
 echo "${green}Building Vamp UI...${reset}"
 npm install -g "gulpjs/gulp#4.0" && npm install && bower install && ./setEnvironment.sh && gulp build
