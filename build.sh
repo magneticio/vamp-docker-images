@@ -105,7 +105,7 @@ function docker_images {
     echo "${green}available images:${yellow}"
     for image in "${images[@]}"
     do
-      echo ${image}:${vamp_version}
+      echo ${image}
     done
 
     echo "${green}built images    :${yellow}"
