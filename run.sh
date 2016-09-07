@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 vamp_version=`cat ${dir}/version 2> /dev/null`
