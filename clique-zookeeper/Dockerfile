@@ -1,6 +1,6 @@
 FROM magneticio/vamp-clique-base:VAMP_VERSION
 
-ENV ZOOKEEPER_VERSION 3.4.8
+ENV ZOOKEEPER_VERSION 3.4.9
 
 RUN set -ex && \
     wget -q -O - http://apache.mirrors.pair.com/zookeeper/zookeeper-$ZOOKEEPER_VERSION/zookeeper-$ZOOKEEPER_VERSION.tar.gz | tar -xzf - -C /usr/local && \
@@ -12,7 +12,12 @@ RUN set -ex && \
 ENV PATH /usr/local/zookeeper/bin:$PATH
 ADD log4j.properties usr/local/zookeeper/conf/
 
-EXPOSE 2181 2888 3888
+ADD zk.sh zk-web.jar /usr/local/zookeeper/
+ADD zk-web-conf.clj /usr/local/zookeeper/conf
+
+RUN chmod +x /usr/local/zookeeper/zk.sh
+
+EXPOSE 2181 2888 3888 8989
 
 ADD supervisord.conf /etc/supervisor/supervisord.conf
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
