@@ -112,17 +112,32 @@ function command_exists() {
 
 if [[ ${flag_clique_etcd} -eq 1 ]]; then
     echo "${green}Running: clique-etcd${reset}"
-    docker run --net=host --security-opt=seccomp:unconfined magneticio/vamp-clique-etcd:${vamp_version}
+    docker run --net=host \
+               --security-opt=seccomp:unconfined \
+               -v /var/run/docker.sock:/var/run/docker.sock \
+               -v $(which docker):/bin/docker \
+               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+               magneticio/vamp-clique-etcd:${vamp_version}
 fi
 
 if [[ ${flag_clique_consul} -eq 1 ]]; then
     echo "${green}Running: clique-consul${reset}"
-    docker run --net=host --security-opt=seccomp:unconfined magneticio/vamp-clique-consul:${vamp_version}
+    docker run --net=host \
+               --security-opt=seccomp:unconfined \
+               -v /var/run/docker.sock:/var/run/docker.sock \
+               -v $(which docker):/bin/docker \
+               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+               magneticio/vamp-clique-consul:${vamp_version}
 fi
 
 if [[ ${flag_clique_zookeeper} -eq 1 ]]; then
     echo "${green}Running: clique-zookeeper${reset}"
-    docker run --net=host --security-opt=seccomp:unconfined magneticio/vamp-clique-zookeeper:${vamp_version}
+    docker run --net=host \
+               --security-opt=seccomp:unconfined \
+               -v /var/run/docker.sock:/var/run/docker.sock \
+               -v $(which docker):/bin/docker \
+               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+               magneticio/vamp-clique-zookeeper:${vamp_version}
 fi
 
 if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
