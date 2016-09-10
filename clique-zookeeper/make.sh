@@ -18,7 +18,6 @@ lein uberjar
 cp $(find "${target}/zk-web/target" -name 'zk-web-*-standalone.jar' | sort | tail -1) ${target}/zk-web.jar
 
 echo "${green}copying files...${reset}"
-mkdir -p ${target}
 cd ${dir}
 cp -f ${dir}/zk.sh ${target}/zk.sh
 cp -f ${dir}/zk-web-conf.clj ${target}/zk-web-conf.clj
