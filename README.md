@@ -78,7 +78,7 @@ Exposed services depending on the image type:
 - Mesos [http://localhost:5050](http://localhost:5050)
 - Marathon [http://localhost:9090](http://localhost:9090)
 - Chronos [http://localhost:4400](http://localhost:4400)
-- ZooKeeper UI [http://localhost:8500](http://localhost:8500)
+- ZooKeeper UI [http://localhost:8989](http://localhost:8989)
 - Consul UI [http://localhost:8500](http://localhost:8500)
 - Vamp [http://localhost:8080](http://localhost:8080)
 
