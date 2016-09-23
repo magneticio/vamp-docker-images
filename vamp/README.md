@@ -7,7 +7,7 @@ This can be done in few way:
 
 Let's say `application.conf` is stored in `/MY/APP/CONF/PATH` directory (absolute path), then:
 ```
-docker run -v /MY/APP/CONF/PATH:/usr/local/vamp/conf magneticio/vamp:0.9.0
+docker run -v /MY/APP/CONF/PATH:/usr/local/vamp/conf magneticio/vamp:katana
 ```
 
 Required minimal configuration is:

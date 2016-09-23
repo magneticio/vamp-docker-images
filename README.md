@@ -28,7 +28,7 @@ Usage of ./build.sh:
   -c  |--clean      Remove image(s).
   -m  |--make       Copy Docker file(s) to 'target/docker' directory.
   -b  |--build      Build image(s).
-  -v=*|--version=*  Specifying Vamp version, e.g. -v=0.9.0
+  -v=*|--version=*  Specifying Vamp version, e.g. -v=katana
   -i=*|--image=*    Specifying single image to be processed, e.g. `-i=marathon` otherwise all.
 ```
 
@@ -61,7 +61,7 @@ Usage: ./run.sh clique-*|quick-start [options]
   clique-zookeeper-marathon  Run all from 'clique-zookeeper' and Mesos, Marathon and Chronos.
   quick-start                Vamp quick start with Marathon.
   -h  |--help                Help.
-  -v=*|--version=*           Specifying Vamp version, e.g. -v=0.9.0
+  -v=*|--version=*           Specifying Vamp version, e.g. -v=katana
 ```
 
 For instance to run Vamp quick start:

@@ -31,7 +31,7 @@ kibana:
     - elasticsearch
 
 vamp-gateway-agent:
-  image: magneticio/vamp-gateway-agent:0.9.1
+  image: magneticio/vamp-gateway-agent:katana
   container_name: vamp-gateway-agent
   command: "--logo=false --storeType=zookeeper --storeConnection=zookeeper:2181 --logstash=logstash:10001"
   links:
@@ -42,7 +42,7 @@ vamp-gateway-agent:
     - "9050-9089:9050-9089"
 
 vamp:
-  image: magneticio/vamp:0.9.0-docker
+  image: magneticio/vamp:katana-docker
   container_name: vamp
   privileged: true
   links:
