@@ -26,7 +26,7 @@ function run() {
         "args": [
           "--storeType=zookeeper",
           "--storeConnection=" + zookeeper,
-          "--storeKey=/vamp/haproxy/" + haproxy,
+          "--storeKey=/vamp/gateways/haproxy/" + haproxy,
           "--logstash=" + logstash + ":10001"
         ],
         "cpus": 0.2,
