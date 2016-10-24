@@ -5,7 +5,7 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 ## Prerequisites
 
 1. [Docker](https://docs.docker.com/)
-2. For building: Git, JDK 8, sbt and Go
+2. For building: Git, JDK 8, sbt, Leiningen and Go
 
 ## Images
 
