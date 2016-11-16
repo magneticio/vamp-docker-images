@@ -2,12 +2,12 @@
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-reset=`tput sgr0`
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
+reset=$(tput sgr0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
 
-vamp_version=`cat ${dir}/version 2> /dev/null`
+vamp_version=$(<"${dir}/version")
 target='target/docker'
 
 cd ${dir}
@@ -75,10 +75,10 @@ function docker_rmi {
 
 function docker_make {
     make_file=${dir}/$1/make.sh
-    if [ -f "${make_file}" ]
+    if [ -x "${make_file}" ]
     then
         echo "${green}executing make.sh from $1 ${reset}"
-        bash ${dir}/$1/make.sh ${dir}/${target}/$1
+        exec ${dir}/$1/make.sh ${dir}/${target}/$1
         exit_code=$?
         if [ ${exit_code} != 0 ]; then
             echo "${red}make.sh failed with code: ${exit_code}${reset}"
@@ -122,14 +122,14 @@ function process() {
         find_in=${dir}/${target_image}
     fi
 
-    for file in `find ${find_in} | grep Dockerfile`
+    for file in $(find ${find_in} -type f -name Dockerfile)
     do
       [[ ${file} =~ $regex ]] && [[ ${file} != *"/"* ]]
         image_dir="${BASH_REMATCH[1]}"
 
         if [[ ${image_dir} != *"/"* ]]; then
 
-            target_version=`cat ${dir}/${image_dir}/version 2> /dev/null`
+            target_version=$(<"${dir}/${image_dir}/version")
 
             if [ "$target_version" ]; then
                 image=magneticio/vamp-${image_dir}-${target_version}
