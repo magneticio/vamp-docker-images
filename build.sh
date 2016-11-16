@@ -90,7 +90,7 @@ function docker_make {
         rm -f ${target}/$1/version 2> /dev/null
     fi
 
-    sed -i "" "s/VAMP_VERSION/${vamp_version}/g" ${target}/$1/Dockerfile
+    sed -i "s/VAMP_VERSION/${vamp_version}/g" ${target}/$1/Dockerfile
 }
 
 function docker_build {
