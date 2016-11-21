@@ -102,10 +102,12 @@ verify_kubectl
 install
 
 step "Polling kubernetes for external ip of Vamp..."
-# poll for the external ip address
+# poll for the external ip address, give up after 6 attempts
 external_ip=""
-while [ -z $external_ip ]; do
+for (( i=0; i<=5; i++ )) ; do
+    [[ -n "$external_ip" ]] && break
     sleep 5
+
     external_ip=$(${KUBECTL} --namespace ${NAMESPACE} get svc vamp --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
 
     if [ ! $? = 0 ]; then
@@ -115,5 +117,8 @@ while [ -z $external_ip ]; do
     step "Still polling for Vamp ip..."
 done
 
-ok "Quickstart finished, Vamp is running on http://$external_ip:8080"
+[[ -n "$external_ip" ]] \
+    && ok "Quickstart finished, Vamp is running on http://$external_ip:8080" \
+    || error "Couldn't get IP address of Vamp, please check logs for more info"
+
 exit 0
