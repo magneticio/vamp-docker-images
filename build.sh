@@ -78,7 +78,7 @@ function docker_make {
     if [ -x "${make_file}" ]
     then
         echo "${green}executing make.sh from $1 ${reset}"
-        exec ${dir}/$1/make.sh ${dir}/${target}/$1
+        ${dir}/$1/make.sh ${dir}/${target}/$1
         exit_code=$?
         if [ ${exit_code} != 0 ]; then
             echo "${red}make.sh failed with code: ${exit_code}${reset}"
