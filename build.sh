@@ -129,7 +129,7 @@ function process() {
 
         if [[ ${image_dir} != *"/"* ]]; then
 
-            target_version=$(<"${dir}/${image_dir}/version")
+            target_version="$(cat ${dir}/${image_dir}/version 2> /dev/null)"
 
             if [ "$target_version" ]; then
                 image=magneticio/vamp-${image_dir}-${target_version}
