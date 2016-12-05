@@ -15,7 +15,7 @@ function run() {
     var marathon = config['vamp.container-driver.marathon.url'];
     var zookeeper = config['vamp.persistence.key-value-store.zookeeper.servers'];
     var haproxy = config['vamp.gateway-driver.haproxy.version'];
-    var logstash = config['vamp.gateway-driver.logstash.host'];
+    var logstash = config['vamp.gateway-driver.logstash.url'];
 
     _(http(mesos + '/master/slaves').promise().then(JSON.parse)).each(function (response) {
 
@@ -27,7 +27,7 @@ function run() {
           "--storeType=zookeeper",
           "--storeConnection=" + zookeeper,
           "--storeKey=/vamp/gateways/haproxy/" + haproxy,
-          "--logstash=" + logstash + ":10001"
+          "--logstash=" + logstash
         ],
         "cpus": 0.2,
         "mem": 256.0,
