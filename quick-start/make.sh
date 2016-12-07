@@ -20,9 +20,10 @@ echo "${green}Building Vamp UI...${reset}"
 
 npm install "gulpjs/gulp#4.0" bower \
   && npm install \
-  && ./node_modules/.bin/bower install \
+  && ./node_modules/.bin/bower --allow-root install \
   && ./environment.sh \
-  && ./node_modules/.bin/gulp build
+  && ./node_modules/.bin/gulp build \
+  || exit 1
 
 mv dist ui && tar -cvjSf ui.tar.bz2 ui
 cd ${target}
