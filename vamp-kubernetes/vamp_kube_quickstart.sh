@@ -9,6 +9,7 @@ ETCD_YAML=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-k
 VGA_YAML=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml
 ES_IMG=magneticio/elastic:2.2
 VAMP_IMG=magneticio/vamp:0.9.1-kubernetes
+KUBE_PROXY=magneticio/kubernetes-proxy
 
 error() {
     echo "[ERROR] $1"
@@ -89,6 +90,8 @@ install() {
 
     # run and expose vamp
     run "vamp" ${VAMP_IMG}
+    run "kubernetes-proxy" ${KUBE_PROXY}
+    expose "kubernetes-proxy" "TCP" 80 "kubernetes-proxy" "ClusterIP"
     expose "vamp" "TCP" 8080 "vamp" "LoadBalancer"
 
 }
