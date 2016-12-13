@@ -46,6 +46,7 @@ Usage of ./build.sh:
 #### Example 2: building all tutorial images (DC/OS, Kubernetes and Rancher)
 
 ```bash
+./build.sh -b -i=vamp
 ./build.sh -b -i=vamp-*
 ```
 
