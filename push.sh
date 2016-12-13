@@ -40,8 +40,6 @@ function push_quick_start_image {
 
     echo "${green}removing ${yellow}magneticio/vamp-docker:${vamp_version}${reset}"
     docker rmi magneticio/vamp-docker:${vamp_version}
-
-    docker-purge
 }
 
 echo "${green}
