@@ -90,7 +90,12 @@ function docker_make {
         rm -f ${target}/$1/version 2> /dev/null
     fi
 
-    sed -i "s/VAMP_VERSION/${vamp_version}/g" ${target}/$1/Dockerfile
+    # FIXME: Workaround to work on both Linux and OSX
+    local tmpfile="${dir}/.build.tmp"
+    > "$tmpfile"
+    sed "s/VAMP_VERSION/${vamp_version}/g" "${target}/$1/Dockerfile" > "$tmpfile"
+    mv "$tmpfile" "${target}/$1/Dockerfile"
+    rm -f "$tmpfile"
 }
 
 function docker_build {
