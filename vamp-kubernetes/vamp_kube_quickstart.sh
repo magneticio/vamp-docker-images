@@ -8,7 +8,7 @@ NAMESPACE=$1
 ETCD_YAML=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml
 VGA_YAML=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml
 ES_IMG=magneticio/elastic:2.2
-VAMP_IMG=magneticio/vamp:0.9.1-kubernetes
+VAMP_IMG=magneticio/vamp:katana-kubernetes
 
 error() {
     echo "[ERROR] $1"
@@ -54,7 +54,7 @@ install_yaml() {
         error "Cannot apply ${1}, already present in ${NAMESPACE}"
     fi
 
-    ok "$2 created successfully"
+    ok "$1 created successfully"
 }
 
 expose() {
@@ -101,12 +101,12 @@ verify_kubectl
 # run the installation on kubernetes
 install
 
-step "Polling kubernetes for external ip of Vamp..."
-# poll for the external ip address, give up after 6 attempts
+step "Polling kubernetes for external ip of Vamp (this might take a while)..."
+# poll for the external ip address, give up after 10 attempts
 external_ip=""
-for (( i=0; i<=5; i++ )) ; do
+for (( i=0; i<=9; i++ )) ; do
     [[ -n "$external_ip" ]] && break
-    sleep 5
+    sleep 20
 
     external_ip=$(${KUBECTL} --namespace ${NAMESPACE} get svc vamp --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
 
@@ -121,4 +121,3 @@ done
     && ok "Quickstart finished, Vamp is running on http://$external_ip:8080" \
     || error "Couldn't get IP address of Vamp, please check logs for more info"
 
-exit 0
