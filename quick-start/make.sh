@@ -40,6 +40,7 @@ cp -f ${target}/vamp-ui/ui.tar.bz2 ${target}/ui.tar.bz2
 
 rm -Rf ${target}/vamp && rm -Rf ${target}/vamp-ui
 
+cp -fR ${dir}/../artifacts ${target}/artifacts
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
 cp -fR ${dir}/logback.xml ${dir}/application.conf ${target}/
 cp -f ${dir}/vamp.sh ${target}/
