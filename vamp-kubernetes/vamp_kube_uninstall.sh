@@ -5,8 +5,8 @@ NAMESPACE=$1
 # assign namespace default if not given
 : ${NAMESPACE:=default}
 
-ETCD_YAML=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml
-VGA_YAML=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml
+: "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml}"
+: "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml}"
 
 error() {
     echo "[ERROR] $1"
