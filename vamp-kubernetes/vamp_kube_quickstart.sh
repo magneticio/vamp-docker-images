@@ -173,21 +173,13 @@ install
 
 if [ ${flag_minikube} -eq 1 ]; then
   step "Polling minikube for Vamp URL (this might take a while)..."
+  echo ${yellow}
+  url=$(minikube service --url vamp)
+  echo ${reset}
 
-  # poll for the url, give up after 20 attempts
-  url=""
-  for (( i=0; i<=19; i++ )) ; do
-      [[ -n "$url" ]] && break
-      sleep 10
-
-      url=$(minikube service --url vamp)
-
-      if [ ! $? = 0 ]; then
-          error "Failed to retrieve Vamp URL"
-      fi
-
-      step "Still polling for Vamp URL..."
-  done
+  if [ ! $? = 0 ]; then
+      error "Failed to retrieve Vamp URL"
+  fi
 
   [[ -n "$url" ]] \
       && ok "Quickstart finished, Vamp is running on $url" \
