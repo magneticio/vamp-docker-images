@@ -1,14 +1,33 @@
 #!/bin/bash
 
-NAMESPACE=$1
+VERSION=$1
+NAMESPACE=$2
 
 # assign namespace default if not given
 : ${NAMESPACE:=default}
 
-: "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml}"
-: "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml}"
+if [ -z "${VERSION}" ]; then
+  if [ "$(git describe --tags)" = "$(git describe --abbrev=0)" ]; then
+    VERSION="$( git describe --tags )"
+  else
+    VERSION="katana"
+  fi
+fi
+
+if [ "${VERSION}" = "katana" ]; then
+  : "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/vga.yml}"
+  : "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml}"
+else
+  : "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/${VERSION}/vamp-kubernetes/vga.yml}"
+  : "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/${VERSION}/vamp-kubernetes/etcd.yml}"
+fi
+
 : "${ES_IMG:=magneticio/elastic:2.2}"
 : "${VAMP_IMG:=magneticio/vamp:katana-kubernetes}"
+
+echo "namespace: $NAMESPACE"
+echo "vga file : $VGA_YAML"
+echo "etcd file: $ETCD_YAML"
 
 error() {
     echo "[ERROR] $1"
