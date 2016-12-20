@@ -147,7 +147,7 @@ else
   echo "${green}katana    : ${yellow}no, otherwise use ${green}-k${yellow} or ${green}--katana${reset}"
   : "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml}"
   : "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml}"
-  : "${VAMP_IMG:=magneticio/vamp:0.9.1-kubernetes}"
+  : "${VAMP_IMG:=magneticio/vamp:0.9.2-kubernetes}"
 fi
 
 if [ -z "${NAMESPACE}" ]; then
