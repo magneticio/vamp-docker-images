@@ -1,46 +1,42 @@
 #!/usr/bin/env bash
 
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+vamp_version=$(<"${dir}/../version")
+
+: "${NAMESPACE:=default}"
+: "${VAMP_IMG:=magneticio/vamp:${vamp_version}-kubernetes}"
+: "${VGA_YAML:=${dir}/vga.yml}"
+: "${ETCD_YAML:=${dir}/etcd.yml}"
+: "${ES_IMG:=magneticio/elastic:2.2}"
+
 reset=$(tput sgr0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 
-VAMP_VERSION="$( git describe --tags --abbrev=0 )"
+echo "${green}
+╦  ╦╔═╗╔╦╗╔═╗  ╦╔═╦ ╦╔╗ ╔═╗╦═╗╔╗╔╔═╗╔╦╗╔═╗╔═╗  ╔═╗ ╦ ╦╦╔═╗╦╔═  ╔═╗╔╦╗╔═╗╦═╗╔╦╗
+╚╗╔╝╠═╣║║║╠═╝  ╠╩╗║ ║╠╩╗║╣ ╠╦╝║║║║╣  ║ ║╣ ╚═╗  ║═╬╗║ ║║║  ╠╩╗  ╚═╗ ║ ╠═╣╠╦╝ ║
+ ╚╝ ╩ ╩╩ ╩╩    ╩ ╩╚═╝╚═╝╚═╝╩╚═╝╚╝╚═╝ ╩ ╚═╝╚═╝  ╚═╝╚╚═╝╩╚═╝╩ ╩  ╚═╝ ╩ ╩ ╩╩╚═ ╩
+${reset}"
 
-: "${VAMP_IMG:=magneticio/vamp:${VAMP_VERSION}-kubernetes}"
-: "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml}"
-: "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/etcd.yml}"
-: "${ES_IMG:=magneticio/elastic:2.2}"
+if [ `kubectl config current-context` = "minikube" ]; then
+  flag_minikube=1
+else
+  flag_minikube=0
+fi
 
-function parse_command_line() {
-    flag_help=0
-    flag_katana=0
+if [ ${flag_minikube} -eq 1 ]; then
+    echo "${green}minikube  : ${yellow}yes${reset}"
+fi
 
-    for key in "$@"
-    do
-    case ${key} in
-        -h|--help)
-        flag_help=1
-        ;;
-        -k|--katana)
-        flag_katana=1
-        ;;
-        -n=*|--namespace=*)
-        NAMESPACE="${key#*=}"
-        shift
-        ;;
-        *)
-        ;;
-    esac
-    done
-}
-
-function print_help() {
-    echo "${green}Usage of $0:${reset}"
-    echo "${yellow}  -h  |--help        ${green}Help.${reset}"
-    echo "${yellow}  -k  |--katana      ${green}Run Vamp katana.${reset}"
-    echo "${yellow}  -n=*|--namespace=* ${green}Kubernates namespace${reset}"
-}
+echo "${green}namespace : ${yellow}$NAMESPACE${reset}"
+echo "${green}vga file  : ${yellow}$VGA_YAML${reset}"
+echo "${green}etcd file : ${yellow}$ETCD_YAML${reset}"
+echo "${green}ES image  : ${yellow}$ES_IMG${reset}"
+echo "${green}Vamp image: ${yellow}$VAMP_IMG${reset}"
+echo
 
 error() {
     echo "${red}[ERROR] $1${reset}"
@@ -123,48 +119,6 @@ install() {
     run "vamp" ${VAMP_IMG}
     expose "vamp" "TCP" 8080 "vamp" "LoadBalancer"
 }
-
-echo "${green}
-╦  ╦╔═╗╔╦╗╔═╗  ╦╔═╦ ╦╔╗ ╔═╗╦═╗╔╗╔╔═╗╔╦╗╔═╗╔═╗  ╔═╗ ╦ ╦╦╔═╗╦╔═  ╔═╗╔╦╗╔═╗╦═╗╔╦╗
-╚╗╔╝╠═╣║║║╠═╝  ╠╩╗║ ║╠╩╗║╣ ╠╦╝║║║║╣  ║ ║╣ ╚═╗  ║═╬╗║ ║║║  ╠╩╗  ╚═╗ ║ ╠═╣╠╦╝ ║
- ╚╝ ╩ ╩╩ ╩╩    ╩ ╩╚═╝╚═╝╚═╝╩╚═╝╚╝╚═╝ ╩ ╚═╝╚═╝  ╚═╝╚╚═╝╩╚═╝╩ ╩  ╚═╝ ╩ ╩ ╩╩╚═ ╩
-${reset}"
-
-parse_command_line $@
-
-if [ `kubectl config current-context` = "minikube" ]; then
-  flag_minikube=1
-else
-  flag_minikube=0
-fi
-
-if [ ${flag_help} -eq 1 ]; then
-    print_help
-    echo
-fi
-
-
-if [ ${flag_katana} -eq 1 ]; then
-  echo "${green}katana    : ${yellow}yes${reset}"
-  VAMP_IMG="magneticio/vamp:katana-kubernetes"
-else
-  echo "${green}katana    : ${yellow}no, otherwise use ${green}-k${yellow} or ${green}--katana${reset}"
-fi
-
-if [ -z "${NAMESPACE}" ]; then
-  NAMESPACE="default"
-fi
-
-if [ ${flag_minikube} -eq 1 ]; then
-    echo "${green}minikube  : ${yellow}yes${reset}"
-fi
-
-echo "${green}namespace : ${yellow}$NAMESPACE${reset}"
-echo "${green}vga file  : ${yellow}$VGA_YAML${reset}"
-echo "${green}etcd file : ${yellow}$ETCD_YAML${reset}"
-echo "${green}ES image  : ${yellow}$ES_IMG${reset}"
-echo "${green}Vamp image: ${yellow}$VAMP_IMG${reset}"
-echo
 
 # run the pre install
 verify_kubectl
