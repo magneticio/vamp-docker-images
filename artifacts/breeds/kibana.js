@@ -1,7 +1,6 @@
 'use strict';
 
 let _ = require('highland');
-let http = require('request-promise');
 let vamp = require('vamp-node-client');
 
 let api = new vamp.Api();
