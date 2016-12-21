@@ -5,6 +5,13 @@ red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 
+VAMP_VERSION="$( git describe --tags --abbrev=0 )"
+
+: "${VAMP_IMG:=magneticio/vamp:${VAMP_VERSION}-kubernetes}"
+: "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml}"
+: "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/etcd.yml}"
+: "${ES_IMG:=magneticio/elastic:2.2}"
+
 function parse_command_line() {
     flag_help=0
     flag_katana=0
@@ -136,18 +143,12 @@ if [ ${flag_help} -eq 1 ]; then
     echo
 fi
 
-: "${ES_IMG:=magneticio/elastic:2.2}"
 
 if [ ${flag_katana} -eq 1 ]; then
   echo "${green}katana    : ${yellow}yes${reset}"
-  : "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/vga.yml}"
-  : "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml}"
-  : "${VAMP_IMG:=magneticio/vamp:katana-kubernetes}"
+  VAMP_IMG="magneticio/vamp:katana-kubernetes"
 else
   echo "${green}katana    : ${yellow}no, otherwise use ${green}-k${yellow} or ${green}--katana${reset}"
-  : "${ETCD_YAML:=https://raw.githubusercontent.com/magneticio/vamp-docker/master/vamp-kubernetes/etcd.yml}"
-  : "${VGA_YAML:=https://raw.githubusercontent.com/magneticio/vamp.io/master/static/res/vga.yml}"
-  : "${VAMP_IMG:=magneticio/vamp:0.9.2-kubernetes}"
 fi
 
 if [ -z "${NAMESPACE}" ]; then
