@@ -46,7 +46,6 @@ vamp {
   workflow-driver {
     type = *** # marathon, chronos, kubernetes, rancher or none.
                # multiple values are possible (csv) refer to docs.
-    vamp-url = *** # e.g. "http://vamp:8080"
   }
 
   pulse.elasticsearch.url = *** # e.g. "http://elasticsearch:9200"
