@@ -36,7 +36,7 @@ api.config().each(function (config) {
       "container": {
         "type": "DOCKER",
         "docker": {
-          "image": "magneticio/vamp-gateway-agent:katana",
+          "image": "magneticio/vamp-gateway-agent:0.9.2",
           "network": "HOST",
           "portMappings": [],
           "privileged": true,
