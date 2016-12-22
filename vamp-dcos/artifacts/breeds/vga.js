@@ -1,23 +1,24 @@
 'use strict';
 
-var _ = require('highland');
-var vamp = require('vamp-node-client');
+let _ = require('highland');
+let vamp = require('vamp-node-client');
 
-var api = new vamp.Api();
-var http = new vamp.Http();
+let api = new vamp.Api();
+let http = new vamp.Http();
+let logger = new vamp.Log();
 
 api.config().each(function (config) {
-  var mesos = config['vamp.container-driver.mesos.url'];
-  var marathon = config['vamp.container-driver.marathon.url'];
-  var zookeeper = config['vamp.persistence.key-value-store.zookeeper.servers'];
-  var haproxy = config['vamp.gateway-driver.haproxy.version'];
-  var logstash = config['vamp.gateway-driver.logstash.url'];
+  let mesos = config['vamp.container-driver.mesos.url'];
+  let marathon = config['vamp.container-driver.marathon.url'];
+  let zookeeper = config['vamp.persistence.key-value-store.zookeeper.servers'];
+  let haproxy = config['vamp.gateway-driver.haproxy.version'];
+  let logstash = config['vamp.gateway-driver.logstash.url'];
 
   _(http.get(mesos + '/master/slaves').then(JSON.parse)).each(function (response) {
 
-    var instances = response.slaves.length;
+    let instances = response.slaves.length;
 
-    var vga = {
+    let vga = {
       "id": "/vamp/vamp-gateway-agent",
       "args": [
         "--storeType=zookeeper",
@@ -49,29 +50,29 @@ api.config().each(function (config) {
       "labels": {}
     };
 
-    console.log('checking if deployed: /vamp/vamp-gateway-agent');
+    logger.log('checking if deployed: /vamp/vamp-gateway-agent');
 
     _(http.get(marathon + '/v2/apps/vamp/vamp-gateway-agent').then(JSON.parse).catch(function () {
       return null;
     })).each(function (app) {
 
       if (app) {
-        console.log('already deployed, checking number of instances...');
-        console.log('deployed instances: ' + app.app.instances);
-        console.log('expected instances: ' + instances);
+        logger.log('already deployed, checking number of instances...');
+        logger.log('deployed instances: ' + app.app.instances);
+        logger.log('expected instances: ' + instances);
 
         if (app.app.instances == instances) {
-          console.log('done.');
+          logger.log('done.');
           return;
         }
       }
 
-      console.log('deploying...');
+      logger.log('deploying...');
 
       http.request(marathon + '/v2/apps', {method: 'POST'}, JSON.stringify(vga)).then(function () {
-        console.log('done.');
+        logger.log('done.');
       }).catch(function (response) {
-        console.log('error - ' + response.statusCode);
+        logger.log('error - ' + response.statusCode);
         return null;
       })
     });
