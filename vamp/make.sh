@@ -35,7 +35,7 @@ echo "${green}Building Vamp...${reset}"
 sbt test assembly
 
 echo "${green}Copying files...${reset}"
-cp $(find "${target}/vamp/bootstrap/target/scala-2.11" -name 'vamp-assembly-*.jar' | sort | tail -1) ${target}/vamp.jar
+cp $(find "${target}/vamp/bootstrap/target/scala-2.12" -name 'vamp-assembly-*.jar' | sort | tail -1) ${target}/vamp.jar
 cp -f ${target}/vamp-ui/ui.tar.bz2 ${target}/ui.tar.bz2
 
 rm -Rf ${target}/vamp && rm -Rf ${target}/vamp-ui
