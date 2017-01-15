@@ -1,6 +1,0 @@
-name    : metrics
-breed   : metrics
-schedule: daemon
-environment_variables:
-  VAMP_WORKFLOW_EXECUTION_PERIOD:  5
-  VAMP_WORKFLOW_EXECUTION_TIMEOUT: 7

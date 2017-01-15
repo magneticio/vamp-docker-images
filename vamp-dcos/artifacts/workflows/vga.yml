@@ -1,6 +1,0 @@
-name    : vga
-breed   : vga
-schedule: daemon
-environment_variables:
-  VAMP_WORKFLOW_EXECUTION_PERIOD:  60
-  VAMP_WORKFLOW_EXECUTION_TIMEOUT: 10
