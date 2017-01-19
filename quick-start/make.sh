@@ -14,7 +14,11 @@ target=$1
 mkdir -p ${target} && cd ${target}
 
 echo "${green}Cloning Vamp UI to ${target}...${reset}"
-git clone --depth=200 https://github.com/magneticio/vamp-ui.git
+
+[[ -n "$VAMP_BUILD_UI_BRANCH" ]] \
+  && git clone --depth=200 --branch="$VAMP_BUILD_UI_BRANCH" https://github.com/magneticio/vamp-ui.git \
+  || git clone --depth=200 https://github.com/magneticio/vamp-ui.git
+
 cd ${target}/vamp-ui
 echo "${green}Building Vamp UI...${reset}"
 
@@ -29,7 +33,11 @@ mv dist ui && tar -cvjSf ui.tar.bz2 ui
 cd ${target}
 
 echo "${green}Cloning Vamp to ${target}...${reset}"
-git clone --depth=200 https://github.com/magneticio/vamp.git
+
+[[ -n "$VAMP_BUILD_BRANCH" ]] \
+  && git clone --depth=200 --branch="$VAMP_BUILD_BRANCH" https://github.com/magneticio/vamp.git \
+  || git clone --depth=200 https://github.com/magneticio/vamp.git
+
 cd ${target}/vamp
 echo "${green}Building Vamp...${reset}"
 sbt test assembly
