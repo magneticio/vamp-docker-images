@@ -40,10 +40,10 @@ echo "${green}Cloning Vamp to ${target}...${reset}"
 
 cd ${target}/vamp
 echo "${green}Building Vamp...${reset}"
-sbt test assembly
+make pack
 
 echo "${green}Copying files...${reset}"
-cp $(find "${target}/vamp/bootstrap/target/scala-2.12" -name 'vamp-assembly-*.jar' | sort | tail -1) ${target}/vamp.jar
+cp $(find "${target}/vamp/bootstrap/target" -name 'vamp-*.tar.gz' | sort | tail -1) ${target}/.
 cp -f ${target}/vamp-ui/ui.tar.bz2 ${target}/ui.tar.bz2
 
 rm -Rf ${target}/vamp && rm -Rf ${target}/vamp-ui

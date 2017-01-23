@@ -24,4 +24,11 @@ if [ -e "/usr/local/vamp/conf/logback.xml" ] ; then
     LOG_CONFIG=/usr/local/vamp/conf/logback.xml
 fi
 
-java -Dvamp.gateway-driver.host=${DOCKER_HOST_IP} -Dlogback.configurationFile=${LOG_CONFIG} -Dconfig.file=${APP_CONFIG} -jar /usr/local/vamp/vamp.jar
+vamp_dir=$(find "/usr/local/vamp" -maxdepth 1 -type d  -name 'vamp-*' | sort | tail -1)
+
+java -Dvamp.gateway-driver.host=${DOCKER_HOST_IP} \
+     -Dlogback.configurationFile=${LOG_CONFIG} \
+     -Dconfig.file=${APP_CONFIG} \
+     -cp "${vamp_dir}/*:${vamp_dir}/lib/*" \
+     io.vamp.bootstrap.Boot
+
