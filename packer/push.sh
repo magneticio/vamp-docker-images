@@ -4,12 +4,14 @@ project=$1
 
 if [[ -z ${project} ]]; then
   echo "no project name provided"
+  exit 1
 fi
 
 version=$2
 
 if [[ -z ${version} ]]; then
   echo "no version name provided"
+  exit 1
 fi
 
 echo "project: ${project}"
