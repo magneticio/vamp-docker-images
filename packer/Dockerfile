@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.5
 
 ADD stash.sh /bin/stash
 RUN chmod u+x /bin/stash && mkdir -p /usr/local/src && mkdir -p /usr/local/stash

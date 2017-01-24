@@ -41,6 +41,9 @@ echo "${green}Cloning Vamp to ${target}...${reset}"
 cd ${target}/vamp
 echo "${green}Building Vamp...${reset}"
 make pack
+vamp_version="$(git describe --tags)"
+cd ${target}/vamp/bootstrap/target && tar -czvf "vamp-${vamp_version}.tar.gz" "vamp-${vamp_version}"
+cd ${target}/vamp
 
 echo "${green}Copying files...${reset}"
 cp $(find "${target}/vamp/bootstrap/target" -name 'vamp-*.tar.gz' | sort | tail -1) ${target}/.
