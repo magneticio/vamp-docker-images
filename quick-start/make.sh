@@ -14,6 +14,7 @@ mkdir -p ${target} && cd ${target}
 
 if [ "$CLEAN_BUILD" = "true" ]; then
   source ${dir}/pack.sh
+  rm -Rf ${target} && mkdir ${target}
 fi
 
 function pull() {
@@ -28,9 +29,8 @@ function pull() {
 
 pull vamp
 pull vamp-ui
-pull vamp-artifacts
-rm ${target}/vamp-artifacts/breeds/vga.js
-rm ${target}/vamp-artifacts/workflows/vga.yml
+pull vamp-lifter && mv ${target}/vamp-lifter/*.jar ${target}/vamp/ && rm -Rf ${target}/vamp-lifter
+pull vamp-artifacts && rm ${target}/vamp-artifacts/breeds/vga.js && rm ${target}/vamp-artifacts/workflows/vga.yml
 
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
 cp -fR ${dir}/logback.xml ${dir}/application.conf ${target}/

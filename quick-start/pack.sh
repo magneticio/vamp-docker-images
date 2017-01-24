@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o errexit # Abort script at first error (command exits non-zero).
+
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 reset=$(tput sgr0)
@@ -41,7 +43,14 @@ echo "${green}Cloning Vamp to ${target}...${reset}"
   || git clone --depth=200 https://github.com/magneticio/vamp.git
 cd ${target}/vamp
 echo "${green}Packing Vamp...${reset}"
-make clean test pack
+make test build pack
+
+cd ${target}
+echo "${green}Cloning Vamp Lifter to ${target}...${reset}"
+git clone https://github.com/magneticio/vamp-lifter.git
+cd ${target}/vamp-lifter
+echo "${green}Packing Vamp Lifter...${reset}"
+make test pack
 
 cd ${target}
 echo "${green}Cloning Vamp Artifacts to ${target}...${reset}"
