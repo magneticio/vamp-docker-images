@@ -1,7 +1,9 @@
 FROM magneticio/vamp-clique-zookeeper-marathon:VAMP_VERSION
 
-ADD artifacts /usr/local/vamp/artifacts
-ADD ui.tar.bz2 vamp-*.tar.gz  application.conf logback.xml /usr/local/vamp/
+ADD vamp-artifacts /usr/local/vamp/artifacts
+ADD vamp-ui /usr/local/vamp/ui
+ADD vamp /usr/local/vamp/bin
+ADD application.conf logback.xml /usr/local/vamp/
 ADD vamp.sh /usr/local/vamp/vamp
 RUN chmod +x /usr/local/vamp/vamp
 
