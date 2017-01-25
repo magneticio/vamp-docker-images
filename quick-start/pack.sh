@@ -60,6 +60,13 @@ echo "${green}Packing Vamp DC/OS...${reset}"
 make test pack
 
 cd ${target}
+echo "${green}Cloning Vamp Kubernetes to ${target}...${reset}"
+git clone https://github.com/magneticio/vamp-kubernetes.git
+cd ${target}/vamp-kubernetes
+echo "${green}Packing Vamp Kubernetes...${reset}"
+make test pack
+
+cd ${target}
 echo "${green}Cloning Vamp Artifacts to ${target}...${reset}"
 git clone https://github.com/magneticio/vamp-artifacts.git
 cd ${target}/vamp-artifacts
