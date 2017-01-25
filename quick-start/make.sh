@@ -27,10 +27,17 @@ function pull() {
     magneticio/packer ${project}
 }
 
+function join() {
+  project=$1
+  pull ${project}
+  cp -R ${target}/${project}/* ${target}/vamp/ && rm -Rf ${target}/${project}
+}
+
 pull vamp
 pull vamp-ui
-pull vamp-lifter && mv ${target}/vamp-lifter/*.jar ${target}/vamp/ && rm -Rf ${target}/vamp-lifter
-pull vamp-artifacts && rm ${target}/vamp-artifacts/breeds/vga.js && rm ${target}/vamp-artifacts/workflows/vga.yml
+join vamp-dcos
+join vamp-lifter
+pull vamp-artifacts
 
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
 cp -fR ${dir}/logback.xml ${dir}/application.conf ${target}/

@@ -53,6 +53,13 @@ echo "${green}Packing Vamp Lifter...${reset}"
 make test pack
 
 cd ${target}
+echo "${green}Cloning Vamp DC/OS to ${target}...${reset}"
+git clone https://github.com/magneticio/vamp-dcos.git
+cd ${target}/vamp-dcos
+echo "${green}Packing Vamp DC/OS...${reset}"
+make test pack
+
+cd ${target}
 echo "${green}Cloning Vamp Artifacts to ${target}...${reset}"
 git clone https://github.com/magneticio/vamp-artifacts.git
 cd ${target}/vamp-artifacts
