@@ -13,7 +13,7 @@ mkdir -p ${target} && cd ${target}
 : "${CLEAN_BUILD:=true}"
 
 if [ "$CLEAN_BUILD" = "true" ]; then
-  source ${dir}/pack.sh
+  source ${dir}/../pack.sh
   rm -Rf ${target} && mkdir ${target}
 fi
 
