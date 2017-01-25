@@ -6,6 +6,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 reset=`tput sgr0`
 green=`tput setaf 2`
+yellow=$(tput setaf 3)
 
 target=$1
 mkdir -p ${target} && cd ${target}
@@ -14,11 +15,12 @@ mkdir -p ${target} && cd ${target}
 
 if [ "$CLEAN_BUILD" = "true" ]; then
   source ${dir}/../pack.sh
-  rm -Rf ${target} && mkdir ${target}
+  rm -Rf ${target} && mkdir -p ${target} && cd ${target}
 fi
 
 function pull() {
   project=$1
+  echo "${green}pulling project: ${yellow}${project}${reset}"
   mkdir ${target}/${project}
   docker run \
     --entrypoint=/bin/pull \
@@ -37,6 +39,7 @@ pull vamp
 pull vamp-ui
 join vamp-dcos
 join vamp-lifter
+join vamp-zookeeper
 pull vamp-artifacts
 
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
