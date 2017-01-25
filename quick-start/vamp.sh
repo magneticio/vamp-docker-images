@@ -29,4 +29,3 @@ java -Dvamp.gateway-driver.host=${DOCKER_HOST_IP} \
      -Dconfig.file=${APP_CONFIG} \
      -cp "/usr/local/vamp/bin/*:/usr/local/vamp/bin/lib/*" \
      io.vamp.bootstrap.Boot
-

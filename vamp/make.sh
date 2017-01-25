@@ -6,46 +6,46 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 reset=`tput sgr0`
 green=`tput setaf 2`
-
-# Exit if we don't have npm available
-hash npm || exit 1
+yellow=$(tput setaf 3)
 
 target=$1
 mkdir -p ${target} && cd ${target}
 
-echo "${green}Cloning Vamp UI to ${target}...${reset}"
+: "${CLEAN_BUILD:=true}"
 
-[[ -n "$VAMP_BUILD_UI_BRANCH" ]] \
-  && git clone --depth=200 --branch="$VAMP_BUILD_UI_BRANCH" https://github.com/magneticio/vamp-ui.git \
-  || git clone --depth=200 https://github.com/magneticio/vamp-ui.git
+if [ "$CLEAN_BUILD" = "true" ]; then
+  source ${dir}/../pack.sh
+  rm -Rf ${target} && mkdir -p ${target} && cd ${target}
+fi
 
-cd ${target}/vamp-ui
-echo "${green}Building Vamp UI...${reset}"
+function pull() {
+  project=$1
+  echo "${green}pulling project: ${yellow}${project}${reset}"
+  mkdir ${target}/${project}
+  docker run \
+    --entrypoint=/bin/pull \
+    -v ${target}/${project}:/usr/local/dst \
+    -v packer:/usr/local/stash \
+    magneticio/packer ${project}
+}
 
-npm install "gulpjs/gulp#4.0" bower \
-  && npm install \
-  && ./node_modules/.bin/bower --allow-root install \
-  && ./environment.sh \
-  && ./node_modules/.bin/gulp build \
-  || exit 1
+function join() {
+  project=$1
+  pull ${project}
+  cp -R ${target}/${project}/* ${target}/vamp/ && rm -Rf ${target}/${project}
+}
 
-mv dist ui && tar -cvjSf ui.tar.bz2 ui
-cd ${target}
-
-echo "${green}Cloning Vamp to ${target}...${reset}"
-
-[[ -n "$VAMP_BUILD_BRANCH" ]] \
-  && git clone --depth=200 --branch="$VAMP_BUILD_BRANCH" https://github.com/magneticio/vamp.git \
-  || git clone --depth=200 https://github.com/magneticio/vamp.git
-
-cd ${target}/vamp
-echo "${green}Building Vamp...${reset}"
-sbt test assembly
-
-echo "${green}Copying files...${reset}"
-cp $(find "${target}/vamp/bootstrap/target/scala-2.12" -name 'vamp-assembly-*.jar' | sort | tail -1) ${target}/vamp.jar
-cp -f ${target}/vamp-ui/ui.tar.bz2 ${target}/ui.tar.bz2
-
-rm -Rf ${target}/vamp && rm -Rf ${target}/vamp-ui
+pull vamp
+pull vamp-ui
+join vamp-dcos
+join vamp-etcd
+join vamp-consul
+join vamp-lifter
+join vamp-rancher
+join vamp-haproxy
+join vamp-zookeeper
+pull vamp-artifacts
+join vamp-kubernetes
+join vamp-elasticsearch
 
 cp -f ${dir}/Dockerfile ${dir}/vamp.sh ${dir}/logback.xml ${target}/

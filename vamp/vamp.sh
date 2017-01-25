@@ -10,7 +10,12 @@ if [ -e "/usr/local/vamp/conf/logback.xml" ] ; then
 fi
 
 if [ -e "${APP_CONFIG}" ] ; then
-    java -Dlogback.configurationFile=${LOG_CONFIG} -Dconfig.file=${APP_CONFIG} -jar /usr/local/vamp/vamp.jar
+    java -Dlogback.configurationFile=${LOG_CONFIG} \
+         -Dconfig.file=${APP_CONFIG} \
+         -cp "/usr/local/vamp/bin/*:/usr/local/vamp/bin/lib/*" \
+         io.vamp.bootstrap.Boot
 else
-    java -Dlogback.configurationFile=${LOG_CONFIG} -jar /usr/local/vamp/vamp.jar
+    java -Dlogback.configurationFile=${LOG_CONFIG} \
+         -cp "/usr/local/vamp/bin/*:/usr/local/vamp/bin/lib/*" \
+         io.vamp.bootstrap.Boot
 fi
