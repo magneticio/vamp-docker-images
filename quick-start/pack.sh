@@ -74,6 +74,13 @@ echo "${green}Packing Vamp Rancher...${reset}"
 make test pack
 
 cd ${target}
+echo "${green}Cloning Vamp Docker to ${target}...${reset}"
+git clone https://github.com/magneticio/vamp-docker.git
+cd ${target}/vamp-docker
+echo "${green}Packing Vamp Docker...${reset}"
+make test pack
+
+cd ${target}
 echo "${green}Cloning Vamp Artifacts to ${target}...${reset}"
 git clone https://github.com/magneticio/vamp-artifacts.git
 cd ${target}/vamp-artifacts
