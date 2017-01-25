@@ -37,6 +37,7 @@ pack vamp-dcos
 pack vamp-rancher
 pack vamp-docker
 pack vamp-kubernetes
+pack vamp-etcd
 pack vamp-zookeeper
 pack vamp-lifter
 pack vamp-artifacts
