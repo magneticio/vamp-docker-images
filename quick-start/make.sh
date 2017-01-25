@@ -39,6 +39,7 @@ pull vamp
 pull vamp-ui
 join vamp-dcos
 join vamp-lifter
+join vamp-haproxy
 join vamp-zookeeper
 pull vamp-artifacts
 

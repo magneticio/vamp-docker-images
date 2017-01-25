@@ -40,5 +40,6 @@ pack vamp-kubernetes
 pack vamp-etcd
 pack vamp-consul
 pack vamp-zookeeper
+pack vamp-haproxy
 pack vamp-lifter
 pack vamp-artifacts
