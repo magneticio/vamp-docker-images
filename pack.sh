@@ -35,6 +35,7 @@ pack vamp
 pack vamp-ui
 pack vamp-dcos
 pack vamp-etcd
+pack vamp-redis
 pack vamp-consul
 pack vamp-docker
 pack vamp-lifter
