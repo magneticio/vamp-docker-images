@@ -32,16 +32,16 @@ pack() {
 }
 
 pack vamp
-pack vamp-ui
-pack vamp-dcos
+pack vamp-haproxy
+pack vamp-elasticsearch
+pack vamp-zookeeper
 pack vamp-etcd
 pack vamp-redis
 pack vamp-consul
+pack vamp-dcos
 pack vamp-docker
-pack vamp-lifter
-pack vamp-rancher
-pack vamp-haproxy
-pack vamp-zookeeper
-pack vamp-artifacts
 pack vamp-kubernetes
-pack vamp-elasticsearch
+pack vamp-rancher
+pack vamp-lifter
+pack vamp-ui
+pack vamp-artifacts
