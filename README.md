@@ -1,11 +1,11 @@
 # Vamp Docker
 
-This repo contains a number of `Dockerfile` files and bash scripts to help setting up Vamp in different situations. 
+This repo contains a number of `Dockerfile` files and bash scripts to help setting up Vamp in different situations.
 
 ## Prerequisites
 
 1. [Docker](https://docs.docker.com/)
-2. For building: Git, JDK 8, sbt, Leiningen and Go
+2. For building: Git, JDK 8, sbt, Leiningen, npm and Go
 
 ## Images
 
@@ -15,7 +15,7 @@ This repo contains a number of `Dockerfile` files and bash scripts to help setti
 - **clique-consul**: `clique-base` + Consul
 - **clique-zookeeper-marathon**: `clique-zookeeper` + Mesos (1 master, 2 slaves), Marathon and Chronos. Suitable for Vamp development.
 - **quick-start**: `clique-zookeeper-marathon` + Vamp. Suitable for trying out Vamp with Marathon.
- 
+
 ## Building
 
 ```bash
@@ -32,7 +32,7 @@ Usage of ./build.sh:
   -i=*|--image=*    Specifying single image to be processed, e.g. `-i=marathon` otherwise all.
 ```
 
-**Note:** depending on the Vamp image, the image dependency (Dockerfile `FROM`) won't be built automatically. 
+**Note:** depending on the Vamp image, the image dependency (Dockerfile `FROM`) won't be built automatically.
 
 #### Example 1: building Vamp Quick Start
 
