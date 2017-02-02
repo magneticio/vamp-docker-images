@@ -3,14 +3,14 @@ FROM ubuntu:15.10
 # Elasticsearch, Logstash and Kibana
 
 ENV ELASTICSEARCH_MAJOR 2.4
-ENV ELASTICSEARCH_VERSION 2.4.1
+ENV ELASTICSEARCH_VERSION 2.4.4
 ENV ELASTICSEARCH_REPO_BASE http://packages.elasticsearch.org/elasticsearch/2.x/debian
 
 ENV LOGSTASH_MAJOR 2.4
 ENV LOGSTASH_VERSION 1:2.4.0-1
 ENV LOGSTASH_REPO_BASE http://packages.elasticsearch.org/logstash/${LOGSTASH_MAJOR}/debian
 
-ENV KIBANA_VERSION 4.6.1
+ENV KIBANA_VERSION 4.6.4
 
 RUN set -ex && \
     locale-gen en_US.UTF-8 && \
