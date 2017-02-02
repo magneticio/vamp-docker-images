@@ -15,6 +15,5 @@ mkdir -p ${target}
 cd ${dir}
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
 cp -Rf ${dir}/elasticsearch ${target}/
-cp -Rf ${dir}/logstash ${target}/
 cp -Rf ${dir}/kibana ${target}/
 cp -f ${dir}/supervisord.conf ${target}/supervisord.conf
