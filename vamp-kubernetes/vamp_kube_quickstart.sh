@@ -57,7 +57,7 @@ verify_kubectl() {
     export KUBECTL=$(which kubectl)
 
     if [ ! $? = 0 ]; then
-        error "Kubectl not found, cannot continue"
+        error "kubectl not found, cannot continue"
     fi
 
     # verify the namespace

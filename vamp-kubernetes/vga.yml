@@ -16,16 +16,14 @@ spec:
         - name: p80
           containerPort: 80
         env:
-          - name: FOO
-            value: bar
-          - name: VAMP_KEY_VALUE_STORE_TYPE
-            value: etcd
-          - name: VAMP_KEY_VALUE_STORE_CONNECTION
-            value: http://etcd-client:2379
-          - name: VAMP_KEY_VALUE_STORE_PATH
-            value: /vamp/gateways/haproxy/1.7/configuration/value
-          - name: VAMP_ELASTICSEARCH_URL
-            value: elasticsearch
+        - name: VAMP_KEY_VALUE_STORE_TYPE
+          value: etcd
+        - name: VAMP_KEY_VALUE_STORE_CONNECTION
+          value: http://etcd-client:2379
+        - name: VAMP_KEY_VALUE_STORE_PATH
+          value: /vamp/gateways/haproxy/1.7/configuration/value
+        - name: VAMP_ELASTICSEARCH_URL
+          value: http://elasticsearch:9200
         resources:
           requests:
             cpu: 0.2
