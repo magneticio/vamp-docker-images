@@ -5,10 +5,11 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 vamp_version=$(<"${dir}/../version")
 
 : "${NAMESPACE:=default}"
-: "${VAMP_IMG:=magneticio/vamp:${vamp_version}-kubernetes}"
+: "${VAMP_IMAGE:=magneticio/vamp:${vamp_version}-kubernetes}"
 : "${VGA_YAML:=${dir}/vga.yml}"
 : "${ETCD_YAML:=${dir}/etcd.yml}"
-: "${ES_IMG:=magneticio/elastic:2.2}"
+: "${ELASTICSEARCH_IMAGE:=elasticsearch:2.4.4}"
+: "${KIBANA_IMAGE:=kibana:4.6.4}"
 
 reset=$(tput sgr0)
 red=$(tput setaf 1)
@@ -31,11 +32,12 @@ if [ ${flag_minikube} -eq 1 ]; then
     echo "${green}minikube  : ${yellow}yes${reset}"
 fi
 
-echo "${green}namespace : ${yellow}$NAMESPACE${reset}"
-echo "${green}vga file  : ${yellow}$VGA_YAML${reset}"
-echo "${green}etcd file : ${yellow}$ETCD_YAML${reset}"
-echo "${green}ES image  : ${yellow}$ES_IMG${reset}"
-echo "${green}Vamp image: ${yellow}$VAMP_IMG${reset}"
+echo "${green}namespace           : ${yellow}$NAMESPACE${reset}"
+echo "${green}vga file            : ${yellow}$VGA_YAML${reset}"
+echo "${green}etcd file           : ${yellow}$ETCD_YAML${reset}"
+echo "${green}Elasticsearch image : ${yellow}$ELASTICSEARCH_IMAGE${reset}"
+echo "${green}Kibana image        : ${yellow}$KIBANA_IMAGE${reset}"
+echo "${green}Vamp image          : ${yellow}$VAMP_IMAGE${reset}"
 echo
 
 error() {
@@ -96,7 +98,7 @@ expose() {
 
 run() {
     step "Running $1 ($2)"
-    RUN_CMD=$(${KUBECTL} run $1 --image=$2 --namespace=${NAMESPACE} 2>&1)
+    RUN_CMD=$(${KUBECTL} run $1 --image=$2 --env=$3 --namespace=${NAMESPACE} 2>&1)
 
     if [ ! $? = 0 ]; then
         error "Failed to run $1. Image: $2"
@@ -109,14 +111,14 @@ install() {
     install_yaml ${ETCD_YAML}
     install_yaml ${VGA_YAML}
 
-    # run and expose elasticsearch
-    run elastic ${ES_IMG}
-    expose "elastic" "TCP" 9200 "elasticsearch" "ClusterIP"
-    expose "elastic" "UDP" 10001 "logstash" "ClusterIP"
-    expose "elastic" "TCP" 5601 "kibana" "ClusterIP"
+    # run and expose elasticsearch and kibana
+    run elasticsearch ${ELASTICSEARCH_IMAGE}
+    run kibana ${KIBANA_IMAGE} "ELASTICSEARCH_URL=http://elasticsearch:9200"
+    expose "elasticsearch" "TCP" 9200 "elasticsearch" "ClusterIP"
+    expose "kibana" "TCP" 5601 "kibana" "ClusterIP"
 
     # run and expose vamp
-    run "vamp" ${VAMP_IMG}
+    run "vamp" ${VAMP_IMAGE}
     expose "vamp" "TCP" 8080 "vamp" "LoadBalancer"
 }
 
