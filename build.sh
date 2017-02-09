@@ -7,8 +7,12 @@ red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 
-vamp_version=$(<"${dir}/version")
 target='target/docker'
+if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
+  vamp_version="$( git describe --tags )"
+else
+  vamp_version="katana"
+fi
 
 cd ${dir}
 
@@ -88,6 +92,22 @@ function docker_make {
         echo "${green}copying files from: $1 ${reset}"
         cp -R ${dir}/$1 ${target} 2> /dev/null
         rm -f ${target}/$1/version 2> /dev/null
+    fi
+
+    # Change all instances of "katana" to a release, if we're on a tag
+    if [[ $vamp_version != "katana" ]] ; then
+      for file in ${target}/${1}/* ; do
+        grep -q katana "$file"
+        if [[ $? -eq 0 ]] ; then
+          echo "${green}changing 'katana' to '$vamp_version' in: $file${reset}"
+
+          local tmpfile="${dir}/.build.tmp"
+          > "$tmpfile"
+          sed "s/katana/${vamp_version}/g" "${file}" > "$tmpfile"
+          mv "$tmpfile" "${file}"
+          rm -f "$tmpfile"
+        fi
+      done
     fi
 
     # FIXME: Workaround to work on both Linux and OSX
