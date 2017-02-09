@@ -8,8 +8,14 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=$(tput setaf 3)
 
-target=$1
+[[ -n $1 ]] && target=$1 || { >&2 echo "missing input, exiting"; exit 1; }
 mkdir -p ${target} && cd ${target}
+
+if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
+  vamp_version="$( git describe --tags )"
+else
+  vamp_version="katana"
+fi
 
 : "${CLEAN_BUILD:=true}"
 
@@ -26,7 +32,7 @@ function pull() {
     --entrypoint=/bin/pull \
     -v ${target}/${project}:/usr/local/dst \
     -v packer:/usr/local/stash \
-    magneticio/packer ${project}
+    magneticio/packer "$project" "$vamp_version"
 }
 
 function join() {
