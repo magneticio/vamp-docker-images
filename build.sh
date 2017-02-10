@@ -96,18 +96,29 @@ function docker_make {
 
     # Change all instances of "katana" to a release, if we're on a tag
     if [[ $vamp_version != "katana" ]] ; then
-      for file in ${target}/${1}/* ; do
-        grep -q katana "$file"
+      # Whitelist of files to look for
+      local whitelist
+      local target_file
+      whitelist="application.conf vga.js"
+
+      for X in $whitelist ; do
+        # Find path of the file we want to modify
+        target_file="$( find "${target}/${1}" -type f -name "$X" )"
+        [[ -z $target_file ]] && continue
+
+        # Check if we need to modify file
+        grep -q katana "$target_file"
         if [[ $? -eq 0 ]] ; then
-          echo "${green}changing 'katana' to '$vamp_version' in: $file${reset}"
+          echo "${green}changing 'katana' to '$vamp_version' in: $target_file${reset}"
 
           local tmpfile="${dir}/.build.tmp"
           > "$tmpfile"
-          sed "s/katana/${vamp_version}/g" "${file}" > "$tmpfile"
-          mv "$tmpfile" "${file}"
+          sed "s/katana/${vamp_version}/g" "${target_file}" > "$tmpfile"
+          mv "$tmpfile" "${target_file}"
           rm -f "$tmpfile"
         fi
       done
+
     fi
 
     # FIXME: Workaround to work on both Linux and OSX
