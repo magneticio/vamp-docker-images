@@ -14,10 +14,11 @@ yellow=$(tput setaf 3)
 if [[ -z $1 ]] ; then
   >&2 echo "Missing argument!"
   echo "Usage:"
-  echo "  tag-release.sh <version>"
+  echo "  release-tag.sh <version> [<push>]"
   echo ""
   echo "Example:"
-  echo "  tag-release.sh 0.9.3"
+  echo "  release-tag.sh 0.9.3"
+  echo "  release-tag.sh 0.9.3 push"
   exit 1
 else
   TAG="$1"
