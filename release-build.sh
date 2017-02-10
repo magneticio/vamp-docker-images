@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -o errexit # Abort script at first error (command exits non-zero).
+
+root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+reset=$(tput sgr0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+
+if [[ -z $1 ]] ; then
+  >&2 echo "Missing argument!"
+  echo "Usage:"
+  echo "  release-build.sh <version>"
+  echo ""
+  echo "Example:"
+  echo "  release-build.sh 0.9.3"
+  exit 1
+else
+  TAG="$1"
+  if [[ $( git describe --tags ) != "$TAG" ]] ; then
+    >&2 echo "${red}Error: Provided tag doesn't match repository tag!${reset}"
+    >&2 echo "Have you exectued 'release-tag.sh'???"
+    >&2 echo "Exiting..."
+    exit 1
+  fi
+fi
+
+echo "${green}
+vamp release builder
+                                                                          by magnetic.io
+${reset}"
+
+workspace=${root}/target
+mkdir -p ${workspace}
+
+build_external() {
+  project=$1
+  echo "${green}project: ${yellow}${project}${reset}"
+
+  if [[ ! -d ${workspace}/${project} ]] ; then
+    >&2 echo "${red}Project doesn't exits: ${project}${project}"
+    >&2 echo "Have you exectued 'release-tag.sh'???"
+    >&2 echo "Exiting..."
+    exit 1
+  fi
+
+  cd ${workspace}/${project}
+
+  if [[ $( git describe --tags ) != "$TAG" ]] ; then
+    >&2 echo "${red}Error: Provided tag doesn't match repository tag!${reset}"
+    >&2 echo "Have you exectued 'release-tag.sh'???"
+    >&2 echo "Exiting..."
+    exit 1
+  fi
+
+  make
+}
+
+# Disable the clean builds of various sub-build scripts
+export CLEAN_BUILD=false
+
+${root}/build.sh --build --image=vamp
+${root}/build.sh --build --image=vamp-custom
+${root}/build.sh --build --image=vamp-dcos
+${root}/build.sh --build --image=vamp-kubernetes
+${root}/build.sh --build --image=vamp-rancher
+
+build_external vamp-runner
+build_external vamp-gateway-agent
+build_external vamp-workflow-agent
