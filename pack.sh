@@ -20,14 +20,29 @@ echo "${green}
 ${reset}"
 
 workspace=${root}/target
-rm -Rf ${workspace} && mkdir ${workspace}
+mkdir -p ${workspace}
 
 pack() {
   project=$1
+  url="git@github.com:magneticio/${project}.git"
   echo "${green}project: ${yellow}${project}${reset}"
   cd ${workspace}
-  git clone --depth=200 https://github.com/magneticio/${project}.git
-  cd ${workspace}/${project}
+
+  if [[ -d ${workspace}/${project} ]] ; then
+    echo "${green}updating existing repository${reset}"
+
+    cd ${workspace}/${project}
+
+    git reset --hard
+    git checkout master
+    git pull
+
+  else
+    git clone --depth=200 "$url"
+    cd ${workspace}/${project}
+
+  fi
+
   make pack
 }
 
