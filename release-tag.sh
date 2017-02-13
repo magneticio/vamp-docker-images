@@ -80,7 +80,7 @@ tag() {
   fi
 
   if [[ "$( git describe --tags )" != "$TAG" ]] ; then
-    git tag "$TAG" || echo "${yellow}${project}: tag exists, ${TAG}, continuing${reset}"
+    git tag "$TAG" || { echo "${yellow}${project}: tag exists, ${TAG}, continuing${reset}"; git checkout "$TAG"; }
   fi
 
   if [[ "$PUSH" = "true" ]] ; then
