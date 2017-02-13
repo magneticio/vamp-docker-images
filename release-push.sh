@@ -46,6 +46,7 @@ docker_images="
   magneticio/vamp-runner:${TAG}
   magneticio/vamp-gateway-agent:${TAG}
   magneticio/vamp-workflow-agent:${TAG}
+  magneticio/vamp-docker:${TAG}
 "
 
 # Check that we have our images available
