@@ -37,8 +37,12 @@ vamp tagger
                                                                           by magnetic.io
 ${reset}"
 
-# Tag our current repository as well
-git tag "$TAG"
+# Ensure we're tagging vamp-docker-images as well
+if [[ "$( git tag --list $TAG )" = "$TAG" ]] ; then
+  git checkout "$TAG"
+else
+  git tag "$TAG"
+fi
 
 workspace=${root}/target
 mkdir -p ${workspace}
@@ -64,8 +68,8 @@ tag() {
 
   fi
 
-  if [[ $( git describe --tags ) != "$TAG" ]] ; then
-    git tag "$TAG"
+  if [[ "$( git describe --tags )" != "$TAG" ]] ; then
+    git tag "$TAG" || echo "${yellow}${project}: tag exists, ${TAG}, continuing${reset}"
   fi
 
   if [[ "$PUSH" = "true" ]] ; then
