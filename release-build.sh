@@ -84,6 +84,7 @@ build_external_custom() {
   fi
 
   ./build.sh --build
+  docker tag "magneticio/${project}:katana" "magneticio/${project}:${TAG}"
 }
 
 # Disable the clean builds of various sub-build scripts
