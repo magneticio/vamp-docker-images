@@ -95,3 +95,10 @@ build_external vamp-workflow-agent
 build_external_custom vamp-runner
 
 
+# Build the quick-start images
+${root}./build.sh --build --image=clique-base
+${root}./build.sh --build --image=clique-zookeeper
+${root}./build.sh --build --image=clique-zookeeper-marathon
+${root}./build.sh --build --image=quick-start
+
+docker tag "magneticio/vamp-quick-start:$TAG" "magneticio/vamp-docker:$TAG"
