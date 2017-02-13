@@ -63,9 +63,9 @@ done
 
 for image in $docker_images ; do
   echo "${green}Pushing image: ${image}${reset}"
-  echo NOOP docker push "$image"
+  docker push "$image"
 done
 
 echo "${green}Pushing git tags${reset}"
-echo NOOP ${root}/release-tag.sh "$TAG" push
-echo NOOP git push --tags
+${root}/release-tag.sh "$TAG" push
+git push --tags
