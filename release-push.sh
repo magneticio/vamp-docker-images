@@ -68,3 +68,4 @@ done
 
 echo "${green}Pushing git tags${reset}"
 echo NOOP ${root}/release-tag.sh "$TAG" push
+echo NOOP git push --tags
