@@ -90,6 +90,8 @@ build_external_custom() {
 # Disable the clean builds of various sub-build scripts
 export CLEAN_BUILD=false
 
+source ${root}/pack.sh
+
 ${root}/build.sh --build --image=vamp
 ${root}/build.sh --build --image=vamp-custom
 ${root}/build.sh --build --image=vamp-dcos
