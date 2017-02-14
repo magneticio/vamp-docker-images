@@ -94,7 +94,6 @@ ${root}/build.sh --build --image=vamp
 ${root}/build.sh --build --image=vamp-custom
 ${root}/build.sh --build --image=vamp-dcos
 ${root}/build.sh --build --image=vamp-kubernetes
-${root}/build.sh --build --image=vamp-rancher
 
 build_external vamp-gateway-agent
 build_external vamp-workflow-agent
