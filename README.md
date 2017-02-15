@@ -87,3 +87,39 @@ NOTE: If you are using Docker Toolbox (Mac OS X or Windows), you should use dock
 ```
 docker-machine ip default
 ```
+
+
+## Building images for release
+
+To build all parts of Vamp for a new release of Vamp the following scripts will ensure appropriate tagging, building and pushing of docker images. 
+
+**release-tag.sh** - Tags all the repositories with the correct version. Need to be executed first.
+
+```
+Usage:
+  release-tag.sh <version> [<push>]
+
+Example:
+  release-tag.sh 0.9.3
+  release-tag.sh 0.9.3 push
+```
+
+**release-build.sh** - Perform the all the build steps for all the different repositories and projects. Need to be executed second.
+
+```
+Usage:
+  release-build.sh <version>
+
+Example:
+  release-build.sh 0.9.3
+```
+
+**release-push.sh** - Pushes git tags and docker tags. Need to be executed third and last.
+
+```
+Usage:
+  release-build.sh <version>
+
+Example:
+  release-build.sh 0.9.3
+```
