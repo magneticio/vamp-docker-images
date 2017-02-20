@@ -1,0 +1,8 @@
+#! /bin/bash
+handle() { echo "metricbeat/run: got signal"; exit; }
+trap handle SIGINT
+
+[[ -e /usr/local/metricbeat/metricbeat.yml ]] || exit 1
+
+exec 2>&1
+exec /usr/local/metricbeat/metricbeat -c /usr/local/metricbeat/metricbeat.yml
