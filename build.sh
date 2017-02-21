@@ -99,7 +99,7 @@ function docker_make {
       # Whitelist of files to look for
       local whitelist
       local target_file
-      whitelist="application.conf vga.js supervisord.conf"
+      whitelist="application.conf vga.js recipes.yml supervisord.conf"
 
       for X in $whitelist ; do
         # Find path of the file we want to modify

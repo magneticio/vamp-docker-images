@@ -44,6 +44,7 @@ join vamp-zookeeper
 pull vamp-artifacts
 join vamp-elasticsearch
 
+cp -R ${dir}/artifacts/* ${target}/vamp-artifacts
 cp -f ${dir}/Dockerfile ${target}/Dockerfile
 cp -fR ${dir}/logback.xml ${dir}/application.conf ${target}/
 cp -f ${dir}/vamp.sh ${target}/
