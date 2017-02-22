@@ -6,6 +6,9 @@ ENV RUNSVINIT_URL=https://github.com/peterbourgon/runsvinit/releases/download/v2
 ENV METRICBEAT_VER=5.2.1
 ENV METRICBEAT_URL=https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${METRICBEAT_VER}-linux-x86_64.tar.gz
 
+ENV HTTPBEAT_VER=4.0.0
+ENV HTTPBEAT_URL=https://github.com/christiangalsterer/httpbeat/releases/download/${HTTPBEAT_VER}/httpbeat-${HTTPBEAT_VER}-linux-x86_64.tar.gz
+
 RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
     ALPINE_GLIBC_PACKAGE_VERSION="2.23-r3" && \
     ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
@@ -51,8 +54,12 @@ RUN set -xe \
     && mkdir -p /usr/local/metricbeat/ \
     && curl --location --silent --show-error $METRICBEAT_URL --output - | tar zxf - -C /tmp \
     && mv /tmp/metricbeat-${METRICBEAT_VER}-linux-x86_64/metricbeat /usr/local/metricbeat/ \
-    && rm -rf /tmp/metricbeat-${METRICBEAT_VER}-linux-x86_64
-
+    && rm -rf /tmp/metricbeat-${METRICBEAT_VER}-linux-x86_64 \
+    \
+    && mkdir -p /usr/local/httpbeat/ \
+    && curl --location --silent --show-error $HTTPBEAT_URL --output - | tar zxf - -C /tmp \
+    && mv /tmp/httpbeat-5.2.1-SNAPSHOT-linux-x86_64/httpbeat /usr/local/httpbeat/ \
+    && rm -rf /tmp/httpbeat-5.2.1-SNAPSHOT-linux-x86_64
 
 RUN mkdir -p /usr/local/vamp/conf
 ADD vamp-artifacts /usr/local/vamp/artifacts

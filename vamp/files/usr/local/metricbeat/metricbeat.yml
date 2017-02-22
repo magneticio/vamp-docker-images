@@ -14,7 +14,7 @@ metricbeat.modules:
   tags: ["vamp"]
 
 output.elasticsearch:
-  hosts: ["http://${DOCKER_HOST_IP}:9200/"]
+  hosts: ["${VAMP_ELASTICSEARCH_URL}"]
   index: "vamp-%{+yyyy-MM-dd}"
   template.path: /usr/local/metricbeat/metricbeat.template.json
 

@@ -5,9 +5,15 @@ This can be done in few way:
 - providing `application.conf` file and/or
 - setting environment variables
 
+
 Let's say `application.conf` is stored in `/MY/APP/CONF/PATH` directory (absolute path), then:
-```
+```shell
 docker run -v /MY/APP/CONF/PATH:/usr/local/vamp/conf magneticio/vamp:katana
+```
+
+For metric collection to work Elasticsearch URL need to be provided through the environment variable `VAMP_ELASTICSEARCH_URL`.
+```shell
+docker run -e VAMP_ELASTICSEARCH_URL=http://elasticsearch.example.com:9200 -v /MY/APP/CONF/PATH:/usr/local/vamp/conf magneticio/vamp:katana
 ```
 
 Required minimal configuration is:

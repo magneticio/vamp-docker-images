@@ -2,6 +2,11 @@
 handle() { echo "metricbeat/run: got signal"; exit; }
 trap handle SIGINT
 
+if [[ -z $VAMP_ELASTICSEARCH_URL ]] ; then
+  sv stop metricbeat
+  exit
+fi
+
 [[ -e /usr/local/metricbeat/metricbeat.yml ]] || exit 1
 
 exec 2>&1
