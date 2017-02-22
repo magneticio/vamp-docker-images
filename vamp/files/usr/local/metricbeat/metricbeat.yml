@@ -14,11 +14,11 @@ metricbeat.modules:
   tags: ["vamp"]
 
 output.elasticsearch:
-  hosts: ["http://127.0.0.1:9200"]
-  index: "vamp-vga-%{+yyyy-MM-dd}"
+  hosts: ["http://${DOCKER_HOST_IP}:9200/"]
+  index: "vamp-%{+yyyy-MM-dd}"
   template.path: /usr/local/metricbeat/metricbeat.template.json
 
 path.home: /usr/local/metricbeat
-path.config: \${path.home}
-path.data: \${path.home}/data
+path.config: ${path.home}
+path.data: ${path.home}/data
 path.logs: /var/log
