@@ -1,0 +1,13 @@
+#! /bin/bash
+handle() { echo "httpbeat/run: got signal"; exit; }
+trap handle SIGINT
+
+if [[ -z $VAMP_ELASTICSEARCH_URL ]] ; then
+  sv stop httpbeat
+  exit
+fi
+
+[[ -e /usr/local/httpbeat/httpbeat.yml ]] || exit 1
+
+exec 2>&1
+exec /usr/local/httpbeat/httpbeat -c /usr/local/httpbeat/httpbeat.yml

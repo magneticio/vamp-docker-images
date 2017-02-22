@@ -1,0 +1,23 @@
+httpbeat:
+
+  hosts:
+    -
+      # Optional cron expression, defines when to poll the host endpoint.
+      # Default is every 1 minute.
+      schedule: "@every 5s"
+      # Vamp API info endpoint
+      url: http://127.0.0.1:8080/api/v1/info?on=jvm
+      method: get
+      headers:
+        Accept: application/json
+      output_format: json
+
+output.elasticsearch:
+  hosts: ["${VAMP_ELASTICSEARCH_URL}"]
+  index: "vamp-%{+yyyy-MM-dd}"
+  template.path: /usr/local/metricbeat/metricbeat.template.json
+
+path.home: /usr/local/httpbeat
+path.config: ${path.home}
+path.data: ${path.home}/data
+path.logs: /var/log

@@ -54,4 +54,5 @@ pull vamp-artifacts
 join vamp-kubernetes
 join vamp-elasticsearch
 
-cp -f ${dir}/Dockerfile ${dir}/vamp.sh ${dir}/logback.xml ${target}/
+cp -Rf ${dir}/files ${target}/
+cp -f ${dir}/Dockerfile ${target}/

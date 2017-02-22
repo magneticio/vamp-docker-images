@@ -1,0 +1,24 @@
+metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu         # CPU stats
+    - load        # System Load stats
+    - filesystem  # Per filesystem stats
+    - fsstat      # File system summary stats
+    - memory      # Memory stats
+    - network     # Network stats
+    - process     # Per process stats
+  enabled: true
+  period: 1s
+  processes: ['.*']
+  tags: ["vamp"]
+
+output.elasticsearch:
+  hosts: ["${VAMP_ELASTICSEARCH_URL}"]
+  index: "vamp-%{+yyyy-MM-dd}"
+  template.path: /usr/local/metricbeat/metricbeat.template.json
+
+path.home: /usr/local/metricbeat
+path.config: ${path.home}
+path.data: ${path.home}/data
+path.logs: /var/log
