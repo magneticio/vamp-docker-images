@@ -161,17 +161,32 @@ fi
 if [[ ${flag_quick_start} -eq 1 ]]; then
     echo "${green}Running: quick-start${reset}"
 
-    if command_exists docker-machine; then
-        DOCKER_HOST_IP=$(docker-machine ip default)
-    else
-        DOCKER_HOST_IP=$(hostname --ip-address)
-    fi
+#    if command_exists docker-machine; then
+#        DOCKER_HOST_IP=$(docker-machine ip default)
+#    else
+#        DOCKER_HOST_IP=$(hostname --ip-address)
+#    fi
 
-    docker run --net=host \
-               --security-opt=seccomp:unconfined \
-               -v /var/run/docker.sock:/var/run/docker.sock \
-               -v $(which docker):/bin/docker \
-               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
-               -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
-               magneticio/vamp-quick-start:${vamp_version}
+#    docker run --security-opt=seccomp:unconfined \
+#               -v /var/run/docker.sock:/var/run/docker.sock \
+#               -v $(which docker):/bin/docker \
+#               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+#               -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
+#               magneticio/vamp-quick-start:${vamp_version}
+
+    DOCKER_HOST_IP="192.168.65.2"
+
+    docker run -v /var/run/docker.sock:/var/run/docker.sock \
+           -v /usr/bin/docker:/bin/docker \
+           -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+           -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
+           -p 8080:8080 \
+           -p 5050:5050 \
+           -p 9090:9090 \
+           -p 8989:8989 \
+           -p 4400:4400 \
+           -p 9200:9200 \
+           -p 5601:5601 \
+           -p 2181:2181 \
+           magneticio/vamp-quick-start:${vamp_version}
 fi

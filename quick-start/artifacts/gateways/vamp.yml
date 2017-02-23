@@ -2,4 +2,4 @@
 name: vamp
 kind: gateway
 port: 8090
-routes: "[192.168.99.100:8080]"
+routes: "[localhost:8080]"
