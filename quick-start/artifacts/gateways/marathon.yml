@@ -2,4 +2,4 @@
 name: marathon
 kind: gateway
 port: 8091
-routes: "[192.168.99.100:9090]"
+routes: "[localhost:9090]"
