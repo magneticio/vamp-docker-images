@@ -28,11 +28,13 @@ function pull() {
   project=$1
   echo "${green}pulling project: ${yellow}${project}${reset}"
   mkdir ${target}/${project}
+
+  docker volume create packer
   docker run \
-    --entrypoint=/bin/pull \
-    -v ${target}/${project}:/usr/local/dst \
-    -v packer:/usr/local/stash \
-    magneticio/packer "$project" "$vamp_version"
+    --volume "${target}/${project}":/usr/local/dst \
+    --volume packer:/usr/local/stash \
+    magneticio/buildserver \
+      pull "$project" "$vamp_version"
 }
 
 function join() {
