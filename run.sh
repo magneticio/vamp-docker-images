@@ -110,6 +110,14 @@ function command_exists() {
 	command -v "$@" > /dev/null 2>&1
 }
 
+# Return the first IP address in the bridge network by incrementing the 4th
+# octet of the gateway IP
+function get_docker_host_ip() {
+  docker network inspect bridge \
+    --format "{{ (index .IPAM.Config 0).Gateway  }}" \
+      | awk -F'.' '{ print $1 "." $2 "." $3 "." ( $4 += 1 ) }'
+}
+
 if [[ ${flag_clique_etcd} -eq 1 ]]; then
     echo "${green}Running: clique-etcd${reset}"
     docker run --net=host \
@@ -144,9 +152,9 @@ if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
     echo "${green}Running: clique-zookeeper-marathon${reset}"
 
     if command_exists docker-machine; then
-        DOCKER_HOST_IP=$(docker-machine ip default)
+        DOCKER_HOST_IP="$( docker-machine ip default )"
     else
-        DOCKER_HOST_IP=$(hostname --ip-address)
+        DOCKER_HOST_IP="$( get_docker_host_ip )"
     fi
 
     docker run --net=host \
@@ -174,7 +182,7 @@ if [[ ${flag_quick_start} -eq 1 ]]; then
 #               -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
 #               magneticio/vamp-quick-start:${vamp_version}
 
-    DOCKER_HOST_IP="192.168.65.2"
+    DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
            -v /usr/bin/docker:/bin/docker \
