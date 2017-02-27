@@ -26,4 +26,5 @@ mesos-slave --launcher=posix \
             --logging_level=ERROR \
             --port=505$1 \
             --resources="cpus(*):2; mem(*):4096; disk(*):65536; ports(*):[31000-32000]" \
-            --hostname=${DOCKER_HOST_IP}
+            --hostname=${DOCKER_HOST_IP} \
+            $2
