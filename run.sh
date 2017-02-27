@@ -151,20 +151,6 @@ fi
 if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
     echo "${green}Running: clique-zookeeper-marathon${reset}"
 
-#    if command_exists docker-machine; then
-#        DOCKER_HOST_IP=$(docker-machine ip default)
-#    else
-#        DOCKER_HOST_IP=$(hostname --ip-address)
-#    fi
-
-#    docker run --net=host \
-#               --security-opt=seccomp:unconfined \
-#               -v /var/run/docker.sock:/var/run/docker.sock \
-#               -v $(which docker):/bin/docker \
-#               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
-#               -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
-#               magneticio/vamp-clique-zookeeper-marathon:${vamp_version}
-
     DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
@@ -183,19 +169,6 @@ fi
 
 if [[ ${flag_quick_start} -eq 1 ]]; then
     echo "${green}Running: quick-start${reset}"
-
-#    if command_exists docker-machine; then
-#        DOCKER_HOST_IP=$(docker-machine ip default)
-#    else
-#        DOCKER_HOST_IP=$(hostname --ip-address)
-#    fi
-
-#    docker run --security-opt=seccomp:unconfined \
-#               -v /var/run/docker.sock:/var/run/docker.sock \
-#               -v $(which docker):/bin/docker \
-#               -v "/sys/fs/cgroup:/sys/fs/cgroup" \
-#               -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
-#               magneticio/vamp-quick-start:${vamp_version}
 
     DOCKER_HOST_IP="$( get_docker_host_ip )"
 
