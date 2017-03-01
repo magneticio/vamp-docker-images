@@ -151,7 +151,7 @@ fi
 if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
     echo "${green}Running: clique-zookeeper-marathon${reset}"
 
-    DOCKER_HOST_IP="$( get_docker_host_ip )"
+    DOCKER_HOST_IP="192.168.65.2" # DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
            -v /usr/bin/docker:/bin/docker \
@@ -170,7 +170,7 @@ fi
 if [[ ${flag_quick_start} -eq 1 ]]; then
     echo "${green}Running: quick-start${reset}"
 
-    DOCKER_HOST_IP="$( get_docker_host_ip )"
+    DOCKER_HOST_IP="192.168.65.2" # DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
            -v /usr/bin/docker:/bin/docker \
