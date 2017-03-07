@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#! /usr/bin/env bash
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -113,9 +113,16 @@ function command_exists() {
 # Return the first IP address in the bridge network by incrementing the 4th
 # octet of the gateway IP
 function get_docker_host_ip() {
-  docker network inspect bridge \
-    --format "{{ (index .IPAM.Config 0).Gateway  }}" \
-      | awk -F'.' '{ print $1 "." $2 "." $3 "." ( $4 += 1 ) }'
+  case "$( uname -s )" in
+    Linux)
+      docker network inspect bridge \
+        --format "{{ (index .IPAM.Config 0).Gateway  }}" \
+          | awk -F'.' '{ print $1 "." $2 "." $3 "." ( $4 += 1 ) }'
+      ;;
+    Darwin)
+      docker-machine ip default
+      ;;
+  esac
 }
 
 if [[ ${flag_clique_etcd} -eq 1 ]]; then
@@ -151,7 +158,7 @@ fi
 if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
     echo "${green}Running: clique-zookeeper-marathon${reset}"
 
-    DOCKER_HOST_IP="192.168.65.2" # DOCKER_HOST_IP="$( get_docker_host_ip )"
+    DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
            -v /usr/bin/docker:/bin/docker \
@@ -170,7 +177,7 @@ fi
 if [[ ${flag_quick_start} -eq 1 ]]; then
     echo "${green}Running: quick-start${reset}"
 
-    DOCKER_HOST_IP="192.168.65.2" # DOCKER_HOST_IP="$( get_docker_host_ip )"
+    DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
            -v /usr/bin/docker:/bin/docker \
