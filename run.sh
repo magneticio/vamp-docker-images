@@ -120,7 +120,7 @@ function get_docker_host_ip() {
           | awk -F'.' '{ print $1 "." $2 "." $3 "." ( $4 += 1 ) }'
       ;;
     Darwin)
-      docker-machine ip default
+      echo "192.168.65.2" # docker-machine ip default
       ;;
   esac
 }
