@@ -24,7 +24,7 @@ mkdir -p ${workspace}
 
 pack() {
   project=$1
-  url="git@github.com:magneticio/${project}.git"
+  url="https://github.com/magneticio/${project}.git"
   echo "${green}project: ${yellow}${project}${reset}"
   cd ${workspace}
 
