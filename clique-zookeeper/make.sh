@@ -12,6 +12,11 @@ target=$1
 mkdir -p ${target} && cd ${target}
 
 echo "${green}building: ${yellow}zk-web${reset}"
+
+if [[ -d ${target}/zk-web ]] ; then
+  rm -rf ${target}/zk-web
+fi
+
 git clone --depth=1 https://github.com/qiuxiafei/zk-web.git
 cd ${target}/zk-web
 
