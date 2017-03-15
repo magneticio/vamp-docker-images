@@ -132,6 +132,11 @@ function docker_make {
 function docker_build {
     echo "${green}building docker image: $1 ${reset}"
     docker build -t $1 $2
+    retval="$?"
+    if [[ $retval -ne 0 ]] ; then
+      echo "${red}Error: ${1}: build failed, exiting!${reset}"
+      exit $retval
+    fi
 }
 
 function docker_images {
