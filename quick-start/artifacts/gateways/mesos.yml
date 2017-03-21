@@ -1,5 +1,5 @@
 ---
-name: marathon
+name: mesos
 kind: gateway
 port: 8091
 routes: "[localhost:5050]"
