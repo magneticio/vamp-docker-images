@@ -1,5 +1,5 @@
 ---
 name: marathon
 kind: gateway
-port: 8091
+port: 8092
 routes: "[localhost:9090]"

@@ -1,5 +1,5 @@
 ---
 name: chronos
 kind: gateway
-port: 8092
+port: 8093
 routes: "[localhost:4400]"
