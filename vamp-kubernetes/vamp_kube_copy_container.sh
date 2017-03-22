@@ -12,6 +12,10 @@ ok() {
     echo "${green}[OK] $1${reset}"
 }
 
+step "Building the magneticio/vamp:katana-kubernetes container."
+../build.sh -b -i=vamp-kubernetes
+ok "Finished building the magneticio/vamp:katana-kubernetes container."
+
 # save the locally published katana-kubernetes image
 step "Saving katana-kubernetes to katana-kubernetes.tar."
 docker save magneticio/vamp:katana-kubernetes > katana-kubernetes.tar
