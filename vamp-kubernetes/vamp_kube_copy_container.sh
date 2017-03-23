@@ -12,9 +12,13 @@ ok() {
     echo "${green}[OK] $1${reset}"
 }
 
-step "Building the magneticio/vamp:katana-kubernetes container."
-../build.sh -b -i=vamp-kubernetes
-ok "Finished building the magneticio/vamp:katana-kubernetes container."
+read -p "Do you want to build vamp:katana-kubernetes locally (y/n)? "
+if [[ $REPLY == 'y' ]]
+then
+  step "Building the magneticio/vamp:katana-kubernetes container."
+  ../build.sh -b -i=vamp-kubernetes
+  ok "Finished building the magneticio/vamp:katana-kubernetes container."
+fi
 
 # save the locally published katana-kubernetes image
 step "Saving katana-kubernetes to katana-kubernetes.tar."
@@ -33,5 +37,8 @@ scp -i ~/.minikube/machines/minikube/id_rsa katana-kubernetes.tar \
 step "Loading katana-kubernetes.tar into minikube docker."
 ssh -t -i ~/.minikube/machines/minikube/id_rsa docker@$MINIKUBE_IP \                     \
   "docker load -i katana-kubernetes.tar"
+
+step "Removing katana-kubernetes.tar"
+rm katana-kubernetes.tar
 
 ok "Finished loading magnetnicio/vamp:katana-kubernetes to minikube."
