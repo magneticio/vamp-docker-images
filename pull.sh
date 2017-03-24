@@ -125,12 +125,12 @@ if [[ "$@" == "custom" ]]
 then
   jq="$(command -v jq)" || { >&2 echo "${red}Error: jq not found!${reset}"; exit 1; }
 
+  step "Retrieving images from docker hub of the magneticio repository"
   IMAGE_LIST=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/magneticio/?page_size=100" | jq -r '.results|.[]|.name')
 
-  N=0
   function listImages() {
+    N=0
     step "Listening all magneticio images:"
-    echo "${N}. All katana versions"
     for IMAGE in ${IMAGE_LIST}
     do
       IMAGES[${N}]=${IMAGE}
@@ -145,8 +145,8 @@ then
     ok "Retrieved ${IMAGES[${1}]}:${VERSIONS[${2}]}"
   }
 
-  V=0
   function listVersions() {
+    V=0
     step "Listing versions for magneticio/${IMAGES[${1}]}:"
     VERSION_LIST=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/magneticio/${IMAGES[${1}]}/tags/?page_size=100" | jq -r '.results|.[]|.name')
     for VERSION in ${VERSION_LIST}
@@ -163,16 +163,15 @@ then
   read
   IMAGE_REPLY=$REPLY
 
-  if [[ $REPLY == 0 ]]
-  then
-    getAllKatanaImages
-  else
-    listVersions $IMAGE_REPLY
-    ask "Choose the number of the version you want to pull: "
-    read
-    VERSION_REPLY=$REPLY
-    getImage $IMAGE_REPLY $VERSION_REPLY
-  fi
+  echo "The number is ${V}"
+  listVersions $IMAGE_REPLY
+
+  ask "Choose the number of the version you want to pull: "
+  read
+
+  VERSION_REPLY=$REPLY
+  getImage $IMAGE_REPLY $VERSION_REPLY
+
   exit
 fi
 
