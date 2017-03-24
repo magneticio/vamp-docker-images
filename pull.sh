@@ -34,15 +34,15 @@ ${reset}"
 if [[ ( "$@" == "" ) || ( "$@" == "-h" ) || ( "$@" == "--help" ) ]]
 then
   echo "${green}Usage: ${reset}"
-  echo "${yellow}  quick-start                ${green}Pull quick-start ().${reset}"
-  echo "${yellow}  vamp                       ${green}Pull vamp ().${reset}"
-  echo "${yellow}  all | *                    ${green}Pull all images from magnetnicio repository.${reset}"
-  echo "${yellow}  custom                     ${green}Interactive choosing images from magenticio repository.${reset}"
+  echo "${yellow}  quick-start                ${green}Pull quick-start.${reset}"
+  echo "${yellow}  vamp                       ${green}Pull vamp.${reset}"
+  echo "${yellow}  all | *                    ${green}Pull all images from magneticio repository.${reset}"
+  echo "${yellow}  custom                     ${green}Interactive choosing images from magneticio repository.${reset}"
   echo "${yellow}  -h  |--help                ${green}Help.${reset}"
   exit
 fi
 
-if [[ "$@" == "quick-start" ]]
+if [[ ( "$@" == "quick-start" ) || ( "$@" == "quick-start/" ) ]]
 then
   ok "Pulling all quick-start images."
 
@@ -51,6 +51,18 @@ then
   docker pull magneticio/sava:1.0.0
   step "Pulling magneticio/sava:1.1.0 image."
   docker pull magneticio/sava:1.1.0
+  step "Pulling magneticio/sava-frontend:1.2.0 image."
+  docker pull magneticio/sava-frontend:1.2.0
+  step "Pulling magneticio/sava-backend1:1.2.0 image."
+  docker pull magneticio/sava-backend1:1.2.0
+  step "Pulling magneticio/sava-backend2:1.2.0 image."
+  docker pull magneticio/sava-backend2:1.2.0
+  step "Pulling magneticio/sava-frontend:1.3.0 image."
+  docker pull magneticio/sava-frontend:1.3.0
+  step "Pulling magneticio/sava-backend:1.3.0 image."
+  docker pull magneticio/sava-backend:1.3.0
+  step "Pulling magneticio/sava:runner_1.0 image."
+  docker pull magneticio/sava:runner_1.0
   ok "Pulled all sava images."
 
   # all agents
@@ -66,15 +78,16 @@ then
   ok "Pulled magneticio/vamp-runner:katana."
 
   # quick start
-  step "Pulling magneticio/vamp:katana image."
-  docker pull magneticio/vamp:katana
-  ok "Pulled magneticio/vamp:katana."
+  step "Pulling magneticio/vamp-docker:katana image."
+  docker pull magneticio/vamp-docker:katana
+  docker tag magneticio/vamp-docker:katana magneticio/vamp-quick-start:katana
+  ok "Pulled magneticio/vamp-docker:katana."
 
   ok "Finished pulling all quick-start images."
   exit
 fi
 
-if [[ "$@" == "vamp" ]]
+if [[ ( "$@" == "vamp" ) || ( "$@" == "vamp/" ) ]]
 then
   # sava:
   step "Pulling magneticio/sava:1.0.0 image."
@@ -117,7 +130,7 @@ then
     getAllVersionsOfImage ${IMAGE}
   done
 
-  ok "Pull all images with all versions from magenticio repository."
+  ok "Pull all images with all versions from magneticio repository."
   exit
 fi
 
@@ -125,12 +138,12 @@ if [[ "$@" == "custom" ]]
 then
   jq="$(command -v jq)" || { >&2 echo "${red}Error: jq not found!${reset}"; exit 1; }
 
-  step "Retrieving images from docker hub of the magneticio repository"
+  step "Retrieving images from docker hub of the magneticio repository..."
   IMAGE_LIST=$(curl -s -S "https://registry.hub.docker.com/v2/repositories/magneticio/?page_size=100" | jq -r '.results|.[]|.name')
 
   function listImages() {
     N=0
-    step "Listening all magneticio images:"
+    step "Listing all magneticio images:"
     for IMAGE in ${IMAGE_LIST}
     do
       IMAGES[${N}]=${IMAGE}
@@ -175,4 +188,4 @@ then
   exit
 fi
 
-echo "${red}Error: Unkown command $@! Use -h or --help for instructions.${reset}"
+echo "${red}Error: Unknown command $@! Use -h or --help for instructions.${reset}"
