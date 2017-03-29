@@ -1,0 +1,7 @@
+name    : kibana
+breed   : kibana
+status  : suspended
+schedule: daemon
+environment_variables:
+  VAMP_WORKFLOW_EXECUTION_PERIOD:  30
+  VAMP_WORKFLOW_EXECUTION_TIMEOUT: 10

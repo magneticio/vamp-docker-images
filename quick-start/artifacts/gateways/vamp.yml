@@ -1,5 +1,0 @@
----
-name: vamp
-kind: gateway
-port: 8090
-routes: "[localhost:8080]"
