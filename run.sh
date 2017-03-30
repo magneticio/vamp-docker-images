@@ -115,9 +115,10 @@ function command_exists() {
 function get_docker_host_ip() {
   case "$( uname -s )" in
     Linux)
-      docker network inspect bridge \
-        --format "{{ (index .IPAM.Config 0).Gateway  }}" \
-          | awk -F'.' '{ print $1 "." $2 "." $3 "." ( $4 += 1 ) }'
+      hostname -I | awk '{ print $1}'
+      # docker network inspect bridge \
+      #   --format "{{ (index .IPAM.Config 0).Gateway  }}" \
+      #     | awk -F'.' '{ print $1 "." $2 "." $3 "." ( $4 += 1 ) }'
       ;;
     Darwin)
       echo "192.168.65.2" # docker-machine ip default
