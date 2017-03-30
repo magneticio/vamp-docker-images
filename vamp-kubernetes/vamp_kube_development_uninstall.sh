@@ -4,7 +4,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 : "${NAMESPACE:=default}"
 : "${VGA_YAML:=${dir}/vga.yml}"
-: "${ETCD_YAML:=${dir}/etcd.yml}"
+: "${ETCD_YAML:=${dir}/etcd_development.yml}"
 
 reset=$(tput sgr0)
 red=$(tput setaf 1)

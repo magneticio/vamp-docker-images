@@ -4,7 +4,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 : "${NAMESPACE:=default}"
 : "${VGA_YAML:=${dir}/vga.yml}"
-: "${ETCD_YAML:=${dir}/etcdDevelopment.yml}"
+: "${ETCD_YAML:=${dir}/etcd_development.yml}"
 : "${ELASTICSEARCH_IMAGE:=elasticsearch:2.4.4}"
 : "${KIBANA_IMAGE:=kibana:4.6.4}"
 
