@@ -1,4 +1,5 @@
-# #! /bin/bash
+#! /bin/bash
+
 # handle() { echo "metricbeat/run: got signal"; exit; }
 # trap handle SIGINT
 #
