@@ -3,9 +3,6 @@ FROM magneticio/java:openjdk-8-jre-alpine
 # https://github.com/peterbourgon/runsvinit
 ENV RUNSVINIT_URL=https://github.com/peterbourgon/runsvinit/releases/download/v2.0.0/runsvinit-linux-amd64.tgz
 
-# ENV METRICBEAT_VER=5.2.1
-# ENV METRICBEAT_URL=https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${METRICBEAT_VER}-linux-x86_64.tar.gz
-
 ENV HTTPBEAT_VER=4.0.0
 ENV HTTPBEAT_URL=https://github.com/christiangalsterer/httpbeat/releases/download/${HTTPBEAT_VER}/httpbeat-${HTTPBEAT_VER}-linux-x86_64.tar.gz
 
@@ -50,12 +47,6 @@ RUN set -xe \
     && curl --location --silent --show-error $RUNSVINIT_URL --output - | tar zxf - -C /sbin \
     && chown 0:0 /sbin/runsvinit \
     && chmod 0775 /sbin/runsvinit \
-    # \
-    # && mkdir -p /usr/local/metricbeat/ \
-    # && curl --location --silent --show-error $METRICBEAT_URL --output - | tar zxf - -C /tmp \
-    # && mv /tmp/metricbeat-${METRICBEAT_VER}-linux-x86_64/metricbeat /usr/local/metricbeat/ \
-    # && rm -rf /tmp/metricbeat-${METRICBEAT_VER}-linux-x86_64 \
-    \
     && mkdir -p /usr/local/httpbeat/ \
     && curl --location --silent --show-error $HTTPBEAT_URL --output - | tar zxf - -C /tmp \
     && mv /tmp/httpbeat-5.2.1-SNAPSHOT-linux-x86_64/httpbeat /usr/local/httpbeat/ \
