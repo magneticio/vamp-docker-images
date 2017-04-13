@@ -63,7 +63,7 @@ build_external() {
     exit 1
   fi
 
-  make pack
+  make
 }
 
 build_external_custom() {
