@@ -15,7 +15,7 @@ httpbeat:
 output.elasticsearch:
   hosts: ["${VAMP_ELASTICSEARCH_URL}"]
   index: "vamp-%{+yyyy-MM-dd}"
-  template.path: /usr/local/metricbeat/metricbeat.template.json
+  template.path: /usr/local/httpbeat/httpbeat.template.json
 
 path.home: /usr/local/httpbeat
 path.config: ${path.home}
