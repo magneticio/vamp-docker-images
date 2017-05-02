@@ -166,7 +166,7 @@ if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
            -v "/sys/fs/cgroup:/sys/fs/cgroup" \
            -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
            -p 5050:5050 \
-           -p 8090:9090 \
+           -p 9090:9090 \
            -p 8989:8989 \
            -p 4400:4400 \
            -p 9200:9200 \
