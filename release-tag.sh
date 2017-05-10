@@ -91,6 +91,9 @@ tag() {
 tag vamp
 tag vamp-haproxy
 tag vamp-elasticsearch
+tag vamp-mysql
+tag vamp-postgresql
+tag vamp-sqlserver
 tag vamp-zookeeper
 tag vamp-etcd
 tag vamp-redis

@@ -64,7 +64,3 @@ for image in $docker_images ; do
   echo "${green}Pushing image: ${image}${reset}"
   docker push "$image"
 done
-
-# echo "${green}Pushing git tags${reset}"
-# ${root}/release-tag.sh "$TAG" push
-# git push --tags
