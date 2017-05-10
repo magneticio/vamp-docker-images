@@ -2,14 +2,6 @@
 
 export LANG=en_US.UTF-8
 
-# Wait for sql dependency before starting Vamp.
-until nc -z -v -w30 $VAMP_DB_PORT 3306
-do
-  echo "Waiting for database connection..."
-  # wait for 5 seconds before check again
-  sleep 5
-done
-
 # Wait for http reachable dependency before starting Vamp.
 while true; do
   status=$(curl -s -w %{http_code} ${VAMP_WAIT_FOR} -o /dev/null)
