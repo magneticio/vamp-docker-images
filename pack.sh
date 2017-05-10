@@ -49,6 +49,9 @@ pack() {
 pack vamp
 pack vamp-haproxy
 pack vamp-elasticsearch
+pack vamp-mysql
+pack vamp-postgresql
+pack vamp-sqlserver
 pack vamp-zookeeper
 pack vamp-etcd
 pack vamp-redis
