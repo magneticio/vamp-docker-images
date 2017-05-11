@@ -52,6 +52,9 @@ join vamp-lifter
 join vamp-rancher
 join vamp-haproxy
 join vamp-zookeeper
+join vamp-mysql
+join vamp-postgresql
+join vamp-sqlserver
 pull vamp-artifacts
 join vamp-kubernetes
 join vamp-elasticsearch
