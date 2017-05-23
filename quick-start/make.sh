@@ -40,6 +40,7 @@ function join() {
 pull vamp
 pull vamp-ui
 join vamp-dcos
+join vamp-config
 join vamp-lifter
 join vamp-haproxy
 join vamp-zookeeper

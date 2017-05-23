@@ -60,6 +60,7 @@ pack vamp-dcos
 pack vamp-docker
 pack vamp-kubernetes
 pack vamp-rancher
+pack vamp-config
 pack vamp-lifter
 pack vamp-ui
 pack vamp-artifacts

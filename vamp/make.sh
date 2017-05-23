@@ -48,6 +48,7 @@ pull vamp-ui
 join vamp-dcos
 join vamp-etcd
 join vamp-consul
+join vamp-config
 join vamp-lifter
 join vamp-rancher
 join vamp-haproxy
