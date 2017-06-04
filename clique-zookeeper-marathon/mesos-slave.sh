@@ -14,7 +14,7 @@ echo "starting Mesos slave: $1"
 mkdir -p /var/run/mesos/slave$1 2> /dev/null
 mkdir -p /var/log/mesos/slave$1 2> /dev/null
 
-mesos-slave --launcher=posix \
+mesos-agent --launcher=posix \
             --containerizers="docker,mesos" \
             --executor_registration_timeout=5mins \
             --docker_stop_timeout=10secs \
@@ -26,5 +26,6 @@ mesos-slave --launcher=posix \
             --logging_level=ERROR \
             --port=505$1 \
             --resources="cpus(*):2; mem(*):4096; disk(*):65536; ports(*):[31000-32000]" \
-            --hostname=${DOCKER_HOST_IP} \
+            --hostname=$DOCKER_HOST_IP \
+            --no-systemd_enable_support \
             $2
