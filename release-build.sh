@@ -22,7 +22,7 @@ if [[ -z $1 ]] ; then
   exit 1
 else
   TAG="$1"
-  if [[ $( git describe --tags ) != "$TAG" ]] ; then
+  if [[ $( git tag | tail -n1 ) != "$TAG" ]] ; then
     >&2 echo "${red}Error: Provided tag doesn't match repository tag!${reset}"
     >&2 echo "Have you exectued 'release-tag.sh'???"
     >&2 echo "Exiting..."
@@ -56,7 +56,7 @@ build_external() {
 
   cd ${workspace}/${project}
 
-  if [[ $( git describe --tags ) != "$TAG" ]] ; then
+  if [[ $( git tag | tail -n1 ) != "$TAG" ]] ; then
     >&2 echo "${red}Error: Provided tag doesn't match repository tag!${reset}"
     >&2 echo "Have you exectued 'release-tag.sh'???"
     >&2 echo "Exiting..."
@@ -79,7 +79,7 @@ build_external_custom() {
 
   cd ${workspace}/${project}
 
-  if [[ $( git describe --tags ) != "$TAG" ]] ; then
+  if [[ $( git tag | tail -n1 ) != "$TAG" ]] ; then
     >&2 echo "${red}Error: Provided tag doesn't match repository tag!${reset}"
     >&2 echo "Have you exectued 'release-tag.sh'???"
     >&2 echo "Exiting..."

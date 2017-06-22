@@ -27,10 +27,6 @@ else
   fi
 fi
 
-if [[ -n $(git status --porcelain 2> /dev/null) ]] ; then
-  >&2 echo "${red}Error:${reset} You got untracked changes, exiting!"
-  exit 1
-fi
 
 echo "${green}
 ██╗   ██╗ █████╗ ███╗   ███╗██████╗     ████████╗ █████╗  ██████╗  ██████╗ ███████╗██████╗
@@ -44,7 +40,7 @@ ${reset}"
 
 # Ensure we're tagging vamp-docker-images as well
 if [[ "$( git tag --list $TAG )" = "$TAG" ]] ; then
-  if [[ "$( git describe --tags )" != "$TAG" ]] ; then
+  if [[ "$( git tag | tail -n1 )" != "$TAG" ]] ; then
     echo "${yellow}Warning:${reset} Tag ${TAG} already exists but you're on a different commit:"
     git show --no-patch
     echo
@@ -79,7 +75,7 @@ tag() {
 
   fi
 
-  if [[ "$( git describe --tags )" != "$TAG" ]] ; then
+  if [[ "$( git tag | tail -n1 )" != "$TAG" ]] ; then
     git tag "$TAG" || { echo "${yellow}${project}: tag exists, ${TAG}, continuing${reset}"; git checkout "$TAG"; }
   fi
 
