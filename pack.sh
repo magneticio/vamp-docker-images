@@ -43,6 +43,10 @@ pack() {
 
   fi
 
+  if [[ -f ${root}/Makefile.local ]]; then
+    cp ${root}/Makefile.local ${workspace}/${project}/
+  fi
+
   make pack
 }
 
