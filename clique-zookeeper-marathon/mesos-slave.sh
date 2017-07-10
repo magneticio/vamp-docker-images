@@ -25,7 +25,6 @@ mesos-slave --launcher=posix \
             --log_dir=/var/log/mesos/slave$1 \
             --logging_level=ERROR \
             --port=505$1 \
-            --no-systemd_enable_support
             --resources="cpus(*):2; mem(*):4096; disk(*):65536; ports(*):[31000-32000]" \
             --hostname=${DOCKER_HOST_IP} \
             $2
