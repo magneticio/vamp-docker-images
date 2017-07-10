@@ -4,9 +4,6 @@ set -o errexit # Abort script at first error (command exits non-zero).
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "Rooooot: ${root}"
-
-
 reset=$(tput sgr0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)

@@ -51,20 +51,5 @@ pack() {
 }
 
 pack vamp
-pack vamp-haproxy
-pack vamp-elasticsearch
-pack vamp-mysql
-pack vamp-postgresql
-pack vamp-sqlserver
-pack vamp-zookeeper
-pack vamp-etcd
-pack vamp-redis
-pack vamp-consul
-pack vamp-dcos
-pack vamp-docker
-pack vamp-kubernetes
-pack vamp-rancher
-pack vamp-config
-pack vamp-lifter
 pack vamp-ui
 pack vamp-artifacts

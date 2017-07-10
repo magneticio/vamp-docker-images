@@ -31,21 +31,9 @@ function pull() {
       pull "$project"
 }
 
-function join() {
-  project=$1
-  pull ${project}
-  cp -R ${target}/${project}/* ${target}/vamp/ && rm -Rf ${target}/${project}
-}
-
 pull vamp
 pull vamp-ui
-join vamp-dcos
-join vamp-config
-join vamp-lifter
-join vamp-haproxy
-join vamp-zookeeper
 pull vamp-artifacts
-join vamp-elasticsearch
 
 cp -R ${dir}/artifacts/* ${target}/vamp-artifacts
 cp -f ${dir}/Dockerfile ${target}/Dockerfile

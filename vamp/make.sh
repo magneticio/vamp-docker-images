@@ -37,28 +37,8 @@ function pull() {
       pull "$project" "$vamp_version"
 }
 
-function join() {
-  project=$1
-  pull ${project}
-  cp -R ${target}/${project}/* ${target}/vamp/ && rm -Rf ${target}/${project}
-}
-
 pull vamp
 pull vamp-ui
-join vamp-dcos
-join vamp-etcd
-join vamp-consul
-join vamp-config
-join vamp-lifter
-join vamp-rancher
-join vamp-haproxy
-join vamp-zookeeper
-join vamp-mysql
-join vamp-postgresql
-join vamp-sqlserver
-pull vamp-artifacts
-join vamp-kubernetes
-join vamp-elasticsearch
 
 cp -Rf ${dir}/files ${target}/
 cp -f ${dir}/Dockerfile ${target}/

@@ -85,21 +85,6 @@ tag() {
 }
 
 tag vamp
-tag vamp-haproxy
-tag vamp-elasticsearch
-tag vamp-mysql
-tag vamp-postgresql
-tag vamp-sqlserver
-tag vamp-zookeeper
-tag vamp-etcd
-tag vamp-redis
-tag vamp-consul
-tag vamp-config
-tag vamp-dcos
-tag vamp-docker
-tag vamp-kubernetes
-tag vamp-rancher
-tag vamp-lifter
 tag vamp-ui
 tag vamp-artifacts
 tag vamp-runner
