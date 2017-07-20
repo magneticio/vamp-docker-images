@@ -39,6 +39,7 @@ function pull() {
 
 pull vamp
 pull vamp-ui
+pull vamp-artifacts
 
 cp -Rf ${dir}/files ${target}/
 cp -f ${dir}/Dockerfile ${target}/
