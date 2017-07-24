@@ -50,6 +50,9 @@ Usage of ./build.sh:
 ./build.sh -b -i=vamp-*
 ```
 
+#### Background info
+`Katana` is the latest (cutting edge) version, and is used by default as a version tag in the created Docker containers. If setting a specific version the build.sh script replaces all `katana` references and strings, including the ones in the Vamp artifact files (https://github.com/magneticio/vamp-artifacts) that define the Vamp Workflow Agent and Vamp Gateway Agent to be bootstrapped by Vamp.   
+
 ## Running
 
 ```bash
