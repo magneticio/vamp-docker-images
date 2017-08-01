@@ -13,18 +13,25 @@ mkdir -p ${target} && cd ${target}
 
 echo "${green}building: ${yellow}zk-web${reset}"
 
+build_server="magneticio/buildserver"
+docker pull $build_server
+
 if [[ -d ${target}/zk-web ]] ; then
-  rm -rf ${target}/zk-web
+
+  docker run \
+    --interactive \
+    --rm \
+    --volume ${target}:/srv/src \
+    --workdir=/srv/src \
+    $build_server \
+      rm -rf /srv/src/zk-web
 fi
 
 git clone --depth=1 https://github.com/qiuxiafei/zk-web.git
 cd ${target}/zk-web
 
-build_server="magneticio/buildserver"
-docker pull $build_server
 docker run \
   --interactive \
-  --tty \
   --rm \
   --volume ${target}/zk-web:/srv/src \
   --workdir=/srv/src \

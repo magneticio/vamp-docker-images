@@ -2,7 +2,7 @@ FROM magneticio/vamp-clique-base:VAMP_VERSION
 
 ENV ETCD_VERSION 2.3.7
 
-ADD https://github.com/coreos/etcd/releases/download/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz /
+RUN wget https://github.com/coreos/etcd/releases/download/v$ETCD_VERSION/etcd-v$ETCD_VERSION-linux-amd64.tar.gz
 
 RUN set -ex && \
     tar xzvf etcd-v$ETCD_VERSION-linux-amd64.tar.gz && \
