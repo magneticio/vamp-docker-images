@@ -22,11 +22,26 @@ ${reset}"
 workspace=${root}/target
 mkdir -p ${workspace}
 
+VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"https://github.com/magneticio"}
+VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
+
 pack() {
   project=$1
-  url="https://github.com/magneticio/${project}.git"
-  echo "${green}project: ${yellow}${project}${reset}"
   cd ${workspace}
+
+  url="${VAMP_GIT_ROOT}/${project}.git"
+  branch="master"
+
+  check_url=$(curl -s -L -I ${url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
+
+  if [ ${check_url} = "200" ]; then
+    branch=$(git ls-remote ${url} | awk '{ print $2 }' | grep -E "refs/heads/${VAMP_GIT_BRANCH}$" | sed -e "s/refs\/heads\///")
+    branch=${branch:-"master"}
+  else
+    url="https://github.com/magneticio/${project}.git"
+  fi
+
+  echo "${green}project: ${yellow}${project} - ${url} - ${branch}${reset}"
 
   if [[ -d ${workspace}/${project} ]] ; then
     echo "${green}updating existing repository${reset}"
@@ -34,13 +49,11 @@ pack() {
     cd ${workspace}/${project}
 
     git reset --hard
-    git checkout master
+    git checkout ${branch}
     git pull
-
   else
-    git clone --depth=200 "$url"
+    git clone -b ${branch} --depth=200 "$url"
     cd ${workspace}/${project}
-
   fi
 
   if [[ -f ${root}/Makefile.local ]]; then
