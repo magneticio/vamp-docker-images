@@ -94,9 +94,9 @@ docker-machine ip default
 
 ## Building images for release
 
-To build all parts of Vamp for a new release of Vamp the following scripts will ensure appropriate tagging, building and pushing of docker images. 
+To build all parts of Vamp for a new release of Vamp the following scripts will ensure appropriate tagging, building and pushing of docker images.
 
-**release-tag.sh** - Tags all the repositories with the correct version. Need to be executed first. NB the optional `push` option pushes the tags to the Github repo's, so use with care! 
+**release-tag.sh** - Tags all the repositories with the correct version. Need to be executed first. NB the optional `push` option pushes the tags to the Github repo's, so use with care!
 
 ```
 Usage:
@@ -126,3 +126,10 @@ Usage:
 Example:
   release-build.sh 0.9.3
 ```
+
+
+## Building custom branches
+
+To build custom branches you need to export `VAMP_GIT_BRANCH` environment variable containing the desired branch name. If given branch can't be found then `master` will be used which is the default value if nothing was specified.
+
+If you work with forks you also need to export `VAMP_GIT_ROOT` environment variable containing the URL to GitHub account where the forked repositories can be found. If given repository can't be found at the specified URL then `https://github.com/magneticio` is used.
