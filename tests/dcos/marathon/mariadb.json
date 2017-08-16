@@ -1,0 +1,52 @@
+{
+  "id": "mariadb",
+  "cpus": 1,
+  "mem": 1024,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "volumes": [
+      {
+        "containerPath": "mysqldata",
+        "mode": "RW",
+        "persistent": {
+          "size": 1000
+        }
+      }
+    ],
+    "docker": {
+      "image": "mariadb:latest",
+      "network": "HOST",
+      "portMappings": [
+        {
+          "containerPort": 3306,
+          "hostPort": 3306
+        }
+      ]
+    }
+  },
+  "args": [
+    "--datadir=/mnt/mesos/sandbox/mariadb-data/"
+  ],
+  "env": {
+    "MYSQL_ROOT_PASSWORD": "root",
+    "MYSQL_USER": "vamp",
+    "MYSQL_PASSWORD": "secret",
+    "MYSQL_DATABASE": "vamp-vamp"
+  },
+  "healthChecks": [
+    {
+      "protocol": "TCP",
+      "port": 3306,
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 0,
+    "maximumOverCapacity": 0
+  }
+}
