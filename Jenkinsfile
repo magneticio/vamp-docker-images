@@ -56,6 +56,7 @@ pipeline {
         ./get-dcos-templates.sh
         ./dcos-aws.sh create
         ./setup-dcos-cli.sh
+        ./dcos-vamp.sh clean
         ./dcos-vamp.sh install
         cd -
         '''
