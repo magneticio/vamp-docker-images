@@ -13,6 +13,10 @@ pipeline {
     string(name: 'VAMP_GIT_BRANCH', defaultValue: '', description: 'Branch name')
   }
 
+  environment {
+    AWS_REGION = 'us-east-1'
+  }
+
   stages {
 
     stage('Clean') {
@@ -24,19 +28,72 @@ pipeline {
       }
     }
 
-    stage('Build') {
+    stage('Build images') {
+      steps {
+        sh '''
+        if [ "$VAMP_GIT_ROOT" = "" ]; then
+          export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print $1 "//" $3 "/" $4 }')
+        fi
+
+        if [ "$VAMP_GIT_BRANCH" = "" ]; then
+          export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+        fi
+
+        git pull
+        cd tests
+        ./test-build.sh
+        ./test-push.sh $VAMP_GIT_BRANCH
+        ./vamp-ui-rspec.sh build
+        cd -
+        '''
+      }
+    }
+
+    stage('Deploy DC/OS') {
+      steps {
+        sh '''
+        cd tests/dcos
+        ./get-dcos-templates.sh
+        ./dcos-aws.sh create
+        ./setup-dcos-cli.sh
+        ./dcos-vamp.sh clean
+        ./dcos-vamp.sh install
+        cd -
+        '''
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh '''
+        cd tests
+        ./vamp-runner.sh run
+        ./vamp-ui-rspec.sh run
+        cd -
+        '''
+      }
+    }
+
+    stage('Destroy DC/OS') {
+      steps {
+        sh '''
+        cd tests/dcos
+        ./dcos-aws.sh delete
+        cd -
+        '''
+      }
+    }
+
+    stage('Remove tags') {
       steps {
         sh '''
         if [ "$VAMP_GIT_BRANCH" = "" ]; then
-          export VAMP_GIT_BRANCH=$BRANCH_NAME
+          export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
         fi
 
-        ./build.sh -b -i=clique-base
-        ./build.sh -b -i=clique-zookeeper
-        ./build.sh -b -i=clique-zookeeper-marathon
-        ./build.sh -b -i=quick-start
-        ./build.sh -b -i=vamp
-        ./build.sh -b -i=vamp-*
+        cd tests
+        ./test-remove.sh $VAMP_GIT_BRANCH
+        cd -
         '''
       }
     }

@@ -32,9 +32,9 @@ pack() {
   url="${VAMP_GIT_ROOT}/${project}.git"
   branch="master"
 
-  check_url=$(curl -s -L -I ${url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
+  check_url=$(curl -m 5 -s -L -I ${url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
 
-  if [ ${check_url} = "200" ]; then
+  if [ "${check_url}" = "200" ]; then
     branch=$(git ls-remote ${url} | awk '{ print $2 }' | grep -E "refs/heads/${VAMP_GIT_BRANCH}$" | sed -e "s/refs\/heads\///")
     branch=${branch:-"master"}
   else
