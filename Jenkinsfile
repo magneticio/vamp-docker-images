@@ -29,6 +29,9 @@ pipeline {
     }
 
     stage('Build images') {
+      when {
+        expression { params.RELEASE_TAG == '' }
+      }
       steps {
         sh '''
         if [ "$VAMP_GIT_ROOT" = "" ]; then
@@ -43,6 +46,9 @@ pipeline {
         cd tests
         ./test-build.sh
         ./test-push.sh $VAMP_GIT_BRANCH
+        if [ "$VAMP_GIT_BRANCH" == "master" ]; then
+          ./test-push.sh katana
+        fi
         ./vamp-ui-rspec.sh build
         cd -
         '''
@@ -50,6 +56,9 @@ pipeline {
     }
 
     stage('Deploy DC/OS') {
+      when {
+        expression { params.RELEASE_TAG == '' }
+      }
       steps {
         sh '''
         cd tests/dcos
@@ -64,6 +73,9 @@ pipeline {
     }
 
     stage('Test') {
+      when {
+        expression { params.RELEASE_TAG == '' }
+      }
       steps {
         sh '''
         cd tests
@@ -75,6 +87,9 @@ pipeline {
     }
 
     stage('Destroy DC/OS') {
+      when {
+        expression { params.RELEASE_TAG == '' }
+      }
       steps {
         sh '''
         cd tests/dcos
@@ -85,6 +100,9 @@ pipeline {
     }
 
     stage('Remove tags') {
+      when {
+        expression { params.RELEASE_TAG == '' }
+      }
       steps {
         sh '''
         if [ "$VAMP_GIT_BRANCH" = "" ]; then

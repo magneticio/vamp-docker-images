@@ -38,9 +38,11 @@ ${reset}"
 
 docker_images="
   magneticio/vamp
+  magneticio/vamp-ee
   magneticio/vamp-gateway-agent
   magneticio/vamp-workflow-agent
   magneticio/vamp-docker
+  magneticio/vamp-runner
 "
 
 # Check that we have our images available
@@ -50,7 +52,7 @@ for i in $docker_images; do
     for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':katana'); do
       image="${j/katana/$TAG}"
       echo "${green}Pushing image: ${image}${reset}"
-      docker tag "$j" "$image"
+      [ "$TAG" != "katana" ] && docker tag "$j" "$image"
       docker push "$image"
     done
   else

@@ -86,6 +86,31 @@ build_external() {
   cd -
 }
 
+build_ee() {
+  project="vamp-ee"
+  echo "${green}project: ${yellow}${project}${reset}"
+
+  if [[ -d ${src_dir}/${project} ]] ; then
+    echo "${green}updating existing repository${reset}"
+
+    cd "$src_dir/$project"
+
+    git reset --hard
+    git checkout ${VAMP_GIT_BRANCH}
+    git pull
+    cd -
+  else
+    cd "$src_dir"
+    git clone -b ${VAMP_GIT_BRANCH} --depth=200 git@github.com:magneticio/vamp-ee.git "$project"
+    cd -
+  fi
+
+  cd ${workspace}/${project}
+  ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
+  ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
+  cd -
+}
+
 init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
@@ -117,4 +142,6 @@ build_external vamp-runner
 
 docker tag "magneticio/vamp-quick-start:katana" "magneticio/vamp-docker:katana"
 
+build_ee
+docker tag "magneticio/vamp-quick-start-ee:katana" "magneticio/vamp-ee:katana"
 cd -
