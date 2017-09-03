@@ -119,6 +119,8 @@ init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
 export CLEAN_BUILD=false
 
 
+OLD_PWD=$PWD
+
 cd ..
 source pack.sh
 cd ${root}
@@ -142,6 +144,6 @@ build_external vamp-runner
 
 docker tag "magneticio/vamp-quick-start:katana" "magneticio/vamp-docker:katana"
 
+cd $OLD_PWD
 build_ee
 docker tag "magneticio/vamp-quick-start-ee:katana" "magneticio/vamp-ee:katana"
-cd -
