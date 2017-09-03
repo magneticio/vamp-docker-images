@@ -112,8 +112,8 @@ build_ee() {
   fi
 
   cd ${workspace}/${project}
-  ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
   ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
+  ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
   cd -
 }
 
