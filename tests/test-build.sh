@@ -101,8 +101,14 @@ build_ee() {
     cd -
   else
     cd "$src_dir"
-    git clone -b ${VAMP_GIT_BRANCH} --depth=200 git@github.com:magneticio/vamp-ee.git "$project"
-    cd -
+    local old_pwd=$OLDPWD
+    git clone --depth=200 git@github.com:magneticio/vamp-ee.git "$project"
+    cd ${project}
+    declare -i got_branch=$(git branch --list | grep -c " ${VAMP_GIT_BRANCH}$")
+    if [  $got_branch -gt 1 ]; then
+      git checkout ${VAMP_GIT_BRANCH}
+    fi
+    cd $old_pwd
   fi
 
   cd ${workspace}/${project}
