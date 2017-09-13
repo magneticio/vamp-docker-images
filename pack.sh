@@ -25,6 +25,11 @@ mkdir -p ${workspace}
 VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"https://github.com/magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
+if [ "$RELEASE_TAG" != "" ]; then
+  VAMP_GIT_BRANCH="master"
+  VAMP_GIT_ROOT="https://github.com/magneticio"
+fi
+
 pack() {
   project=$1
   cd ${workspace}
