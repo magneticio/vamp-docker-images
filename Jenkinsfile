@@ -99,23 +99,6 @@ pipeline {
       }
     }
 
-    stage('Remove tags') {
-      when {
-        expression { params.RELEASE_TAG == '' }
-      }
-      steps {
-        sh '''
-        if [ "$VAMP_GIT_BRANCH" = "" ]; then
-          export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
-        fi
-
-        cd tests
-        ./test-remove.sh $VAMP_GIT_BRANCH
-        cd -
-        '''
-      }
-    }
-
     stage('Release') {
       when {
         expression { params.RELEASE_TAG != '' }
@@ -127,6 +110,27 @@ pipeline {
         ./release-push.sh ${RELEASE_TAG}
         '''
       }
+    }
+  }
+  post {
+    always {
+      sh '''
+      if [ "$VAMP_GIT_BRANCH" = "" ]; then
+        export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+      fi
+
+      cd tests
+      ./test-remove.sh $VAMP_GIT_BRANCH
+      cd -
+      '''
+
+      sh '''
+      cd tests/dcos
+      ./dcos-aws.sh delete
+      cd -
+      '''
+
+      deleteDir()
     }
   }
 }
