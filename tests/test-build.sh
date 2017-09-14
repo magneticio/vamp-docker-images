@@ -151,5 +151,7 @@ build_external vamp-runner
 docker tag "magneticio/vamp-quick-start:katana" "magneticio/vamp-docker:katana"
 
 cd $OLD_PWD
+
+export CLEAN_BUILD=true
 build_ee
 docker tag "magneticio/vamp-quick-start-ee:katana" "magneticio/vamp-ee:katana"
