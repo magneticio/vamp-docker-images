@@ -13,10 +13,6 @@ pipeline {
     string(name: 'VAMP_GIT_BRANCH', defaultValue: '', description: 'Branch name')
   }
 
-  environment {
-    AWS_REGION = 'us-east-1'
-  }
-
   stages {
 
     stage('Clean') {
@@ -43,14 +39,14 @@ pipeline {
         fi
 
         git pull
-        cd tests
-        ./test-build.sh
-        ./test-push.sh $VAMP_GIT_BRANCH
+        cd tests/docker
+        ./build.sh
+        ./push.sh $VAMP_GIT_BRANCH
         if [ "$VAMP_GIT_BRANCH" == "master" ]; then
-          ./test-push.sh katana
+          ./push.sh katana
         fi
+        cd ../dcos
         ./vamp-ui-rspec.sh build
-        cd -
         '''
       }
     }
@@ -62,12 +58,9 @@ pipeline {
       steps {
         sh '''
         cd tests/dcos
-        ./get-dcos-templates.sh
-        ./dcos-aws.sh create
-        ./setup-dcos-cli.sh
-        ./dcos-vamp.sh clean
-        ./dcos-vamp.sh install
-        cd -
+        ./dcos-acs.sh create
+        ./dcos-acs.sh clean
+        ./dcos-acs.sh install
         '''
       }
     }
@@ -78,23 +71,9 @@ pipeline {
       }
       steps {
         sh '''
-        cd tests
+        cd tests/dcos
         ./vamp-runner.sh run
         ./vamp-ui-rspec.sh run
-        cd -
-        '''
-      }
-    }
-
-    stage('Destroy DC/OS') {
-      when {
-        expression { params.RELEASE_TAG == '' }
-      }
-      steps {
-        sh '''
-        cd tests/dcos
-        ./dcos-aws.sh delete
-        cd -
         '''
       }
     }
@@ -119,15 +98,10 @@ pipeline {
         export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
       fi
 
-      cd tests
-      ./test-remove.sh $VAMP_GIT_BRANCH
-      cd -
-      '''
-
-      sh '''
-      cd tests/dcos
-      ./dcos-aws.sh delete
-      cd -
+      cd tests/docker
+      ./remove.sh $VAMP_GIT_BRANCH
+      cd ../dcos
+      ./dcos-acs.sh delete
       '''
 
       deleteDir()

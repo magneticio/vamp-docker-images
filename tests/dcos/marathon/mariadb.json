@@ -5,15 +5,6 @@
   "instances": 1,
   "container": {
     "type": "DOCKER",
-    "volumes": [
-      {
-        "containerPath": "mysqldata",
-        "mode": "RW",
-        "persistent": {
-          "size": 1000
-        }
-      }
-    ],
     "docker": {
       "image": "mariadb:latest",
       "network": "HOST",
@@ -25,9 +16,6 @@
       ]
     }
   },
-  "args": [
-    "--datadir=/mnt/mesos/sandbox/mariadb-data/"
-  ],
   "env": {
     "MYSQL_ROOT_PASSWORD": "root",
     "MYSQL_USER": "vamp",

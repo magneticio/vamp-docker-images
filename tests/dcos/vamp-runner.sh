@@ -3,10 +3,10 @@
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Directory to download sources to
-src_dir="${root}/../target"
+src_dir="${root}/../../target"
 
 # Store script output in a log file
-log_dir="${root}/../target/log"
+log_dir="${root}/../../target/log"
 
 # set -o xtrace
 set -o errexit
@@ -136,9 +136,8 @@ vr_run() {
   if [[ -n "$1" ]] ; then
     vamp_url="$1"
   else
-    info "Attempting to find Vamp installation in AWS..."
-    endpoint=$(get_dcos_endpoint)
-    vamp_url="http://${endpoint}:80/service/vamp"
+    info "Attempting to find Vamp installation in Azure..."
+    vamp_url="http://127.0.0.1:8080/service/vamp"
   fi
 
   # FIXME: Make sure the URL includes schema and port number

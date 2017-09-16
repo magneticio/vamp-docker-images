@@ -1,10 +1,10 @@
 #! /usr/bin/env bash
 
 # Directory to download sources to
-src_dir="../target"
+src_dir="../../target"
 
 # Store script output in a log file
-log_dir="../target/log"
+log_dir="../../target/log"
 
 # set -o xtrace
 set -o errexit
@@ -136,44 +136,12 @@ run_rspec() {
     endpoint="$1"
   else
     info "Attempting to find Vamp installation in AWS..."
-    endpoint=$(get_dcos_endpoint)
+    endpoint="http://127.0.0.1/service/vamp/"
   fi
 
-  export VAMP_URL="http://${endpoint}/service/vamp/"
+  export VAMP_URL="${endpoint}"
   export TERM="xterm"
   make test || errexit "Failed building vamp-ui-rspec"
-}
-
-get_aws_region() {
-  # If AWS_REGION is set in the environment we'll skip the metadata API lookup
-  if [[ -n "$AWS_REGION" ]] ; then
-    echo "$AWS_REGION"
-    return 0
-  fi
-
-  # Lookup the current running region against the AWS metadata API. This only
-  # works on AWS EC2 instances however
-  local aws_metadata_url region
-
-  aws_metadata_url="http://169.254.169.254/latest/dynamic/instance-identity/document"
-  region="$( curl --connect-timeout 3 --silent "$aws_metadata_url" | awk -F'"' '/region/ { print $4 }' )"
-
-  [[ -z "$region" ]] \
-    && return 1 \
-    || echo "$region"
-}
-
-get_dcos_endpoint() {
-  local aws_region stack_name
-
-  aws_region=$( get_aws_region ) || return 1
-  stack_name="$STACK_NAME"
-
-  aws cloudformation describe-stacks  \
-    --region "$aws_region" \
-    --stack-name "$stack_name" \
-    --output text \
-  | awk '$1 ~ /^OUTPUTS$/ && $4 ~ /^DnsAddress$/ { print $NF }'
 }
 
 case "$1" in
