@@ -148,11 +148,13 @@ fi
 
 if [[ ${flag_clique_zookeeper} -eq 1 ]]; then
     echo "${green}Running: clique-zookeeper${reset}"
-    docker run --net=host \
-               --security-opt=seccomp:unconfined \
-               -v /var/run/docker.sock:/var/run/docker.sock \
-               -v $(which docker):/bin/docker \
+    docker run -v /var/run/docker.sock:/var/run/docker.sock \
+               -v /usr/bin/docker:/bin/docker \
                -v "/sys/fs/cgroup:/sys/fs/cgroup" \
+               -p 5050:5050 \
+               -p 8989:8989 \
+               -p 9200:9200 \
+               -p 2181:2181 \
                magneticio/vamp-clique-zookeeper:${vamp_version}
 fi
 
