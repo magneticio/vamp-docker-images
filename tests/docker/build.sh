@@ -10,7 +10,7 @@ errexit() { erro "$@"; erro "Exiting!"; exit 1; }
 set -o errexit # Abort script at first error (command exits non-zero).
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-src_dir="../target"
+src_dir="../../target"
 
 reset=$(tput sgr0)
 red=$(tput setaf 1)
@@ -127,7 +127,7 @@ export CLEAN_BUILD=false
 
 OLD_PWD=$PWD
 
-cd ..
+cd ../..
 source pack.sh
 cd ${root}
 
