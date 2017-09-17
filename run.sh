@@ -187,6 +187,7 @@ if [[ ${flag_quick_start} -eq 1 ]]; then
            -v "/sys/fs/cgroup:/sys/fs/cgroup" \
            -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
            -p 8080:8080 \
+           -p 8081:8081 \
            -p 5050:5050 \
            -p 9090:9090 \
            -p 8989:8989 \

@@ -3,11 +3,11 @@
 # Wait for Elasticsearch before starting Vamp.
 while true; do
     sleep 3
-    status=$(curl -s -w %{http_code} http://0.0.0.0:9200/.kibana -o /dev/null)
+    status=$(curl -s -w %{http_code} http://0.0.0.0:8081/api/connections -o /dev/null)
     if [ ${status} -eq 200 ]; then
         break
     else
-        echo "********* Waiting for ElasticSearch to be ready before starting Vamp... *********"
+        echo "********* Waiting for Vamp Lifter to initialize services... *********"
     fi
 done
 
