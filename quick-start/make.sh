@@ -34,6 +34,7 @@ function pull() {
 pull vamp
 pull vamp-ui
 pull vamp-lifter
+pull vamp-lifter-ui
 pull vamp-artifacts
 
 cp -R ${dir}/artifacts/* ${target}/vamp-artifacts

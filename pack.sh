@@ -70,4 +70,6 @@ pack() {
 
 pack vamp
 pack vamp-ui
+pack vamp-lifter
+pack vamp-lifter-ui
 pack vamp-artifacts
