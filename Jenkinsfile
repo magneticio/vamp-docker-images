@@ -15,15 +15,6 @@ pipeline {
 
   stages {
 
-    stage('Clean') {
-      steps {
-        sh '''
-        ./build.sh -c
-        docker run --rm -v $PWD:/vol alpine sh -c "rm -rf /vol/target"
-        '''
-      }
-    }
-
     stage('Build images') {
       when {
         expression { params.RELEASE_TAG == '' }
@@ -91,6 +82,7 @@ pipeline {
       }
     }
   }
+  
   post {
     always {
       sh '''
@@ -102,9 +94,10 @@ pipeline {
       ./remove.sh $VAMP_GIT_BRANCH
       cd ../dcos
       ./dcos-acs.sh delete
-      '''
 
-      deleteDir()
+      ./build.sh -c
+      docker run --rm -v $PWD:/vol alpine sh -c "rm -rf /vol"
+      '''
     }
   }
 }
