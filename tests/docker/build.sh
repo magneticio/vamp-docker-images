@@ -94,9 +94,15 @@ build_ee() {
     echo "${green}updating existing repository${reset}"
 
     cd "$src_dir/$project"
-
     git reset --hard
-    git checkout ${VAMP_GIT_BRANCH}
+
+    declare -i got_branch=$(git branch --list | grep -c " ${VAMP_GIT_BRANCH}$")
+    if [  $got_branch -gt 1 ]; then
+      git checkout ${VAMP_GIT_BRANCH}
+    else
+      git checkout
+    fi
+
     git pull
     cd -
   else
