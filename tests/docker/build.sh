@@ -107,14 +107,15 @@ build_ee() {
     declare -i got_branch=$(git branch --list | grep -c " ${VAMP_GIT_BRANCH}$")
     if [  $got_branch -gt 1 ]; then
       git checkout ${VAMP_GIT_BRANCH}
+      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
+      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
+    else
+      git checkout master
+      ./docker/local/make.sh
+      ./docker/dcos/make.sh
     fi
     cd $old_pwd
   fi
-
-  cd ${workspace}/${project}
-  ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
-  ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-  cd -
 }
 
 init_project ${VAMP_GIT_ROOT}/vamp-runner.git
