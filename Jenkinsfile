@@ -93,6 +93,7 @@ pipeline {
       cd tests/docker
       ./remove.sh $VAMP_GIT_BRANCH || true
       ./build.sh -c
+      docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }')
 
       cd ../dcos
       ./dcos-acs.sh delete
