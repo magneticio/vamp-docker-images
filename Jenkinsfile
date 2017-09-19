@@ -82,7 +82,7 @@ pipeline {
       }
     }
   }
-  
+
   post {
     always {
       sh '''
@@ -92,10 +92,11 @@ pipeline {
 
       cd tests/docker
       ./remove.sh $VAMP_GIT_BRANCH
+      ./build.sh -c
+
       cd ../dcos
       ./dcos-acs.sh delete
 
-      ./build.sh -c
       docker run --rm -v $PWD:/vol alpine sh -c "rm -rf /vol"
       '''
     }
