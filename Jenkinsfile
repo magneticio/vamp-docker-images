@@ -91,7 +91,7 @@ pipeline {
       fi
 
       cd tests/docker
-      ./remove.sh $VAMP_GIT_BRANCH
+      ./remove.sh $VAMP_GIT_BRANCH || true
       ./build.sh -c
 
       cd ../dcos
