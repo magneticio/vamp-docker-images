@@ -99,7 +99,7 @@ pipeline {
 
       cd ../..
       ./build.sh -c
-      docker run --rm -v $PWD:/vol alpine sh -c "rm -rf /vol"
+      docker run --rm -v $(realpath $PWD/..):/vol alpine sh -c "rm -rf /vol/$(basename $WORKSPACE)"
       '''
     }
   }
