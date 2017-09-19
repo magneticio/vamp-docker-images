@@ -95,7 +95,7 @@ pipeline {
       docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }')
 
       cd ../dcos
-      ./dcos-acs.sh delete
+      ./dcos-acs.sh delete || true
 
       cd ../..
       ./build.sh -c
