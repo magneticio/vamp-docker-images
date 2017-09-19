@@ -135,8 +135,7 @@ run_rspec() {
   if [[ -n "$1" ]] ; then
     endpoint="$1"
   else
-    info "Attempting to find Vamp installation in AWS..."
-    endpoint="http://127.0.0.1:18080/service/vamp/"
+    endpoint="http://172.17.0.1:18080/service/vamp/"
   fi
 
   export VAMP_URL="${endpoint}"
