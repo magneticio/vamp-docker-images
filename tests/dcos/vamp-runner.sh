@@ -137,7 +137,7 @@ vr_run() {
     vamp_url="$1"
   else
     info "Attempting to find Vamp installation in Azure..."
-    vamp_url="http://127.0.0.1:8080/service/vamp"
+    vamp_url="http://127.0.0.1:18080/service/vamp"
   fi
 
   # FIXME: Make sure the URL includes schema and port number
