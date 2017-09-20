@@ -1,0 +1,12 @@
+es.logger.level: ERROR
+rootLogger: ${es.logger.level}, console
+logger:
+  action: ERROR
+  com.amazonaws: ERROR
+
+appender:
+  console:
+    type: console
+    layout:
+      type: consolePattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
