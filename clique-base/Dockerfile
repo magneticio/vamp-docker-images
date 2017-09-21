@@ -1,4 +1,4 @@
-FROM ubuntu:15.10
+FROM ubuntu:16.04
 
 # Elasticsearch and Kibana
 
@@ -9,13 +9,13 @@ ENV ELASTICSEARCH_REPO_BASE http://packages.elasticsearch.org/elasticsearch/2.x/
 ENV KIBANA_VERSION 4.6.4
 
 RUN set -ex && \
-    locale-gen en_US.UTF-8 && \
     groupadd -r elasticsearch && useradd -r -m -g elasticsearch elasticsearch && \
     groupadd -r kibana && useradd -r -m -g kibana kibana && \
 		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && \
     arch="$(dpkg --print-architecture)" && \
 	  apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y curl locales && \
+    locale-gen en_US.UTF-8 && \
     curl -o /usr/local/bin/gosu -fSL "https://github.com/tianon/gosu/releases/download/1.3/gosu-$arch" && \
 	  curl -o /usr/local/bin/gosu.asc -fSL "https://github.com/tianon/gosu/releases/download/1.3/gosu-$arch.asc" && \
 	  gpg --verify /usr/local/bin/gosu.asc && \

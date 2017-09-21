@@ -1,10 +1,12 @@
 #! /usr/bin/env bash
 
+root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Directory to download sources to
-src_dir="../target"
+src_dir="${root}/../../target"
 
 # Store script output in a log file
-log_dir="../target/log"
+log_dir="${root}/../../target/log"
 
 # set -o xtrace
 set -o errexit
@@ -33,6 +35,7 @@ error_trap() {
 
   exit "${code}"
 }
+
 trap 'error_trap ${LINENO}' ERR
 
 pushd () { command pushd "$@" > /dev/null; }
@@ -46,7 +49,7 @@ script_log() {
 
   [[ -d $log_dir ]] || mkdir -p "$log_dir"
 
-  logfile="${log_dir}/vamp-ui-rspec${task}.$(date +%Y%m%d_%H%M%S).log"
+  logfile="${log_dir}/vamp-runner${task}.$(date +%Y%m%d_%H%M%S).log"
   > "$logfile"
 
   exec >  >(tee -a $logfile)     # STDOUT
@@ -112,36 +115,86 @@ init_project() {
   fi
 }
 
-build_rspec() {
-  script_lock vamp-ui-rspec.build || return
-  script_log vamp-ui-rspec.build
+vr_build() {
+  script_lock vamp-runner.build || return
+  script_log vamp-runner.build
 
-  init_project ${VAMP_GIT_ROOT}/vamp-ui-rspec.git
+  init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 
-  info "Running vamp-ui-rspec"
+  info "Building vamp-runner"
 
   export TERM="xterm"
-  make image || errexit "Failed building vamp-ui-rspec"
+  make || errexit "Failed building vamp-runner"
 }
 
-run_rspec() {
-  script_lock vamp-ui-rspec.run || return
-  script_log vamp-ui-rspec.run
+vr_run() {
+  script_lock vamp-runner.run || return
+  script_log vamp-runner.run
 
-  pushd ${src_dir}/vamp-ui-rspec
-
-  info "Running vamp-ui-rspec"
+  local vamp_url vamp_api regex vr_files_dir vr_local_dir
 
   if [[ -n "$1" ]] ; then
-    endpoint="$1"
+    vamp_url="$1"
   else
-    info "Attempting to find Vamp installation in AWS..."
-    endpoint=$(get_dcos_endpoint)
+    info "Attempting to find Vamp installation in Azure..."
+    vamp_url="http://127.0.0.1:18080/service/vamp"
   fi
 
-  export VAMP_URL="http://${endpoint}/service/vamp/"
-  export TERM="xterm"
-  make test || errexit "Failed building vamp-ui-rspec"
+  # FIXME: Make sure the URL includes schema and port number
+  regex='https?://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]:[0-9]{1,5}'
+  [[ $vamp_url =~ $regex ]] \
+    || errexit "Malformed URL, see: https://github.com/magneticio/vamp-runner/issues/84"
+
+  vamp_api="${vamp_url}/api/v1"
+
+  info "URL: $vamp_url"
+  info "API: $vamp_api"
+
+  vr_files_dir="${src_dir}/vamp-runner/target/docker"
+  vr_local_dir="${src_dir}/headless-vamp-runner"
+
+  [[ -d $vr_files_dir ]] \
+    || errexit "Can't find vamp-runner compiled files, please run build!"
+
+  mkdir -p "$vr_local_dir"
+  pushd "$vr_local_dir"
+
+  cp \
+    "${vr_files_dir}/vamp-runner.jar" \
+    "${vr_files_dir}/application.conf" \
+    "${vr_files_dir}/logback.xml" \
+    "${vr_files_dir}/recipes.tar.bz2" \
+      "$vr_local_dir"
+
+  sed -i "s#/usr/local/vamp-runner#${vr_local_dir}#g" "${vr_local_dir}/application.conf"
+  tar -xjf "${vr_local_dir}/recipes.tar.bz2"
+
+  info "Writing Vamp runner headless script: ${vr_local_dir}/run-headless.sh"
+
+  cat << EOF > "${vr_local_dir}/run-headless.sh"
+#! /usr/bin/env bash
+set -x
+java \
+  -Dvamp.runner.api.url="$vamp_api" \
+  -Dlogback.configurationFile=logback.xml \
+  -Dconfig.file=application.conf \
+  -cp vamp-runner.jar \
+  io.vamp.runner.VampConsoleRunner \
+    --list \
+    --run 'Auto Scaling' \
+    --run 'Canary Release' \
+  | tee vamp-runner-headless.log
+
+grep -i erro vamp-runner-headless.log && exit 1
+
+exit 0
+EOF
+
+  chmod 0775 "${vr_local_dir}/run-headless.sh"
+
+  "${vr_local_dir}/run-headless.sh" \
+    && info "Vamp runner exited successfully" \
+    || (erro "Vamp runner exited with non-zero exit code" && exit 1)
 }
 
 get_aws_region() {
@@ -178,15 +231,15 @@ get_dcos_endpoint() {
 
 case "$1" in
   build)
-    build_rspec
+    vr_build
     ;;
   run)
     [[ -n $2 ]] \
-      && run_rspec "$2" \
-      || run_rspec
+      && vr_run "$2" \
+      || vr_run
     ;;
   *)
-    echo "Usage: vamp-ui-rspec.sh <build|run> [Vamp URL]"
+    echo "Usage: vamp-runner.sh <build|run> [Vamp URL]"
     exit 1
     ;;
 esac

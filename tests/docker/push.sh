@@ -72,4 +72,4 @@ for i in $docker_images; do
   fi
 done
 
-sed -i -e "s/\(\"image\": \"magneticio\/vamp:\).*\(-dcos\",\)/\1$TAG\2/g" dcos/marathon/vamp.json
+sed -i -e "s/\(\"image\": \"magneticio\/vamp:\).*\(-dcos\",\)/\1$TAG\2/g" ../dcos/marathon/vamp.json
