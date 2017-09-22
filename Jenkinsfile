@@ -15,46 +15,66 @@ pipeline {
 
   stages {
 
-    stage('Build images') {
-      when {
-        expression { params.RELEASE_TAG == '' }
-      }
-      steps {
-        sh '''
-        if [ "$VAMP_GIT_ROOT" = "" ]; then
-          export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print $1 "//" $3 "/" $4 }')
-        fi
+    parallel (
+      "deploy": {
+        stage('Deploy DC/OS') {
+          when {
+            expression { params.RELEASE_TAG == '' }
+          }
+          steps {
+            parallel (
+              "dcos-1.9": {
+                sh '''
+                cd tests/dcos
+                ./dcos-acs.sh create
+                ./dcos-acs.sh clean
+                ./dcos-acs.sh install
+                '''
+              },
+              "dcos-1.10": {
+                sh '''
+                  cd tests/dcos/azure
+                  az group create --name ci-dcos-1.10 --location westeu
+                  az group deployment create \
+                    --name ci-dcos-1.10 \
+                    --resource-group ci-dcos-1.10 \
+                    --template-file template.json \
+                    --parameters @parameters.json
+                '''
+              }
+            )
+          }
+        }
+      },
+      "build": {
+        stage('Build images') {
+          when {
+            expression { params.RELEASE_TAG == '' }
+          }
+          steps {
+            sh '''
+            if [ "$VAMP_GIT_ROOT" = "" ]; then
+              export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print $1 "//" $3 "/" $4 }')
+            fi
 
-        if [ "$VAMP_GIT_BRANCH" = "" ]; then
-          export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
-        fi
+            if [ "$VAMP_GIT_BRANCH" = "" ]; then
+              export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+            fi
 
-        git pull
-        cd tests/docker
-        ./build.sh
-        ./push.sh $VAMP_GIT_BRANCH
-        if [ "$VAMP_GIT_BRANCH" == "master" ]; then
-          ./push.sh katana
-        fi
-        cd ../dcos
-        ./vamp-ui-rspec.sh build
-        '''
+            git pull
+            cd tests/docker
+            ./build.sh
+            ./push.sh $VAMP_GIT_BRANCH
+            if [ "$VAMP_GIT_BRANCH" == "master" ]; then
+              ./push.sh katana
+            fi
+            cd ../dcos
+            ./vamp-ui-rspec.sh build
+            '''
+          }
+        }
       }
-    }
-
-    stage('Deploy DC/OS') {
-      when {
-        expression { params.RELEASE_TAG == '' }
-      }
-      steps {
-        sh '''
-        cd tests/dcos
-        ./dcos-acs.sh create
-        ./dcos-acs.sh clean
-        ./dcos-acs.sh install
-        '''
-      }
-    }
+    )
 
     stage('Test') {
       when {
