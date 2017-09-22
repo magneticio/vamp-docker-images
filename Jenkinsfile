@@ -15,43 +15,33 @@ pipeline {
 
   stages {
 
-    parallel (
-      "deploy": {
-        stage('Deploy DC/OS') {
-          when {
-            expression { params.RELEASE_TAG == '' }
-          }
-          steps {
-            parallel (
-              "dcos-1.9": {
-                sh '''
-                cd tests/dcos
-                ./dcos-acs.sh create
-                ./dcos-acs.sh clean
-                ./dcos-acs.sh install
-                '''
-              },
-              "dcos-1.10": {
-                sh '''
-                  cd tests/dcos/azure
-                  az group create --name ci-dcos-1.10 --location westeu
-                  az group deployment create \
-                    --name ci-dcos-1.10 \
-                    --resource-group ci-dcos-1.10 \
-                    --template-file template.json \
-                    --parameters @parameters.json
-                '''
-              }
-            )
-          }
-        }
-      },
-      "build": {
-        stage('Build images') {
-          when {
-            expression { params.RELEASE_TAG == '' }
-          }
-          steps {
+    stage('Build images') {
+      when {
+        expression { params.RELEASE_TAG == '' }
+      }
+      steps {
+
+        parallel (
+          "deploy-dcos-1.9": {
+            sh '''
+            cd tests/dcos
+            ./dcos-acs.sh create
+            ./dcos-acs.sh clean
+            ./dcos-acs.sh install
+            '''
+          },
+          "deploy-dcos-1.10": {
+            sh '''
+              cd tests/dcos/azure
+              az group create --name ci-dcos-1.10 --location westeu
+              az group deployment create \
+                --name ci-dcos-1.10 \
+                --resource-group ci-dcos-1.10 \
+                --template-file template.json \
+                --parameters @parameters.json
+            '''
+          },
+          "build-images": {
             sh '''
             if [ "$VAMP_GIT_ROOT" = "" ]; then
               export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print $1 "//" $3 "/" $4 }')
@@ -72,9 +62,9 @@ pipeline {
             ./vamp-ui-rspec.sh build
             '''
           }
-        }
+        )
       }
-    )
+    }
 
     stage('Test') {
       when {
@@ -83,6 +73,14 @@ pipeline {
       steps {
         sh '''
         cd tests/dcos
+        ./vamp-runner.sh run
+        ./vamp-ui-rspec.sh run
+
+        kill $(ps -ef | grep 0.0.0.0:18080 | head -n 1 | awk '{ print $2 }') || true
+        fqdn="magneticio-ci-dcos-master-1-10.westeurope.cloudapp.azure.com"
+        ssh-keygen -R [${fqdn}]:2200 || true
+        ssh -oStrictHostKeyChecking=no -fNL 0.0.0.0:18080:localhost:80 -p 2200 dcos@${fqdn}
+
         ./vamp-runner.sh run
         ./vamp-ui-rspec.sh run
         '''
