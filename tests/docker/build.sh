@@ -159,7 +159,7 @@ build_external vamp-runner
 ./build.sh --build --image=clique-zookeeper-marathon
 ./build.sh --build --image=quick-start
 
-docker tag "magneticio/vamp-quick-start:katana" "magneticio/vamp-docker:katana"
+docker tag "magneticio/vamp-quick-start:${VAMP_GIT_BRANCH}" "magneticio/vamp-docker:${VAMP_GIT_BRANCH}"
 
 cd $OLD_PWD
 
