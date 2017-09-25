@@ -13,6 +13,10 @@ pipeline {
     string(name: 'VAMP_GIT_BRANCH', defaultValue: '', description: 'Branch name')
   }
 
+  environment {
+     AZURE_ADMIN_PASS = credentials('azure-test-pass')
+  }
+
   stages {
 
     stage('Build images') {
@@ -20,25 +24,25 @@ pipeline {
         expression { params.RELEASE_TAG == '' }
       }
       steps {
-
         parallel (
           "deploy-dcos-1.9": {
             sh '''
             cd tests/dcos
             ./dcos-acs.sh create
             ./dcos-acs.sh clean
-            ./dcos-acs.sh install
             '''
           },
           "deploy-dcos-1.10": {
             sh '''
               cd tests/dcos/azure
-              az group create --name ci-dcos-1.10 --location westeu
+              az group create --name ci-dcos-1.10 --location westeurope
               az group deployment create \
                 --name ci-dcos-1.10 \
                 --resource-group ci-dcos-1.10 \
                 --template-file template.json \
-                --parameters @parameters.json
+                --parameters @parameters.json \
+                  windowsAdminPassword="${AZURE_ADMIN_PASS}" \
+                  linuxAdminPassword="${AZURE_ADMIN_PASS}"
             '''
           },
           "build-images": {
@@ -55,7 +59,7 @@ pipeline {
             cd tests/docker
             ./build.sh
             ./push.sh $VAMP_GIT_BRANCH
-            if [ "$VAMP_GIT_BRANCH" == "master" ]; then
+            if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               ./push.sh katana
             fi
             cd ../dcos
@@ -66,24 +70,48 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Deploy services') {
       when {
         expression { params.RELEASE_TAG == '' }
       }
       steps {
         sh '''
         cd tests/dcos
-        ./vamp-runner.sh run
-        ./vamp-ui-rspec.sh run
+        ./dcos-acs.sh install
+        '''
 
-        kill $(ps -ef | grep 0.0.0.0:18080 | head -n 1 | awk '{ print $2 }') || true
+        sh '''
+        cd tests/dcos
         fqdn="magneticio-ci-dcos-master-1-10.westeurope.cloudapp.azure.com"
         ssh-keygen -R [${fqdn}]:2200 || true
-        ssh -oStrictHostKeyChecking=no -fNL 0.0.0.0:18080:localhost:80 -p 2200 dcos@${fqdn}
-
-        ./vamp-runner.sh run
-        ./vamp-ui-rspec.sh run
+        ssh -oStrictHostKeyChecking=no -fNL 0.0.0.0:18081:localhost:80 -p 2200 dcos@${fqdn}
+        dcos config set core.dcos_url http://127.0.0.1:18081
+        ./dcos-acs.sh install
         '''
+      }
+    }
+
+    stage('Test') {
+      when {
+        expression { params.RELEASE_TAG == '' }
+      }
+      steps {
+        parallel (
+          "test-dcos-1.9": {
+            sh '''
+            cd tests/dcos
+            ./vamp-runner.sh run http://127.0.0.1:18080/service/vamp
+            ./vamp-ui-rspec.sh run http://127.0.0.1:18080/service/vamp
+            '''
+          },
+          "test-dcos-1.10": {
+            sh '''
+            cd tests/dcos
+            ./vamp-runner.sh run http://127.0.0.1:18081/service/vamp
+            ./vamp-ui-rspec.sh run http://127.0.0.1:18081/service/vamp
+            '''
+          }
+        )
       }
     }
 
@@ -112,6 +140,7 @@ pipeline {
       ./remove.sh $VAMP_GIT_BRANCH || true
       docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }')
 
+      az group delete --name ci-dcos-1.10 -y --no-wait
       cd ../dcos
       ./dcos-acs.sh delete || true
 
