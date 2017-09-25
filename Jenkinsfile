@@ -147,6 +147,7 @@ pipeline {
       cd ../..
       ./build.sh -c
       docker run --rm -v $(realpath $PWD/..):/vol alpine sh -c "rm -rf /vol/$(basename $WORKSPACE)"
+      docker rmi $(docker images | grep none | awk '{ print $3 }')
       '''
     }
   }
