@@ -12,8 +12,10 @@ wait_for_service() {
   TASK_NAME="$1"
   REQUIRED_TASKS=$2
   CURRENT_TASKS=0
-  while [ $CURRENT_TASKS -ne $REQUIRED_TASKS ]; do
+  COUNTER=0
+  while [[ $CURRENT_TASKS -ne $REQUIRED_TASKS && $COUNTER -lt 600 ]]; do
     CURRENT_TASKS=`dcos marathon task list | grep ${TASK_NAME} | grep -Ev 'None' | awk '{ print $2 }' | grep -i true | wc -l`
+    COUNTER=$[COUNTER+1]
     sleep 1
   done
 }
