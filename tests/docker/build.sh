@@ -96,8 +96,8 @@ build_ee() {
     cd "$src_dir/$project"
     git reset --hard
 
-    declare -i got_branch=$(git branch --list | grep -c " ${VAMP_GIT_BRANCH}$")
-    if [  $got_branch -gt 1 ]; then
+    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
+    if [  $got_branch -gt 0 ]; then
       git checkout ${VAMP_GIT_BRANCH}
       ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
       ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
@@ -112,10 +112,10 @@ build_ee() {
   else
     cd "$src_dir"
     local old_pwd=$OLDPWD
-    git clone --depth=200 git@github.com:magneticio/vamp-ee.git "$project"
+    git clone git@github.com:magneticio/vamp-ee.git "$project"
     cd ${project}
-    declare -i got_branch=$(git branch --list | grep -c " ${VAMP_GIT_BRANCH}$")
-    if [  $got_branch -gt 1 ]; then
+    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
+    if [ $got_branch -gt 0 ]; then
       git checkout ${VAMP_GIT_BRANCH}
       ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
       ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
@@ -165,4 +165,3 @@ cd $OLD_PWD
 
 export CLEAN_BUILD=true
 build_ee
-docker tag "magneticio/vamp-quick-start-ee:katana" "magneticio/vamp-ee:katana"

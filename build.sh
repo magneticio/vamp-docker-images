@@ -11,7 +11,7 @@ target='target/docker'
 if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
   vamp_version="$( git describe --tags )"
 else
-  if [ "$VAMP_GIT_BRANCH" != "" ]; then
+  if [[ "$VAMP_GIT_BRANCH" != "" && "$VAMP_GIT_BRANCH" != "master" ]]; then
     vamp_version=$VAMP_GIT_BRANCH
   else
     vamp_version="katana"
