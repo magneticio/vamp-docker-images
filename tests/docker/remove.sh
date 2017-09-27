@@ -30,25 +30,32 @@ docker_images="
 
 # Check that we have our images available
 for i in $docker_images; do
-  declare -i is_katana=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':katana' | wc -l)
-  if [ $is_katana -gt 0 ]; then
-    for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':katana'); do
-      image="${j/katana/$TAG}"
-      echo "${green}Found matching image: ${image}${reset}"
-      remove_tag "$(echo $image | sed -e "s/:/\/tags\//")"
-    done
-  else
-    declare -i is_release=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.' | wc -l)
-    if [ $is_release -gt 0 ]; then
-      for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.'); do
-        image="${j/[0-9]\.[0-9]\.[0-9]/$TAG}"
+  declare -i is_custom=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -Ei ':[a-z].+' | wc -l)
+  if [ $is_custom -gt 0 ]; then
+    for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ":$TAG"); do
+      if [ "$TAG" = "master" ]; then
+        image="${j/master/katana}"
         echo "${green}Found matching image: ${image}${reset}"
         remove_tag "$(echo $image | sed -e "s/:/\/tags\//")"
-      done
-    else
-      >&2 echo "${red}Error: No such image: ${i}${reset}"
-      >&2 echo "Exiting..."
-      exit 1
+      else
+        echo "${green}Found matching image: ${j}${reset}"
+        remove_tag "$(echo $j | sed -e "s/:/\/tags\//")"
+      fi
+    done
+  else
+    if [ "$TAG" = "master" ]; then
+      declare -i is_release=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.' | wc -l)
+      if [ $is_release -gt 0 ]; then
+        for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.'); do
+          image="${j/[0-9]\.[0-9]\.[0-9]/katana}"
+          echo "${green}Found matching image: ${image}${reset}"
+          remove_tag "$(echo $image | sed -e "s/:/\/tags\//")"
+        done
+      else
+        >&2 echo "${red}Error: No such image: ${i}${reset}"
+        >&2 echo "Exiting..."
+        exit 1
+      fi
     fi
   fi
 done
