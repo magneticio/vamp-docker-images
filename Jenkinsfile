@@ -145,9 +145,15 @@ pipeline {
       ./dcos-acs.sh delete || true
 
       cd ../..
-      ./build.sh -c
       docker run --rm -v $(realpath $PWD/..):/vol alpine sh -c "rm -rf /vol/$(basename $WORKSPACE)"
-      docker rmi $(docker images | grep none | awk '{ print $3 }')
+
+      tag=$VAMP_GIT_BRANCH
+      if [ "$VAMP_GIT_BRANCH" = "master" ]; then
+        tag="katana"
+      fi
+
+      docker rmi -f $(docker images | grep -E "magneticio/vamp.*${tag}.*" | awk '{ print $3 }') || true
+      docker rmi $(docker images | grep none | awk '{ print $3 }') || true
       '''
     }
   }
