@@ -17,9 +17,9 @@ RUN set -ex && \
     \
     groupadd -r elasticsearch && useradd -r -m -g elasticsearch elasticsearch && \
     groupadd -r kibana && useradd -r -m -g kibana kibana && \
-    apt-get install -y curl locales && \
-    locale-gen en_US.UTF-8 && \
-    apt-get update && apt-get install -y wget supervisor openjdk-8-jre unzip
+    apt-get update && \
+    apt-get install -y curl locales && locale-gen en_US.UTF-8 && \
+    apt-get install -y wget supervisor openjdk-8-jre unzip
 
 
 # grab gosu for easy step-down from root
