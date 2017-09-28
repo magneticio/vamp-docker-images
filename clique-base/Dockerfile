@@ -1,5 +1,16 @@
 FROM ubuntu:16.04
 
+ENV ELASTICSEARCH_VERSION 5.5.2
+ENV ELASTICSEARCH_DEB_VERSION 5.5.2
+
+ENV GOSU_VERSION 1.10
+
+ENV KIBANA_VERSION 5.5.2
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 # Elasticsearch and Kibana
 
 RUN set -ex && \
@@ -7,10 +18,9 @@ RUN set -ex && \
     groupadd -r elasticsearch && useradd -r -m -g elasticsearch elasticsearch && \
     groupadd -r kibana && useradd -r -m -g kibana kibana && \
     \
-    apt-get update && apt-get install -y wget supervisor openjdk-8-jre unzip
+    apt-get update && apt-get install -y wget supervisor openjdk-8-jre unzip curl
 
 # grab gosu for easy step-down from root
-ENV GOSU_VERSION 1.10
 RUN set -x \
 	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
@@ -22,7 +32,6 @@ RUN set -x \
 	&& gosu nobody true
 
 # KEYS
-
 RUN set -ex; \
 # https://artifacts.elastic.co/GPG-KEY-elasticsearch
 	key='46095ACC8548582C1A2699A9D27D666CD88E42B4'; \
@@ -37,9 +46,6 @@ RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends apt-transport-https && rm -rf /var/lib/apt/lists/* \
 	&& echo 'deb https://artifacts.elastic.co/packages/5.x/apt stable main' > /etc/apt/sources.list.d/elasticsearch.list
 
-ENV ELASTICSEARCH_VERSION 5.5.2
-ENV ELASTICSEARCH_DEB_VERSION 5.5.2
-
 RUN set -x \
 	\
 # don't allow the package to install its sysctl file (causes the install to fail)
@@ -49,9 +55,6 @@ RUN set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends "elasticsearch=$ELASTICSEARCH_DEB_VERSION" \
 	&& rm -rf /var/lib/apt/lists/*
-
-ENV PATH /usr/share/elasticsearch/bin:$PATH
-
 
 RUN for path in \
     		  /usr/share/elasticsearch/data \
@@ -65,16 +68,8 @@ RUN for path in \
     chown -R elasticsearch:elasticsearch /usr/share/elasticsearch
 
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
 #  Kibana
-# https://www.elastic.co/guide/en/kibana/5.0/deb.html
-#RUN echo 'deb https://artifacts.elastic.co/packages/5.x/apt stable main' > /etc/apt/sources.list.d/kibana.list
-
-ENV KIBANA_VERSION 5.5.2
-
+# https://www.elastic.co/guide/en/kibana/5.0/deb.htmls
 RUN set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends kibana=$KIBANA_VERSION \
@@ -88,11 +83,13 @@ RUN set -x \
 	&& sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /etc/kibana/kibana.yml \
 	&& grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" /etc/kibana/kibana.yml
 
+
+
+ENV PATH /usr/share/elasticsearch/bin:$PATH
 ENV PATH /usr/share/kibana/bin:$PATH
 
 
-
-COPY elasticsearch/config/elasticsearch.yml elasticsearch/log4j2.properties /usr/share/elasticsearch/
+COPY elasticsearch/elasticsearch.yml elasticsearch/log4j2.properties /usr/share/elasticsearch/config/
 COPY kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 COPY kibana/start.sh /usr/share/kibana/bin/kibana-start
 # setup Supervisord
