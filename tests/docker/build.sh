@@ -161,7 +161,7 @@ build_external vamp-runner
 
 tag=$VAMP_GIT_BRANCH
 if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-  tag="katan"
+  tag="katana"
 fi
 docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
 
