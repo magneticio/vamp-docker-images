@@ -1,0 +1,87 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "jumpboxEndpointDNSNamePrefix": {
+            "value": "magneticio-ci-dcos-jumbox-1-10"
+        },
+        "vmsPerStorageAccount": {
+            "value": 5
+        },
+        "agentEndpointDNSNamePrefix": {
+            "value": "magneticio-ci-dcos-agent-1-10"
+        },
+        "oauthEnabled": {
+            "value": "false"
+        },
+        "nameSuffix": {
+            "value": "01234567"
+        },
+        "windowsAdminPassword": {
+            "value": null
+        },
+        "windowsAdminUsername": {
+            "value": "azureuser"
+        },
+        "linuxSku": {
+            "value": "16.04.0-LTS"
+        },
+        "linuxPublisher": {
+            "value": "Canonical"
+        },
+        "masterEndpointDNSNamePrefix": {
+            "value": "magneticio-ci-dcos-master-1-10"
+        },
+        "isValidation": {
+            "value": 0
+        },
+        "enableNewStorageAccountNaming": {
+            "value": true
+        },
+        "linuxAdminUsername": {
+            "value": "dcos"
+        },
+        "enableVMDiagnostics": {
+            "value": true
+        },
+        "linuxOffer": {
+            "value": "UbuntuServer"
+        },
+        "postInstallScriptURI": {
+            "value": "disabled"
+        },
+        "setLinuxConfigurationForVMCreate": {
+            "value": 1
+        },
+        "linuxAdminPassword": {
+            "value": null
+        },
+        "windowsJumpboxPublisher": {
+            "value": "MicrosoftVisualStudio"
+        },
+        "windowsJumpboxOffer": {
+            "value": "VisualStudio"
+        },
+        "disablePasswordAuthentication": {
+            "value": true
+        },
+        "agentCount": {
+            "value": 4
+        },
+        "agentVMSize": {
+            "value": "Standard_D2_v2"
+        },
+        "masterCount": {
+            "value": 1
+        },
+        "linuxVersion": {
+            "value": "16.04.201606270"
+        },
+        "windowsJumpboxSku": {
+            "value": "VS-2015-Enterprise-AzureSDK-2.7-WS2012R2"
+        },
+        "sshRSAPublicKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/y6hEGUFAUh6UCnVYGJyc+iInVkewVHi4gR1bD2eUy7hP+0etyqdswch+JiQ13RIw2B8sARRwAAt/fPxjgxezPR6v7cVE9dG+COzGOa9Nu2XbkvkldVFBxoS/4geb3vkIP6VmhccrJXcWyNBEnCNScLVHdQcPK44w7IhUVU+wPhnfUXaw1FAQzdmAQSeTou/ojIGlmeegJUUEyZ+iGo/5qOilrG0ShL/r6vQ19KRaJVsA1bJCaWVrLtyi7/KQpEc9iyK5ZnWqkW2zbtnNKNgl7Mh37YiEGJINRHgaHXFduDwCIwtez+QQ4+Q2h3ZBs+TobEf5f2o5kOBSyZ0MLqM3zbUTLwJLdRiF93zYPlbETpOlEU9Xjm/hBllCUiBnJHrOh+3X+t7vR9ZaLoZ00GCBzYW7LN8h6uzQx9kFRAZEUGVARrZFEeVYEus95gkIDhUJ9bRdkAQHP93ZI1Oj0Qe49oRkcJuLBBiV8OVbjfERMYgJiycg2V/YH6HTBaPnAzjRjHAaZ9xm2m5zP3Jy2nDbov9fB7nZpnlKLSHV2ZPUwHkCOXxlUCRVtPwHJNtHnl/kLxYNqMYp37QBw3N01wO9307s4LuaDFBzqYMIRMahJ3bqMT1Php9C8IACt7aU9m2Asuua0KIf9/Y9TYh2peU1sG0QQMv7bZIqOyvPhio+jQ== jenkins@ci.magnetic.io"
+        }
+    }
+}

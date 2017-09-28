@@ -63,8 +63,8 @@ build_external() {
   make
 }
 
-build_external_custom() {
-  project=$1
+build_ee() {
+  project="vamp-ee"
   echo "${green}project: ${yellow}${project}${reset}"
 
   if [[ ! -d ${workspace}/${project} ]] ; then
@@ -83,8 +83,9 @@ build_external_custom() {
     exit 1
   fi
 
-  ./build.sh --build
-  docker tag "magneticio/${project}:katana" "magneticio/${project}:${TAG}"
+  ./docker/dcos/make.sh
+  ./docker/local/make.sh
+  cd -
 }
 
 # Disable the clean builds of various sub-build scripts
@@ -99,7 +100,9 @@ ${root}/build.sh --build --image=vamp-kubernetes
 
 build_external vamp-gateway-agent
 build_external vamp-workflow-agent
-build_external_custom vamp-runner
+build_external vamp-runner
+
+docker tag "magneticio/vamp-runner:katana" "magneticio/vamp-runner:$TAG"
 
 
 # Build the quick-start images
@@ -109,3 +112,8 @@ ${root}/build.sh --build --image=clique-zookeeper-marathon
 ${root}/build.sh --build --image=quick-start
 
 docker tag "magneticio/vamp-quick-start:$TAG" "magneticio/vamp-docker:$TAG"
+
+build_ee
+docker tag "magneticio/vamp-quick-start-ee:katana" "magneticio/vamp-ee:katana"
+docker tag "magneticio/vamp-quick-start-ee:katana" "magneticio/vamp-ee:$TAG"
+docker tag "magneticio/vamp-ee:katana-dcos" "magneticio/vamp-ee:$TAG-dcos"

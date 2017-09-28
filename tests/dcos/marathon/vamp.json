@@ -6,7 +6,7 @@
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "magneticio/vamp:katana-dcos",
+      "image": "magneticio/vamp:master-dcos",
       "network": "BRIDGE",
       "portMappings": [
         {

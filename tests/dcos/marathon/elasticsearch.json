@@ -4,6 +4,7 @@
   "cpus": 1,
   "mem": 2048.0,
   "container": {
+    "type": "DOCKER",
     "docker": {
       "image": "magneticio/elastic:2.2",
       "network": "BRIDGE",

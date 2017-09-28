@@ -10,7 +10,7 @@ errexit() { erro "$@"; erro "Exiting!"; exit 1; }
 set -o errexit # Abort script at first error (command exits non-zero).
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-src_dir="../target"
+src_dir="../../target"
 
 reset=$(tput sgr0)
 red=$(tput setaf 1)
@@ -86,6 +86,48 @@ build_external() {
   cd -
 }
 
+build_ee() {
+  project="vamp-ee"
+  echo "${green}project: ${yellow}${project}${reset}"
+
+  if [[ -d ${src_dir}/${project} ]] ; then
+    echo "${green}updating existing repository${reset}"
+
+    cd "$src_dir/$project"
+    git reset --hard
+
+    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
+    if [  $got_branch -gt 0 ]; then
+      git checkout ${VAMP_GIT_BRANCH}
+      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
+      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
+    else
+      git checkout
+      ./docker/local/make.sh
+      ./docker/dcos/make.sh
+    fi
+
+    git pull
+    cd -
+  else
+    cd "$src_dir"
+    local old_pwd=$OLDPWD
+    git clone git@github.com:magneticio/vamp-ee.git "$project"
+    cd ${project}
+    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
+    if [ $got_branch -gt 0 ]; then
+      git checkout ${VAMP_GIT_BRANCH}
+      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
+      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
+    else
+      git checkout master
+      ./docker/local/make.sh
+      ./docker/dcos/make.sh
+    fi
+    cd $old_pwd
+  fi
+}
+
 init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
@@ -94,7 +136,9 @@ init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
 export CLEAN_BUILD=false
 
 
-cd ..
+OLD_PWD=$PWD
+
+cd ../..
 source pack.sh
 cd ${root}
 
@@ -115,6 +159,9 @@ build_external vamp-runner
 ./build.sh --build --image=clique-zookeeper-marathon
 ./build.sh --build --image=quick-start
 
-docker tag "magneticio/vamp-quick-start:katana" "magneticio/vamp-docker:katana"
+docker tag "magneticio/vamp-quick-start:${VAMP_GIT_BRANCH}" "magneticio/vamp-docker:${VAMP_GIT_BRANCH}"
 
-cd -
+cd $OLD_PWD
+
+export CLEAN_BUILD=true
+build_ee

@@ -42,6 +42,8 @@ docker_images="
   magneticio/vamp:${TAG}-custom
   magneticio/vamp:${TAG}-dcos
   magneticio/vamp:${TAG}-kubernetes
+  magneticio/vamp-ee:${TAG}
+  magneticio/vamp-ee:${TAG}-dcos
   magneticio/vamp-runner:${TAG}
   magneticio/vamp-gateway-agent:${TAG}
   magneticio/vamp-workflow-agent:${TAG}

@@ -49,6 +49,10 @@ if [[ "$( git tag --list $TAG )" = "$TAG" ]] ; then
   fi
 else
   git tag "$TAG"
+
+  if [[ "$PUSH" = "true" ]] ; then
+    git push --tags
+  fi
 fi
 
 workspace=${root}/target
@@ -72,7 +76,6 @@ tag() {
   else
     git clone --depth=200 "$url"
     cd ${workspace}/${project}
-
   fi
 
   if [[ "$( git tag | tail -n1 )" != "$TAG" ]] ; then
@@ -85,7 +88,9 @@ tag() {
 }
 
 tag vamp
+tag vamp-ee
 tag vamp-ui
+tag vamp-ee-ui
 tag vamp-artifacts
 tag vamp-runner
 tag vamp-gateway-agent

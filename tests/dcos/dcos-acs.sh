@@ -1,6 +1,6 @@
-#! /usr/bin/env bash
+#!/bin/bash -e
 
-# Install Vamp on DC/OS
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Helper functions
 export TERM=xterm # XXX: To get around 'tput: No value for $TERM and no -T specified'
@@ -8,12 +8,36 @@ info() { echo "$(date +%T): $(tput setaf 2)INFO:$(tput sgr0) $@"; }
 warn() { echo "$(date +%T): $(tput setaf 3)WARN:$(tput sgr0) $@"; }
 erro() { echo "$(date +%T): $(tput setaf 1)ERRO:$(tput sgr0) $@" >&2; }
 errexit() { erro "$@"; erro "Exiting!"; exit 1; }
+wait_for_service() {
+  TASK_NAME="$1"
+  REQUIRED_TASKS=$2
+  CURRENT_TASKS=0
+  COUNTER=0
+  while [[ $CURRENT_TASKS -ne $REQUIRED_TASKS && $COUNTER -lt 600 ]]; do
+    CURRENT_TASKS=`dcos marathon task list | grep ${TASK_NAME} | grep -Ev 'None' | awk '{ print $2 }' | grep -i true | wc -l`
+    COUNTER=$[COUNTER+1]
+    sleep 1
+  done
+}
 
-pushd () { command pushd "$@" > /dev/null; }
-popd () { command popd "$@" > /dev/null; }
+acs_create() {
+  cd terraform
+  export TF_VAR_ssh_key="$(cat ~/.ssh/id_rsa.pub)"
+  terraform init
+  terraform apply
+  terraform refresh
+  fqdn=$(terraform output dcos-master-url | grep fqdn | awk -F ' = ' '{ print $2 }')
+  cd -
+  ssh-keygen -R [${fqdn}]:2200 || true
+  ssh -oStrictHostKeyChecking=no -fNL 0.0.0.0:18080:localhost:80 -p 2200 dcos@${fqdn}
+  dcos config set core.dcos_url http://127.0.0.1:18080
+}
 
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
+acs_delete() {
+  cd terraform
+  terraform destroy -force
+  cd -
+}
 
 vamp_install() {
   info "Installing MariaDB"
@@ -21,39 +45,21 @@ vamp_install() {
   dcos marathon app add "${dir}/marathon/mariadb.json" \
     || errexit "Failed to install MariaDB"
 
-  # wait for MariaDB to be deployed
-  REQUIRED_TASKS=1
-  CURRENT_TASKS=0
-  while [ $CURRENT_TASKS -ne $REQUIRED_TASKS ]; do
-    CURRENT_TASKS=`dcos marathon task list | grep mariadb | awk '{ print $2 }' | grep -i true | wc -l`
-    sleep 1
-  done
+  wait_for_service "mariadb" 1
 
   info "Installing Elasticsearch"
 
   dcos marathon app add "${dir}/marathon/elasticsearch.json" \
     || errexit "Failed to install Elasticsearch"
 
-  # wait for Elasticsearch to be deployed
-  REQUIRED_TASKS=1
-  CURRENT_TASKS=0
-  while [ $CURRENT_TASKS -ne $REQUIRED_TASKS ]; do
-    CURRENT_TASKS=`dcos marathon task list | grep elasticsearch | awk '{ print $2 }' | grep -i true | wc -l`
-    sleep 1
-  done
+  wait_for_service "elasticsearch" 1
 
   info "Installing Vamp"
 
   dcos marathon app add "${dir}/marathon/vamp.json" \
     || errexit "Failed to install Vamp"
 
-  # wait for services to be deployed
-  REQUIRED_TASKS=12
-  CURRENT_TASKS=0
-  while [ $CURRENT_TASKS -ne $REQUIRED_TASKS ]; do
-    CURRENT_TASKS=`dcos marathon task list | grep vamp | awk '{ print $2 }' | grep -i true | wc -l`
-    sleep 1
-  done
+  wait_for_service "vamp" 10
 }
 
 vamp_uninstall() {
@@ -93,6 +99,12 @@ vamp_clean() {
 }
 
 case "$1" in
+  create)
+    acs_create
+    ;;
+  delete)
+    acs_delete
+    ;;
   install)
     vamp_install
     ;;
@@ -103,8 +115,8 @@ case "$1" in
     vamp_clean
     ;;
   *)
-    echo "dcos-vamp.sh - Setup Vamp on DC/OS"
-    echo "Usage: dcos-vamp.sh <install|uninstall|clean>"
+    echo "$(echo $0) - Setup Vamp on ACS with DC/OS"
+    echo "Usage: $(echo $0) <create|destroy|install|uninstall|clean>"
     exit 1
     ;;
 esac

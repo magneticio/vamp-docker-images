@@ -38,36 +38,45 @@ ${reset}"
 
 docker_images="
   magneticio/vamp
+  magneticio/vamp-ee
   magneticio/vamp-gateway-agent
   magneticio/vamp-workflow-agent
   magneticio/vamp-docker
+  magneticio/vamp-runner
 "
 
 # Check that we have our images available
 for i in $docker_images; do
-  declare -i is_katana=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':katana' | wc -l)
-  if [ $is_katana -gt 0 ]; then
-    for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':katana'); do
-      image="${j/katana/$TAG}"
-      echo "${green}Pushing image: ${image}${reset}"
-      docker tag "$j" "$image"
-      docker push "$image"
-    done
-  else
-    declare -i is_release=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.' | wc -l)
-    if [ $is_release -gt 0 ]; then
-      for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.'); do
-        image="${j/[0-9]\.[0-9]\.[0-9]/$TAG}"
+  declare -i is_custom=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -Ei ':[a-z].+' | wc -l)
+  if [ $is_custom -gt 0 ]; then
+    for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ":$TAG"); do
+      if [ "$TAG" = "master" ]; then
+        image="${j/master/katana}"
         echo "${green}Pushing image: ${image}${reset}"
         docker tag "$j" "$image"
         docker push "$image"
-      done
-    else
-      >&2 echo "${red}Error: No such image: ${i}${reset}"
-      >&2 echo "Exiting..."
-      exit 1
+      else
+        echo "${green}Pushing image: ${j}${reset}"
+        docker push "$j"
+      fi
+    done
+  else
+    if [ "$TAG" = "master" ]; then
+      declare -i is_release=$(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.' | wc -l)
+      if [ $is_release -gt 0 ]; then
+        for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:*" | grep -E ':[0-9]\.'); do
+          image="${j/[0-9]\.[0-9]\.[0-9]/katana}"
+          echo "${green}Pushing image: ${image}${reset}"
+          docker tag "$j" "$image"
+          docker push "$image"
+        done
+      else
+        >&2 echo "${red}Error: No such image: ${i}${reset}"
+        >&2 echo "Exiting..."
+        exit 1
+      fi
     fi
   fi
 done
 
-sed -i -e "s/\(\"image\": \"magneticio\/vamp:\).*\(-dcos\",\)/\1$TAG\2/g" dcos/marathon/vamp.json
+sed -i -e "s/\(\"image\": \"magneticio\/vamp:\).*\(-dcos\",\)/\1$TAG\2/g" ../dcos/marathon/vamp.json
