@@ -17,9 +17,9 @@ RUN set -ex && \
     \
     groupadd -r elasticsearch && useradd -r -m -g elasticsearch elasticsearch && \
     groupadd -r kibana && useradd -r -m -g kibana kibana && \
-    apt-get install -y curl locales && \
-    locale-gen en_US.UTF-8 && \
-    apt-get update && apt-get install -y wget supervisor openjdk-8-jre unzip
+    apt-get update && \
+    apt-get install -y curl locales && locale-gen en_US.UTF-8 && \
+    apt-get install -y wget supervisor openjdk-8-jre unzip
 
 
 # grab gosu for easy step-down from root
@@ -92,6 +92,7 @@ ENV PATH /usr/share/kibana/bin:$PATH
 
 
 COPY elasticsearch/elasticsearch.yml elasticsearch/log4j2.properties /usr/share/elasticsearch/config/
+COPY elasticsearch/jvm.options /etc/elasticsearch
 COPY kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 COPY kibana/start.sh /usr/share/kibana/bin/kibana-start
 # setup Supervisord
