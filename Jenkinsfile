@@ -69,7 +69,7 @@ pipeline {
         )
       }
     }
-
+/*
     stage('Deploy services') {
       when {
         expression { params.RELEASE_TAG == '' }
@@ -114,7 +114,7 @@ pipeline {
         )
       }
     }
-
+*/
     stage('Release') {
       when {
         expression { params.RELEASE_TAG != '' }
