@@ -139,7 +139,6 @@ pipeline {
       fi
 
       cd tests/docker
-      ./remove.sh $VAMP_GIT_BRANCH || true
       docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }')
 
       tag=$VAMP_GIT_BRANCH
