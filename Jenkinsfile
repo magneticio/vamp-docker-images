@@ -25,6 +25,7 @@ pipeline {
       }
       steps {
         parallel (
+/*  
           "deploy-dcos-1.9": {
             sh '''
             cd tests/dcos
@@ -45,6 +46,7 @@ pipeline {
                   linuxAdminPassword="${AZURE_ADMIN_PASS}"
             '''
           },
+*/
           "build-images": {
             sh '''
             if [ "$VAMP_GIT_ROOT" = "" ]; then
@@ -69,7 +71,7 @@ pipeline {
         )
       }
     }
-
+/*
     stage('Deploy services') {
       when {
         expression { params.RELEASE_TAG == '' }
@@ -114,7 +116,7 @@ pipeline {
         )
       }
     }
-
+*/
     stage('Release') {
       when {
         expression { params.RELEASE_TAG != '' }
@@ -131,6 +133,23 @@ pipeline {
 
   post {
     always {
+      sh '''
+      if [ "$VAMP_GIT_BRANCH" = "" ]; then
+        export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+      fi
+
+      cd tests/docker
+      docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }')
+
+      tag=$VAMP_GIT_BRANCH
+      if [ "$VAMP_GIT_BRANCH" = "master" ]; then
+        tag="katana"
+      fi
+
+      docker rmi -f $(docker images | grep -E "magneticio/vamp.*${tag}.*" | awk '{ print $3 }') || true
+      docker rmi $(docker images | grep none | awk '{ print $3 }') || true
+      '''
+/*
       sh '''
       if [ "$VAMP_GIT_BRANCH" = "" ]; then
         export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
@@ -155,6 +174,7 @@ pipeline {
       docker rmi -f $(docker images | grep -E "magneticio/vamp.*${tag}.*" | awk '{ print $3 }') || true
       docker rmi $(docker images | grep none | awk '{ print $3 }') || true
       '''
+*/
     }
   }
 }
