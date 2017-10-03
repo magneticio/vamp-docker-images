@@ -92,7 +92,7 @@ ENV PATH /usr/share/kibana/bin:$PATH
 
 
 COPY elasticsearch/elasticsearch.yml elasticsearch/log4j2.properties /usr/share/elasticsearch/config/
-COPY elasticsearch/jvm.options /etc/elasticsearch
+# COPY elasticsearch/jvm.options /etc/elasticsearch
 COPY kibana/kibana.yml /usr/share/kibana/config/kibana.yml
 COPY kibana/start.sh /usr/share/kibana/bin/kibana-start
 # setup Supervisord
