@@ -20,4 +20,4 @@ java -Dvamp.gateway-driver.host=${DOCKER_HOST_IP} \
      -Dlogback.configurationFile=${LOG_CONFIG} \
      -Dconfig.file=${APP_CONFIG} \
      -cp "/usr/local/vamp/lifter/*:/usr/local/vamp/lifter/lib/*" \
-     io.vamp.lifter.Lifter -initialize
+     io.vamp.lifter.Lifter

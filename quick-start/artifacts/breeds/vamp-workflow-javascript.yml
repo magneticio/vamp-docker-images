@@ -1,6 +1,6 @@
 ---
 name: vamp-workflow-javascript
-kind: breed
+kind: breeds
 deployable: magneticio/vamp-workflow-agent:katana
 ports:
   webport: 8080/http
