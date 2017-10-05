@@ -48,7 +48,11 @@ done
 echo "${green}Deploying Vamp${reset}"
 curl -X POST ${MARATHON} -d @vamp.json -H "Content-type: application/json"
 echo
-echo "${green}Deploying Vamp Gateway Agent${reset}"
-curl -X POST ${MARATHON} -d @vga.json -H "Content-type: application/json"
-echo
+
+if [ ${DOCKER_COMPOSE_FILE} == 'docker-compose.yml' ]; then
+  echo "${green}Deploying Vamp Gateway Agent${reset}"
+  curl -X POST ${MARATHON} -d @vga.json -H "Content-type: application/json"
+  echo
+fi
+
 echo "${green}Running.${reset}"
