@@ -9,6 +9,8 @@ if [ -e "/usr/local/vamp/conf/logback.xml" ] ; then
     LOG_CONFIG=/usr/local/vamp/conf/logback.xml
 fi
 
+echo "running Vamp Lifter"
+
 if [ -e "${APP_CONFIG}" ] ; then
     java -Dlogback.configurationFile=${LOG_CONFIG} \
          -Dconfig.file=${APP_CONFIG} \

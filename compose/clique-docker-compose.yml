@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+
+  clique:
+    image: magneticio/vamp-clique-zookeeper-marathon:katana
+    privileged: true
+    hostname: localhost
+    ports:
+      - "5050:5050"
+      - "8090:9090"
+      - "8989:8989"
+      - "4400:4400"
+      - "9200:9200"
+      - "5601:5601"
+      - "2181:2181"
+    environment:
+      - DOCKER_HOST_IP=192.168.65.2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/bin/docker
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    networks:
+      vamp:
+        ipv4_address: 172.16.121.2
+
+  mysql:
+    image: mysql:5
+    hostname: mysql
+    ports:
+      - "3306:3306"
+    networks:
+      vamp:
+        ipv4_address: 172.16.121.3
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+
+networks:
+  vamp:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.121.0/24

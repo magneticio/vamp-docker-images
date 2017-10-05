@@ -2,11 +2,5 @@
 handle() { echo "vamp/run: got signal"; exit; }
 trap handle SIGINT
 
-: "${RUN_VAMP:=true}"
-
-if [[ -z RUN_VAMP ]] ; then
-  exit
-fi
-
 exec 2>&1
 exec /usr/local/vamp/vamp

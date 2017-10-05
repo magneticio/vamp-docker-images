@@ -4,9 +4,7 @@ trap handle SIGINT
 
 : "${RUN_VAMP_LIFTER:=true}"
 
-if [[ -z RUN_VAMP_LIFTER ]] ; then
-  exit
+if [ "$RUN_VAMP_LIFTER" = "true" ]; then
+  exec 2>&1
+  exec /usr/local/vamp/lifter.sh
 fi
-
-exec 2>&1
-exec /usr/local/vamp/lifter
