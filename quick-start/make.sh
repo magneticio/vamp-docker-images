@@ -25,7 +25,7 @@ function pull() {
 
   docker volume create packer
   docker run \
-    -- rm \
+    --rm \
     --volume "${target}/${project}":/usr/local/dst \
     --volume packer:/usr/local/stash \
     magneticio/buildserver \
