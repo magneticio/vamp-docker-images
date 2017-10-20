@@ -67,6 +67,7 @@ init_project() {
     cd "$src_dir/$repo_dir"
 
     git reset --hard
+    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
@@ -96,6 +97,7 @@ build_ee() {
 
     cd "$src_dir/$project"
     git reset --hard
+    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     git fetch --depth=200 --prune
 
     declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")

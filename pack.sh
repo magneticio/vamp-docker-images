@@ -54,6 +54,7 @@ pack() {
     cd ${workspace}/${project}
 
     git reset --hard
+    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
