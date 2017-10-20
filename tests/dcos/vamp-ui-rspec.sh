@@ -104,6 +104,7 @@ init_project() {
     pushd "$repo_dir"
 
     git reset --hard
+    git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
   else

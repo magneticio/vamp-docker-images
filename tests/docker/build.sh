@@ -67,6 +67,7 @@ init_project() {
     cd "$src_dir/$repo_dir"
 
     git reset --hard
+    git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
     cd -

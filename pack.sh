@@ -54,6 +54,7 @@ pack() {
     cd ${workspace}/${project}
 
     git reset --hard
+    git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
   else
