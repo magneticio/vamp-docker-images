@@ -139,7 +139,7 @@ pipeline {
       fi
 
       cd tests/docker
-      docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }')
+      docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }') || true
 
       tag=$VAMP_GIT_BRANCH
       if [ "$VAMP_GIT_BRANCH" = "master" ]; then
