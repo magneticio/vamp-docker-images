@@ -88,52 +88,6 @@ build_external() {
   cd -
 }
 
-build_ee() {
-  project="vamp-ee"
-  echo "${green}project: ${yellow}${project}${reset}"
-
-  if [[ -d ${src_dir}/${project} ]] ; then
-    echo "${green}updating existing repository${reset}"
-
-    cd "$src_dir/$project"
-    git reset --hard
-    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-    git fetch --depth=200 --prune
-
-    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
-    if [  $got_branch -gt 0 ]; then
-      git checkout ${VAMP_GIT_BRANCH}
-      git pull
-      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
-      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    else
-      git checkout master
-      git pull
-      ./docker/local/make.sh
-      ./docker/dcos/make.sh
-    fi
-
-    git pull
-    cd -
-  else
-    cd "$src_dir"
-    local old_pwd=$OLDPWD
-    git clone git@github.com:magneticio/vamp-ee.git "$project"
-    cd ${project}
-    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
-    if [ $got_branch -gt 0 ]; then
-      git checkout ${VAMP_GIT_BRANCH}
-      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
-      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    else
-      git checkout master
-      ./docker/local/make.sh
-      ./docker/dcos/make.sh
-    fi
-    cd $old_pwd
-  fi
-}
-
 init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
@@ -172,6 +126,3 @@ fi
 docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
 
 cd $OLD_PWD
-
-export CLEAN_BUILD=true
-build_ee
