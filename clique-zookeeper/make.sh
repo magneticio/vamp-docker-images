@@ -8,13 +8,16 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
+build_server="magneticio/buildserver"
+dir_m2=${HOME}/.m2/repository
+test -f ${dir}/local.sh && source ${dir}/local.sh
+
+docker pull $build_server
+
 target=$1
 mkdir -p ${target} && cd ${target}
 
 echo "${green}building: ${yellow}zk-web${reset}"
-
-build_server="magneticio/buildserver"
-docker pull $build_server
 
 if [[ -d ${target}/zk-web ]] ; then
 
@@ -34,7 +37,10 @@ docker run \
   --interactive \
   --rm \
   --volume ${target}/zk-web:/srv/src \
+  --volume ${dir_m2}:/home/vamp/.m2/repository \
   --workdir=/srv/src \
+  --env BUILD_UID=$(id -u) \
+  --env BUILD_GID=$(id -g) \
   $build_server \
     lein uberjar
 

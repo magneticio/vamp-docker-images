@@ -8,6 +8,11 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=$(tput setaf 3)
 
+build_server="magneticio/buildserver"
+test -f ${dir}/local.sh && source ${dir}/local.sh
+
+docker pull $build_server
+
 target=$1
 mkdir -p ${target} && cd ${target}
 
@@ -28,7 +33,7 @@ function pull() {
     --rm \
     --volume "${target}/${project}":/usr/local/dst \
     --volume packer:/usr/local/stash \
-    magneticio/buildserver \
+    $build_server \
       pull "$project"
 }
 
