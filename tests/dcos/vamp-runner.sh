@@ -107,6 +107,8 @@ init_project() {
     pushd "$repo_dir"
 
     git reset --hard
+    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+    git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
   else
