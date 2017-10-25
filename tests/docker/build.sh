@@ -95,6 +95,7 @@ build_external() {
 init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
+init_project ${VAMP_GIT_ROOT}/vamp-docker-images-ee.git
 
 # Disable the clean builds of various sub-build scripts
 export CLEAN_BUILD=false
@@ -104,6 +105,12 @@ OLD_PWD=$PWD
 
 cd ../..
 source pack.sh
+# Pack ee projects
+pack vamp-ee
+pack vamp-ee-ui
+pack vamp-vault
+pack vamp-ee-lifter
+pack vamp-ee-lifter-ui
 cd ${root}
 
 ./build.sh --build --image=vamp
@@ -128,5 +135,8 @@ if [ "$VAMP_GIT_BRANCH" = "master" ]; then
   tag="katana"
 fi
 docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
+
+cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh $tag
+cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh $tag
 
 cd $OLD_PWD
