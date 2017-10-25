@@ -37,11 +37,15 @@ pack() {
   url="${VAMP_GIT_ROOT}/${project}.git"
   branch="master"
 
-  check_url=$(curl -m 5 -s -L -I ${url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
+  remotes=($(git ls-remote ${url} || echo fail))
 
-  if [ "${check_url}" = "200" ]; then
-    branch=$(git ls-remote ${url} | awk '{ print $2 }' | grep -E "refs/heads/${VAMP_GIT_BRANCH}$" | sed -e "s/refs\/heads\///")
-    branch=${branch:-"master"}
+  if [ "${remotes[0]}" != "fail" ]; then
+    for x in "${remotes[@]}"; do
+      if [ "${x}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
+        branch=${VAMP_GIT_BRANCH}
+        break
+      fi
+    done
   else
     url="https://github.com/magneticio/${project}.git"
   fi
