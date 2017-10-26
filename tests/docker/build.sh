@@ -75,10 +75,12 @@ init_project() {
     git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
+    git submodule sync --recursive
+    git submodule update --init --recursive
     cd -
   else
     cd "$src_dir"
-    git clone -b ${branch} --depth=200 "$repo_url" "$repo_dir"
+    git clone --recursive -b ${branch} --depth=200 "$repo_url" "$repo_dir"
     cd -
   fi
 }

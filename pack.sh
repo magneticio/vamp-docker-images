@@ -62,8 +62,10 @@ pack() {
     git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
+    git submodule sync --recursive
+    git submodule update --init --recursive
   else
-    git clone -b ${branch} --depth=200 "$url"
+    git clone --recursive -b ${branch} --depth=200 "$url"
     cd ${workspace}/${project}
   fi
 
