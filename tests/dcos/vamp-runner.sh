@@ -15,7 +15,7 @@ set -o errtrace
 : "${STACK_NAME:=dcos-katana}"
 
 
-VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
+VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"https://github.com/magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
 
@@ -97,7 +97,7 @@ init_project() {
       fi
     done
   else
-    repo_url="git@github.com:magneticio/$(basename $repo_url)"
+    repo_url="https://github.com/magneticio/$(basename $repo_url)"
   fi
 
   info "Project '$repo_url' - ${branch} at '${src_dir}/${repo_dir}'"

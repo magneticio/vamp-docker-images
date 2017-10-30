@@ -22,12 +22,12 @@ ${reset}"
 workspace=${root}/target
 mkdir -p ${workspace}
 
-VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
+VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"https://github.com/magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
 if [ "$RELEASE_TAG" != "" ]; then
   VAMP_GIT_BRANCH="master"
-  VAMP_GIT_ROOT="git@github.com:magneticio"
+  VAMP_GIT_ROOT="https://github.com/magneticio"
 fi
 
 pack() {
@@ -47,7 +47,7 @@ pack() {
       fi
     done
   else
-    url="git@github.com:magneticio/${project}.git"
+    url="https://github.com/magneticio/${project}.git"
   fi
 
   echo "${green}project: ${yellow}${project} - ${url} - ${branch}${reset}"
