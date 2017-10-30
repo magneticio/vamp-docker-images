@@ -148,6 +148,8 @@ pipeline {
 
       docker rmi -f $(docker images | grep -E "magneticio/vamp.*${tag}.*" | awk '{ print $3 }') || true
       docker rmi $(docker images | grep none | awk '{ print $3 }') || true
+      
+      docker volume prune --force || true
       '''
 /*
       sh '''
