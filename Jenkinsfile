@@ -60,7 +60,7 @@ pipeline {
             git pull
             cd tests/docker
 
-            for image in $(docker images -f reference='*' --format='{{.Repository}}:{{.Tag}}' | grep -vEe '^vamp'); do
+            for image in $(docker images --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp'); do
               docker pull ${image}
             done
 
