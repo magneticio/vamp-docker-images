@@ -151,16 +151,13 @@ pipeline {
       fi
 
       exited_containers=$(docker ps -a -f status=exited -q)
-      test -n "${exited_containers}" && docker rm ${exited_containers}
-
       dead_containers=$(docker ps -a -f status=dead -q)
-      test -n "${dead_containers}" && docker rm ${dead_containers}
+      test -n "${exited_containers}" -o -n "${dead_containers}" && docker rm ${exited_containers} ${dead_containers}
 
       remote_images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" -q)
-      test -n "${remote_images}" && docker rmi -f ${remote_images}
 
       local_images=$(docker image ls -f reference="vamp*:${tag}*" -q)
-      test -n "${local_images}" && docker rmi -f ${local_images}
+      test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 
       dangling_images=$(docker image ls -f dangling=true -q)
       test -n "${dangling_images}" && docker rmi -f ${dangling_images}
