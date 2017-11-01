@@ -13,6 +13,7 @@ environment_variables:
   VAMP_WORKFLOW_EXECUTION_PERIOD  : ${config://vamp.workflow-driver.workflow.vamp-workflow-execution-period}
   VAMP_WORKFLOW_EXECUTION_TIMEOUT : ${config://vamp.workflow-driver.workflow.vamp-workflow-execution-timeout}
   VAMP_ELASTICSEARCH_URL          : ${config://vamp.workflow-driver.workflow.vamp-elasticsearch-url}
+  VAMP_WORKFLOW_DATA              : ${data}
 arguments:
 - privileged: true
 
