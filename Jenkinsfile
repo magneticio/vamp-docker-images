@@ -59,6 +59,11 @@ pipeline {
 
             git pull
             cd tests/docker
+
+            for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp'); do
+              docker pull ${image} || true
+            done
+
             ./build.sh
             ./push.sh $VAMP_GIT_BRANCH
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
