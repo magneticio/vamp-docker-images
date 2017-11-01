@@ -39,6 +39,7 @@ ${reset}"
 docker_images="
   magneticio/vamp
   magneticio/vamp-ee
+  magneticio/vamp-ee-lifter
   magneticio/vamp-gateway-agent
   magneticio/vamp-workflow-agent
   magneticio/vamp-docker
