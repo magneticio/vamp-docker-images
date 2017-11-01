@@ -152,13 +152,13 @@ pipeline {
       test -n "${containers}" && docker rm ${containers}
 
       images=$(docker image ls -f reference='magneticio/vamp*' --format '{{.ID}} {{.Tag}}' | grep -Ee " ${tag}$" -Ee " ${tag}-.*$" | cut -d ' ' -f1)
-      test -n "${images}" && docker rmi ${images}
+      test -n "${images}" && docker rmi -f ${images}
 
       images=$(docker image ls -f reference='vamp*' --format '{{.ID}} {{.Tag}}' | grep -Ee " ${tag}$" -Ee " ${tag}-.*$" | cut -d ' ' -f1)
-      test -n "${images}" && docker rmi ${images}
+      test -n "${images}" && docker rmi -f ${images}
 
       images=$(docker image ls -f dangling=true -q)
-      test -n "${images}" && docker rmi ${images}
+      test -n "${images}" && docker rmi -f ${images}
 
       volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
       test -n "${volumes}" && docker volume rm ${volumes}
