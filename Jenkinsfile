@@ -150,23 +150,23 @@ pipeline {
         tag="katana"
       fi
 
-      containers=$(docker ps -a -f status=exited -q)
-      test -n "${containers}" && docker rm ${containers}
+      exited_containers=$(docker ps -a -f status=exited -q)
+      test -n "${exited_containers}" && docker rm ${exited_containers}
 
-      containers=$(docker ps -a -f status=dead -q)
-      test -n "${containers}" && docker rm ${containers}
+      dead_containers=$(docker ps -a -f status=dead -q)
+      test -n "${dead_containers}" && docker rm ${dead_containers}
 
-      images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" -q)
-      test -n "${images}" && docker rmi -f ${images}
+      remote_images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" -q)
+      test -n "${remote_images}" && docker rmi -f ${remote_images}
 
-      images=$(docker image ls -f reference="vamp*:${tag}*" -q)
-      test -n "${images}" && docker rmi -f ${images}
+      local_images=$(docker image ls -f reference="vamp*:${tag}*" -q)
+      test -n "${local_images}" && docker rmi -f ${local_images}
 
-      images=$(docker image ls -f dangling=true -q)
-      test -n "${images}" && docker rmi -f ${images}
+      dangling_images=$(docker image ls -f dangling=true -q)
+      test -n "${dangling_images}" && docker rmi -f ${dangling_images}
 
-      volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
-      test -n "${volumes}" && docker volume rm ${volumes}
+      dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
+      test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
       exit 0
       '''
