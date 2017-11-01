@@ -134,22 +134,36 @@ pipeline {
   post {
     always {
       sh '''
+      set +e
+
       if [ "$VAMP_GIT_BRANCH" = "" ]; then
         export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
       fi
-
-      cd tests/docker
-      docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }') || true
 
       tag=$VAMP_GIT_BRANCH
       if [ "$VAMP_GIT_BRANCH" = "master" ]; then
         tag="katana"
       fi
 
-      docker rmi -f $(docker images | grep -E "magneticio/vamp.*${tag}.*" | awk '{ print $3 }') || true
-      docker rmi $(docker images | grep none | awk '{ print $3 }') || true
-      
-      docker volume prune --force || true
+      containers=$(docker ps -a -f status=exited -q)
+      test -n "${containers}" && docker rm ${containers}
+
+      containers=$(docker ps -a -f status=dead -q)
+      test -n "${containers}" && docker rm ${containers}
+
+      images=$(docker image ls -f reference='magneticio/vamp*' --format '{{.ID}} {{.Tag}}' | grep -Ee " ${tag}$" -Ee " ${tag}-.*$" | cut -d ' ' -f1)
+      test -n "${images}" && docker rmi ${images}
+
+      images=$(docker image ls -f reference='vamp*' --format '{{.ID}} {{.Tag}}' | grep -Ee " ${tag}$" -Ee " ${tag}-.*$" | cut -d ' ' -f1)
+      test -n "${images}" && docker rmi ${images}
+
+      images=$(docker image ls -f dangling=true -q)
+      test -n "${images}" && docker rmi ${images}
+
+      volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
+      test -n "${volumes}" && docker volume rm ${volumes}
+
+      exit 0
       '''
 /*
       sh '''
