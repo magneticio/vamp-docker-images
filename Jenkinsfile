@@ -60,8 +60,8 @@ pipeline {
             git pull
             cd tests/docker
 
-            for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp'); do
-              docker pull ${image} || true
+            for image in $(docker images -f reference='*' --format='{{.Repository}}:{{.Tag}}' | grep -vEe '^vamp'); do
+              docker pull ${image}
             done
 
             ./build.sh
@@ -150,23 +150,19 @@ pipeline {
         tag="katana"
       fi
 
-      containers=$(docker ps -a -f status=exited -q)
-      test -n "${containers}" && docker rm ${containers}
+      exited_containers=$(docker ps -a -f status=exited -q)
+      dead_containers=$(docker ps -a -f status=dead -q)
+      test -n "${exited_containers}" -o -n "${dead_containers}" && docker rm ${exited_containers} ${dead_containers}
 
-      containers=$(docker ps -a -f status=dead -q)
-      test -n "${containers}" && docker rm ${containers}
+      remote_images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" --format '{{.CreatedAt}}\t{{.ID}}' | sort | cut -f2)
+      local_images=$(docker image ls -f reference="vamp*:${tag}*" --format '{{.CreatedAt}}\t{{.ID}}' | sort | cut -f2)
+      test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 
-      images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" -q)
-      test -n "${images}" && docker rmi -f ${images}
+      dangling_images=$(docker image ls -f dangling=true -q)
+      test -n "${dangling_images}" && docker rmi -f ${dangling_images}
 
-      images=$(docker image ls -f reference="vamp*:${tag}*" -q)
-      test -n "${images}" && docker rmi -f ${images}
-
-      images=$(docker image ls -f dangling=true -q)
-      test -n "${images}" && docker rmi -f ${images}
-
-      volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
-      test -n "${volumes}" && docker volume rm ${volumes}
+      dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
+      test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
       exit 0
       '''
