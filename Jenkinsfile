@@ -151,10 +151,10 @@ pipeline {
       containers=$(docker ps -a -f status=dead -q)
       test -n "${containers}" && docker rm ${containers}
 
-      images=$(docker image ls -f reference='magneticio/vamp*' --format '{{.ID}} {{.Tag}}' | grep -Ee " ${tag}$" -Ee " ${tag}-.*$" | cut -d ' ' -f1)
+      images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" -q)
       test -n "${images}" && docker rmi -f ${images}
 
-      images=$(docker image ls -f reference='vamp*' --format '{{.ID}} {{.Tag}}' | grep -Ee " ${tag}$" -Ee " ${tag}-.*$" | cut -d ' ' -f1)
+      images=$(docker image ls -f reference="vamp*:${tag}*" -q)
       test -n "${images}" && docker rmi -f ${images}
 
       images=$(docker image ls -f dangling=true -q)
