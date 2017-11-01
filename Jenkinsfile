@@ -69,8 +69,9 @@ pipeline {
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               ./push.sh katana
             fi
-            cd ../dcos
-            ./vamp-ui-rspec.sh build
+
+            # cd ../dcos
+            # ./vamp-ui-rspec.sh build
             '''
           }
         )
@@ -166,32 +167,6 @@ pipeline {
 
       exit 0
       '''
-/*
-      sh '''
-      if [ "$VAMP_GIT_BRANCH" = "" ]; then
-        export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
-      fi
-
-      cd tests/docker
-      ./remove.sh $VAMP_GIT_BRANCH || true
-      docker rm -v $(docker ps -a | grep Exited | awk '{ print $1 }')
-
-      az group delete --name ci-dcos-1.10 -y --no-wait
-      cd ../dcos
-      ./dcos-acs.sh delete || true
-
-      cd ../..
-      docker run --rm -v $(realpath $PWD/..):/vol alpine sh -c "rm -rf /vol/$(basename $WORKSPACE)"
-
-      tag=$VAMP_GIT_BRANCH
-      if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-        tag="katana"
-      fi
-
-      docker rmi -f $(docker images | grep -E "magneticio/vamp.*${tag}.*" | awk '{ print $3 }') || true
-      docker rmi $(docker images | grep none | awk '{ print $3 }') || true
-      '''
-*/
     }
   }
 }
