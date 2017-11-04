@@ -60,8 +60,8 @@ pipeline {
             git pull
             cd tests/docker
 
-            for image in $(docker images -f reference='*' --format='{{.Repository}}:{{.Tag}}' | grep -vEe '^vamp'); do
-              docker pull ${image}
+            for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp'); do
+              docker pull ${image} || true
             done
 
             ./build.sh
@@ -155,8 +155,8 @@ pipeline {
       dead_containers=$(docker ps -a -f status=dead -q)
       test -n "${exited_containers}" -o -n "${dead_containers}" && docker rm ${exited_containers} ${dead_containers}
 
-      remote_images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" --format '{{.CreatedAt}}\t{{.ID}}' | sort | cut -f2)
-      local_images=$(docker image ls -f reference="vamp*:${tag}*" --format '{{.CreatedAt}}\t{{.ID}}' | sort | cut -f2)
+      remote_images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" --format '{{.Repository}}:{{.Tag}}')
+      local_images=$(docker image ls -f reference="vamp*:${tag}*" --format '{{.Repository}}:{{.Tag}}')
       test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 
       dangling_images=$(docker image ls -f dangling=true -q)

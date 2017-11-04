@@ -106,14 +106,8 @@ build_ee() {
       git pull
       ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
       ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    else
-      git checkout master
-      git pull
-      ./docker/local/make.sh
-      ./docker/dcos/make.sh
     fi
 
-    git pull
     cd -
   else
     cd "$src_dir"
@@ -125,10 +119,6 @@ build_ee() {
       git checkout ${VAMP_GIT_BRANCH}
       ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
       ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    else
-      git checkout master
-      ./docker/local/make.sh
-      ./docker/dcos/make.sh
     fi
     cd $old_pwd
   fi
