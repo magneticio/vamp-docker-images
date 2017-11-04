@@ -65,9 +65,10 @@ pipeline {
             done
 
             ./build.sh
-            ./push.sh $VAMP_GIT_BRANCH
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               ./push.sh katana
+            else
+              ./push.sh $VAMP_GIT_BRANCH
             fi
 
             # cd ../dcos
