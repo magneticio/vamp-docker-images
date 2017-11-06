@@ -22,12 +22,12 @@ ${reset}"
 workspace=${root}/target
 mkdir -p ${workspace}
 
-VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"https://github.com/magneticio"}
+VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
 if [ "$RELEASE_TAG" != "" ]; then
   VAMP_GIT_BRANCH="master"
-  VAMP_GIT_ROOT="https://github.com/magneticio"
+  VAMP_GIT_ROOT="git@github.com:magneticio"
 fi
 
 pack() {
@@ -37,13 +37,17 @@ pack() {
   url="${VAMP_GIT_ROOT}/${project}.git"
   branch="master"
 
-  check_url=$(curl -m 5 -s -L -I ${url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
+  remotes=($(git ls-remote ${url} || echo fail))
 
-  if [ "${check_url}" = "200" ]; then
-    branch=$(git ls-remote ${url} | awk '{ print $2 }' | grep -E "refs/heads/${VAMP_GIT_BRANCH}$" | sed -e "s/refs\/heads\///")
-    branch=${branch:-"master"}
+  if [ "${remotes[0]}" != "fail" ]; then
+    for x in "${remotes[@]}"; do
+      if [ "${x}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
+        branch=${VAMP_GIT_BRANCH}
+        break
+      fi
+    done
   else
-    url="https://github.com/magneticio/${project}.git"
+    url="git@github.com:magneticio/${project}.git"
   fi
 
   echo "${green}project: ${yellow}${project} - ${url} - ${branch}${reset}"
@@ -58,8 +62,10 @@ pack() {
     git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
+    git submodule sync --recursive
+    git submodule update --init --recursive
   else
-    git clone -b ${branch} --depth=200 "$url"
+    git clone --recursive -b ${branch} --depth=200 "$url"
     cd ${workspace}/${project}
   fi
 
@@ -72,4 +78,6 @@ pack() {
 
 pack vamp
 pack vamp-ui
+pack vamp-lifter
+pack vamp-lifter-ui
 pack vamp-artifacts

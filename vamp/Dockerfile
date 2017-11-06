@@ -54,6 +54,8 @@ RUN set -xe \
 
 RUN mkdir -p /usr/local/vamp/conf
 ADD vamp-artifacts /usr/local/vamp/artifacts
+ADD vamp-lifter /usr/local/vamp/lifter
+ADD vamp-lifter-ui /usr/local/vamp/lifter/ui
 ADD vamp-ui /usr/local/vamp/ui
 ADD vamp /usr/local/vamp/bin
 ADD files/ /

@@ -1,0 +1,27 @@
+{
+  "id": "/vamp/vamp-gateway-agent",
+  "env": {
+    "VAMP_KEY_VALUE_STORE_TYPE": "zookeeper",
+    "VAMP_KEY_VALUE_STORE_CONNECTION": "localhost:2181",
+    "VAMP_KEY_VALUE_STORE_PATH": "/vamp/vamp/gateways/haproxy/1.7/configuration",
+    "VAMP_ELASTICSEARCH_URL": "http://localhost:9200"
+  },
+  "cpus": 0.2,
+  "mem": 128.0,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "magneticio/vamp-gateway-agent:katana",
+      "network": "HOST",
+      "portMappings": [],
+      "privileged": true,
+      "forcePullImage": false,
+      "parameters": []
+    }
+  },
+  "constraints": [
+    ["hostname", "UNIQUE"]
+  ],
+  "maxLaunchDelaySeconds": 600
+}

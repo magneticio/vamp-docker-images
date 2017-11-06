@@ -1,0 +1,52 @@
+{
+  "id": "/vamp/vamp",
+  "cpus": 0.5,
+  "mem": 512,
+  "disk": 0,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "volumes": [],
+    "docker": {
+      "image": "magneticio/vamp:katana-compose",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 0,
+          "protocol": "tcp"
+        },
+        {
+          "containerPort": 8081,
+          "hostPort": 0,
+          "protocol": "tcp"
+        }
+      ],
+      "privileged": false,
+      "forcePullImage": false,
+      "parameters": [
+        {
+          "key": "publish",
+          "value": "8080:8080"
+        },
+        {
+          "key": "publish",
+          "value": "8081:8081"
+        }
+      ]
+    }
+  },
+  "env": {
+    "RUN_VAMP": "true",
+    "RUN_VAMP_LIFTER": "true",
+    "VAMP_HOST": "172.17.0.1",
+    "GATEWAY_DRIVER_HOST": "172.17.0.1",
+    "VAMP_WAIT_FOR": "http://0.0.0.0:8081/api/connections",
+    "ZOOKEEPER": "172.17.0.1:2181",
+    "MESOS": "http://172.17.0.1:5050",
+    "MARATHON": "http://172.17.0.1:8090",
+    "MYSQL": "jdbc:mysql://172.17.0.1:3306",
+    "VAMP_ELASTICSEARCH_URL": "http://172.17.0.1:9200"
+  },
+  "maxLaunchDelaySeconds": 600
+}

@@ -1,0 +1,10 @@
+#! /bin/bash
+handle() { echo "vamp/run: got signal"; exit; }
+trap handle SIGINT
+
+: "${RUN_VAMP:=true}"
+
+if [ "$RUN_VAMP" = "true" ]; then
+  exec 2>&1
+  exec /usr/local/vamp/vamp.sh
+fi

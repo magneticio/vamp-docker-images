@@ -13,7 +13,7 @@ set -o errtrace
 : "${STACK_NAME:=dcos-katana}"
 
 
-VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"https://github.com/magneticio"}
+VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
 
@@ -84,13 +84,17 @@ init_project() {
 
   branch="master"
 
-  check_url=$(curl -s -L -I ${repo_url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
+  remotes=($(git ls-remote ${repo_url} || echo fail))
 
-  if [ ${check_url} = "200" ]; then
-    branch=$(git ls-remote ${repo_url} | awk '{ print $2 }' | grep -E "refs/heads/${VAMP_GIT_BRANCH}$" | sed -e "s/refs\/heads\///")
-    branch=${branch:-"master"}
+  if [ "${remotes[0]}" != "fail" ]; then
+    for x in "${remotes[@]}"; do
+      if [ "${x}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
+        branch=${VAMP_GIT_BRANCH}
+        break
+      fi
+    done
   else
-    repo_url="https://github.com/magneticio/$(basename $repo_url)"
+    repo_url="git@github.com:magneticio/$(basename $repo_url)"
   fi
 
   info "Project '$repo_url' - ${branch} at '${src_dir}/${repo_dir}'"

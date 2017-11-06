@@ -1,0 +1,10 @@
+#! /bin/bash
+handle() { echo "vamp-lifter/run: got signal"; exit; }
+trap handle SIGINT
+
+: "${RUN_VAMP_LIFTER:=true}"
+
+if [ "$RUN_VAMP_LIFTER" = "true" ]; then
+  exec 2>&1
+  exec /usr/local/vamp/lifter.sh
+fi

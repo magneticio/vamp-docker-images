@@ -31,7 +31,7 @@ workspace=${src_dir}
 mkdir -p ${workspace}
 
 
-VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"https://github.com/magneticio"}
+VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
 init_project() {
@@ -48,13 +48,17 @@ init_project() {
 
   branch="master"
 
-  check_url=$(curl -s -L -I ${repo_url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
+  remotes=($(git ls-remote ${repo_url} || echo fail))
 
-  if [ ${check_url} = "200" ]; then
-    branch=$(git ls-remote ${repo_url} | awk '{ print $2 }' | grep -E "refs/heads/${VAMP_GIT_BRANCH}$" | sed -e "s/refs\/heads\///")
-    branch=${branch:-"master"}
+  if [ "${remotes[0]}" != "fail" ]; then
+    for x in "${remotes[@]}"; do
+      if [ "${x}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
+        branch=${VAMP_GIT_BRANCH}
+        break
+      fi
+    done
   else
-    repo_url="https://github.com/magneticio/$(basename $repo_url)"
+    repo_url="git@github.com:magneticio/$(basename $repo_url)"
   fi
 
   info "Project '$repo_url' - ${branch} at '${src_dir}/${repo_dir}'"
@@ -71,10 +75,12 @@ init_project() {
     git fetch --depth=200 --prune
     git checkout ${branch}
     git pull
+    git submodule sync --recursive
+    git submodule update --init --recursive
     cd -
   else
     cd "$src_dir"
-    git clone -b ${branch} --depth=200 "$repo_url" "$repo_dir"
+    git clone --recursive -b ${branch} --depth=200 "$repo_url" "$repo_dir"
     cd -
   fi
 }
@@ -88,45 +94,10 @@ build_external() {
   cd -
 }
 
-build_ee() {
-  project="vamp-ee"
-  echo "${green}project: ${yellow}${project}${reset}"
-
-  if [[ -d ${src_dir}/${project} ]] ; then
-    echo "${green}updating existing repository${reset}"
-
-    cd "$src_dir/$project"
-    git reset --hard
-    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-    git fetch --depth=200 --prune
-
-    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
-    if [  $got_branch -gt 0 ]; then
-      git checkout ${VAMP_GIT_BRANCH}
-      git pull
-      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
-      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    fi
-
-    cd -
-  else
-    cd "$src_dir"
-    local old_pwd=$OLDPWD
-    git clone git@github.com:magneticio/vamp-ee.git "$project"
-    cd ${project}
-    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
-    if [ $got_branch -gt 0 ]; then
-      git checkout ${VAMP_GIT_BRANCH}
-      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
-      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    fi
-    cd $old_pwd
-  fi
-}
-
 init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
+init_project ${VAMP_GIT_ROOT}/vamp-docker-images-ee.git
 
 # Disable the clean builds of various sub-build scripts
 export CLEAN_BUILD=false
@@ -136,6 +107,12 @@ OLD_PWD=$PWD
 
 cd ../..
 source pack.sh
+# Pack ee projects
+pack vamp-ee
+pack vamp-ee-ui
+pack vamp-vault
+pack vamp-ee-lifter
+pack vamp-ee-lifter-ui
 cd ${root}
 
 ./build.sh --build --image=vamp
@@ -161,7 +138,7 @@ if [ "$VAMP_GIT_BRANCH" = "master" ]; then
 fi
 docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
 
-cd $OLD_PWD
+cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh $tag
+cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh $tag
 
-export CLEAN_BUILD=true
-build_ee
+cd $OLD_PWD

@@ -50,7 +50,7 @@ pipeline {
           "build-images": {
             sh '''
             if [ "$VAMP_GIT_ROOT" = "" ]; then
-              export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print $1 "//" $3 "/" $4 }')
+              export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print "git@" $3 ":" $4 }')
             fi
 
             if [ "$VAMP_GIT_BRANCH" = "" ]; then
@@ -65,9 +65,10 @@ pipeline {
             done
 
             ./build.sh
-            ./push.sh $VAMP_GIT_BRANCH
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               ./push.sh katana
+            else
+              ./push.sh $VAMP_GIT_BRANCH
             fi
 
             # cd ../dcos
