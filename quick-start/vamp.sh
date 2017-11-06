@@ -16,6 +16,8 @@ export LANG=en_US.UTF-8
 APP_CONFIG=/usr/local/vamp/application.conf
 LOG_CONFIG=/usr/local/vamp/logback.xml
 
+VAMP_JAVA_ARGS=${VAMP_JAVA_ARGS:-"-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1"}
+
 if [ -e "/usr/local/vamp/conf/application.conf" ] ; then
     APP_CONFIG=/usr/local/vamp/external.conf
 fi
@@ -24,7 +26,8 @@ if [ -e "/usr/local/vamp/conf/logback.xml" ] ; then
     LOG_CONFIG=/usr/local/vamp/conf/logback.xml
 fi
 
-java -Dvamp.gateway-driver.host=${DOCKER_HOST_IP} \
+java ${VAMP_JAVA_ARGS} \
+     -Dvamp.gateway-driver.host=${DOCKER_HOST_IP} \
      -Dlogback.configurationFile=${LOG_CONFIG} \
      -Dconfig.file=${APP_CONFIG} \
      -cp "/usr/local/vamp/bin/*:/usr/local/vamp/bin/lib/*" \
