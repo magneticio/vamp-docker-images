@@ -16,11 +16,14 @@ done
 LOG_CONFIG=/usr/local/vamp/logback.xml
 APP_CONFIG=/usr/local/vamp/conf/application.conf
 
+VAMP_JAVA_ARGS=${VAMP_JAVA_ARGS:-"-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1"}
+
 if [ -e "/usr/local/vamp/conf/logback.xml" ] ; then
     LOG_CONFIG=/usr/local/vamp/conf/logback.xml
 fi
 
-java -Dlogback.configurationFile=${LOG_CONFIG} \
+java ${VAMP_JAVA_ARGS} \
+     -Dlogback.configurationFile=${LOG_CONFIG} \
      -Dconfig.file=${APP_CONFIG} \
      -cp "/usr/local/vamp/bin/*:/usr/local/vamp/bin/lib/*" \
      io.vamp.bootstrap.Boot
