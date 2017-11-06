@@ -49,6 +49,7 @@ pipeline {
 */
           "build-images": {
             sh '''
+            exit 0
             if [ "$VAMP_GIT_ROOT" = "" ]; then
               export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print "git@" $3 ":" $4 }')
             fi
