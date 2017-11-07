@@ -147,7 +147,7 @@ pipeline {
         export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
       fi
 
-      tag=${VAMP_GIT_BRANCH//\\//_}
+      tag=${VAMP_GIT_BRANCH//'\'//_}
       if [ "$VAMP_GIT_BRANCH" = "master" ]; then
         tag="katana"
       fi

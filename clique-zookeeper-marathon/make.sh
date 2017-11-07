@@ -49,3 +49,11 @@ docker run \
     sbt universal:packageBin
 
 mv $(find "${target}/metronome/target" -name 'metronome-*.zip' | sort | tail -1) ${target}/metronome.zip
+echo "${green}copying files...${reset}"
+cd ${dir}
+cp -f ${dir}/chronos.sh ${target}
+cp -f ${dir}/Dockerfile ${target}
+cp -f ${dir}/marathon.sh ${target}
+cp -f ${dir}/mesos-master.sh ${target}
+cp -f ${dir}/mesos-slave.sh ${target}
+cp -f ${dir}/supervisord.conf ${target}
