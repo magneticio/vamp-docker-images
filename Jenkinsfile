@@ -54,7 +54,7 @@ pipeline {
             fi
 
             if [ "$VAMP_GIT_BRANCH" = "" ]; then
-              export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+              export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
 
             git pull
@@ -65,11 +65,11 @@ pipeline {
             done
 
             ./build.sh
+            tag=$(echo $VAMP_GIT_BRANCH | sed 's,/,_,g')
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-              ./push.sh katana
-            else
-              ./push.sh $VAMP_GIT_BRANCH
+              tag=katana
             fi
+            ./push.sh $tag
 
             # cd ../dcos
             # ./vamp-ui-rspec.sh build
@@ -144,10 +144,10 @@ pipeline {
       set +e
 
       if [ "$VAMP_GIT_BRANCH" = "" ]; then
-        export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+        export VAMP_GIT_BRANCH=$BRANCH_NAME
       fi
 
-      tag=${VAMP_GIT_BRANCH//'\'//_}
+      tag=$(echo $VAMP_GIT_BRANCH | sed 's,/,_,g')
       if [ "$VAMP_GIT_BRANCH" = "master" ]; then
         tag="katana"
       fi
