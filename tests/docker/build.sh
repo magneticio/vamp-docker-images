@@ -132,7 +132,7 @@ build_external vamp-runner
 ./build.sh --build --image=clique-zookeeper-marathon
 ./build.sh --build --image=quick-start
 
-tag=$VAMP_GIT_BRANCH
+tag=${VAMP_GIT_BRANCH//\//_}
 if [ "$VAMP_GIT_BRANCH" = "master" ]; then
   tag="katana"
 fi
