@@ -64,6 +64,7 @@ pipeline {
               docker pull ${image} || true
             done
 
+            export PACKER="packer-$(git describe --all | sed 's,/,_,g')"
             ./build.sh
             tag=$(echo $VAMP_GIT_BRANCH | sed 's,/,_,g')
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
@@ -163,6 +164,7 @@ pipeline {
       dangling_images=$(docker image ls -f dangling=true -q)
       test -n "${dangling_images}" && docker rmi -f ${dangling_images}
 
+      docker volume rm "packer-$(git describe --all | sed 's,/,_,g')" 2>/dev/null
       dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
       test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
