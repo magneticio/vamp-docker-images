@@ -8,6 +8,7 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=$(tput setaf 3)
 
+packer=${PACKER:-packer}
 build_server="magneticio/buildserver"
 test -f ${dir}/local.sh && source ${dir}/local.sh
 
@@ -28,11 +29,10 @@ function pull() {
   echo "${green}pulling project: ${yellow}${project}${reset}"
   mkdir ${target}/${project}
 
-  docker volume create packer
   docker run \
     --rm \
     --volume "${target}/${project}":/usr/local/dst \
-    --volume packer:/usr/local/stash \
+    --volume ${packer}:/usr/local/stash \
     $build_server \
       pull "$project"
 }
