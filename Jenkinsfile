@@ -62,7 +62,7 @@ pipeline {
 	    #temporary add to update java image
 	    cd alpine-jdk
 	    docker build --tag magneticio/java:openjdk-8-jre-alpine .
-            docker push magneticio/java:openjdk-8-jre-alpine
+            # docker push magneticio/java:openjdk-8-jre-alpine
             cd -
 
 
