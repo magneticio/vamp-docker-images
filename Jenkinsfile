@@ -161,7 +161,15 @@ pipeline {
       sh '''
       set +e
 
-      if [ "$VAMP_GIT_BRANCH" = "" ]; then
+      if [ -n "$VAMP_CHANGE_TARGET" ]; then
+        export VAMP_GIT_BRANCH=$VAMP_CHANGE_TARGET
+      fi
+
+      if [ -n "$CHANGE_TARGET" ]; then
+        export VAMP_GIT_BRANCH=$CHANGE_TARGET
+      fi
+
+      if [ -z "$VAMP_GIT_BRANCH" ]; then
         export VAMP_GIT_BRANCH=$BRANCH_NAME
       fi
 
