@@ -11,6 +11,8 @@ pipeline {
     string(name: 'RELEASE_TAG', defaultValue: '', description: 'Release tag')
     string(name: 'VAMP_GIT_ROOT', defaultValue: '', description: 'GitHub account URL')
     string(name: 'VAMP_GIT_BRANCH', defaultValue: '', description: 'Branch name')
+    string(name: 'VAMP_CHANGE_TARGET', defaultValue: '', description: 'Target branch name for a PR')
+    string(name: 'VAMP_CHANGE_URL', defaultValue: '', description: 'URL for a PR')
   }
 
   environment {
@@ -57,7 +59,8 @@ pipeline {
               export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
 
-            echo $VAMP_GIT_BRANCH | grep -qvEe '^PR-[0-9]+$' || { env; exit 0; }
+            env
+            exit 0
 
             git pull
             cd tests/docker
