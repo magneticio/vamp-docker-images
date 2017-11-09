@@ -57,6 +57,8 @@ pipeline {
               export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
 
+            echo $VAMP_GIT_BRANCH | grep -qvEe '^PR-[0-9]+$' || { env; exit 0; }
+
             git pull
             cd tests/docker
 
