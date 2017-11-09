@@ -51,11 +51,20 @@ pipeline {
 */
           "build-images": {
             sh '''
-            if [ "$VAMP_GIT_ROOT" = "" ]; then
+            if [ -z "$VAMP_GIT_ROOT" ]; then
               export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print "git@" $3 ":" $4 }')
             fi
 
-            if [ "$VAMP_GIT_BRANCH" = "" ]; then
+            if [ -n "$VAMP_CHANGE_TARGET" ]; then
+              export CHANGE_TARGET=$VAMP_CHANGE_TARGET
+              export CHANGE_URL=$VAMP_CHANGE_URL
+            fi
+
+            if [ -n "$CHANGE_TARGET" ]; then
+              export VAMP_GIT_BRANCH=$CHANGE_TARGET
+            fi
+
+            if [ -z "$VAMP_GIT_BRANCH" ]; then
               export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
 
@@ -75,7 +84,10 @@ pipeline {
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               tag=katana
             fi
-            ./push.sh $tag
+
+            if [ -z "$CHANGE_TARGET" ]; then
+              ./push.sh $tag
+            fi
 
             # cd ../dcos
             # ./vamp-ui-rspec.sh build
