@@ -69,6 +69,11 @@ pack() {
     cd ${workspace}/${project}
   fi
 
+  if [[ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${project}\/pull\/*/}" ]] ; then
+    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/head:${branch}
+    git reset --hard
+  fi
+
   if [[ -f ${root}/Makefile.local ]]; then
     cp ${root}/Makefile.local ${workspace}/${project}/
   fi

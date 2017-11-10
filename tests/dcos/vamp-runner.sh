@@ -119,6 +119,11 @@ init_project() {
     git clone -b ${branch} --depth=200 "$repo_url" "$repo_dir"
     pushd "$repo_dir"
   fi
+
+  if [[ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\/*/}" ]] ; then
+    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\//}/head:${branch}
+    git reset --hard
+  fi
 }
 
 vr_build() {

@@ -65,6 +65,7 @@ init_project() {
 
   mkdir -p "$src_dir"
 
+  pushd .
   if [[ -d ${src_dir}/${repo_dir} ]] ; then
     echo "${green}updating existing repository${reset}"
 
@@ -77,12 +78,18 @@ init_project() {
     git reset --hard origin/${branch}
     git submodule sync --recursive
     git submodule update --init --recursive
-    cd -
   else
     cd "$src_dir"
     git clone --recursive -b ${branch} --depth=200 "$repo_url" "$repo_dir"
-    cd -
+    cd "$repo_dir"
   fi
+
+  if [[ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\/*/}" ]] ; then
+    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\//}/head:${branch}
+    git reset --hard
+  fi
+
+  popd
 }
 
 build_external() {
