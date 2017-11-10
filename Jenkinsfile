@@ -55,21 +55,18 @@ pipeline {
               export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print "git@" $3 ":" $4 }')
             fi
 
-            if [ -n "$VAMP_CHANGE_TARGET" ]; then
-              export CHANGE_TARGET=$VAMP_CHANGE_TARGET
-              export CHANGE_URL=$VAMP_CHANGE_URL
+            if [ -n "$CHANGE_TARGET" ]; then
+              export VAMP_CHANGE_TARGET=$CHANGE_TARGET
+              export VAMP_CHANGE_URL=$CHANGE_URL
             fi
 
-            if [ -n "$CHANGE_TARGET" ]; then
-              export VAMP_GIT_BRANCH=$CHANGE_TARGET
+            if [ -n "$VAMP_CHANGE_TARGET" ]; then
+              export VAMP_GIT_BRANCH=$VAMP_CHANGE_TARGET
             fi
 
             if [ -z "$VAMP_GIT_BRANCH" ]; then
               export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
-
-            env
-            exit 0
 
             git pull
             cd tests/docker
