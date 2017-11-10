@@ -143,7 +143,7 @@ build_external vamp-runner
 ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper
 ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper-marathon
 ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=quick-start
-docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
+docker tag "magneticio/vamp-quick-start:${VAMP_TAG_PREFIX}${tag}" "magneticio/vamp-docker:${VAMP_TAG_PREFIX}${tag}"
 
 cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh ${VAMP_TAG_PREFIX}${tag}
 cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh ${VAMP_TAG_PREFIX}${tag}
