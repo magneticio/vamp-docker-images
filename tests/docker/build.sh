@@ -65,6 +65,7 @@ init_project() {
 
   mkdir -p "$src_dir"
 
+  pushd .
   if [[ -d ${src_dir}/${repo_dir} ]] ; then
     echo "${green}updating existing repository${reset}"
 
@@ -74,15 +75,21 @@ init_project() {
     git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     git fetch --depth=200 --prune
     git checkout ${branch}
-    git pull
+    git reset --hard origin/${branch}
     git submodule sync --recursive
     git submodule update --init --recursive
-    cd -
   else
     cd "$src_dir"
     git clone --recursive -b ${branch} --depth=200 "$repo_url" "$repo_dir"
-    cd -
+    cd "$repo_dir"
   fi
+
+  if [ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\/*/}" ]; then
+    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\//}/head:${branch}
+    git reset --hard
+  fi
+
+  popd
 }
 
 build_external() {
@@ -115,10 +122,15 @@ pack vamp-ee-lifter
 pack vamp-ee-lifter-ui
 cd ${root}
 
-./build.sh --build --image=vamp
-./build.sh --build --image=vamp-custom
-./build.sh --build --image=vamp-dcos
-./build.sh --build --image=vamp-kubernetes
+tag=${VAMP_GIT_BRANCH//\//_}
+if [ "$VAMP_GIT_BRANCH" = "master" ]; then
+  tag="katana"
+fi
+
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-custom
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-dcos
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-kubernetes
 
 
 build_external vamp-gateway-agent
@@ -127,18 +139,13 @@ build_external vamp-runner
 
 
 # Build the quick-start images
-./build.sh --build --image=clique-base
-./build.sh --build --image=clique-zookeeper
-./build.sh --build --image=clique-zookeeper-marathon
-./build.sh --build --image=quick-start
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-base
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper-marathon
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=quick-start
+docker tag "magneticio/vamp-quick-start:${VAMP_TAG_PREFIX}${tag}" "magneticio/vamp-docker:${VAMP_TAG_PREFIX}${tag}"
 
-tag=${VAMP_GIT_BRANCH//\//_}
-if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-  tag="katana"
-fi
-docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
-
-cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh $tag
-cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh $tag
+cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh ${VAMP_TAG_PREFIX}${tag}
+cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh ${VAMP_TAG_PREFIX}${tag}
 
 cd $OLD_PWD

@@ -61,12 +61,17 @@ pack() {
     git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     git fetch --depth=200 --prune
     git checkout ${branch}
-    git pull
+    git reset --hard origin/${branch}
     git submodule sync --recursive
     git submodule update --init --recursive
   else
     git clone --recursive -b ${branch} --depth=200 "$url"
     cd ${workspace}/${project}
+  fi
+
+  if [ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${project}\/pull\/*/}" ]; then
+    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/head:${branch}
+    git reset --hard
   fi
 
   if [[ -f ${root}/Makefile.local ]]; then
