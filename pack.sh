@@ -70,7 +70,8 @@ pack() {
   fi
 
   if [ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${project}\/pull\/*/}" ]; then
-    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/head:${branch}
+    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/head:${branch} || \
+    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/merge:${branch}
     git reset --hard
   fi
 
