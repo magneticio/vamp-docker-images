@@ -58,6 +58,7 @@ pipeline {
             if [ -n "$CHANGE_TARGET" ]; then
               export VAMP_CHANGE_TARGET=$CHANGE_TARGET
               export VAMP_CHANGE_URL=$CHANGE_URL
+              export VAMP_TAG_PREFIX="pr-$(echo $CHANGE_URL | sed -e 's,.*/vamp-docker-images/pull/,,g')-"
             fi
 
             if [ -n "$VAMP_CHANGE_TARGET" ]; then
@@ -75,14 +76,15 @@ pipeline {
               docker pull ${image} || true
             done
 
-            export PACKER="packer-$(git describe --all | sed 's,/,_,g')"
+            export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
             ./build.sh
             tag=$(echo $VAMP_GIT_BRANCH | sed 's,/,_,g')
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               tag=katana
             fi
+            tag="${VAMP_TAG_PREFIX}${tag}"
 
-            if [ -z "$CHANGE_TARGET" ]; then
+            if [ -z "$VAMP_CHANGE_TARGET" ]; then
               ./push.sh $tag
             fi
 
@@ -164,6 +166,7 @@ pipeline {
 
       if [ -n "$CHANGE_TARGET" ]; then
         export VAMP_GIT_BRANCH=$CHANGE_TARGET
+        export VAMP_TAG_PREFIX="pr-$(echo $CHANGE_URL | sed -e 's,.*/vamp-docker-images/pull/,,g')-"
       fi
 
       if [ -z "$VAMP_GIT_BRANCH" ]; then
@@ -174,6 +177,7 @@ pipeline {
       if [ "$VAMP_GIT_BRANCH" = "master" ]; then
         tag="katana"
       fi
+      tag="${VAMP_TAG_PREFIX}${tag}"
 
       exited_containers=$(docker ps -a -f status=exited -q)
       dead_containers=$(docker ps -a -f status=dead -q)
@@ -186,7 +190,7 @@ pipeline {
       dangling_images=$(docker image ls -f dangling=true -q)
       test -n "${dangling_images}" && docker rmi -f ${dangling_images}
 
-      docker volume rm "packer-$(git describe --all | sed 's,/,_,g')" 2>/dev/null
+      docker volume rm "packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')" 2>/dev/null
       dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
       test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 

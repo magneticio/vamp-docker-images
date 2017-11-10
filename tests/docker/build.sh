@@ -122,10 +122,15 @@ pack vamp-ee-lifter
 pack vamp-ee-lifter-ui
 cd ${root}
 
-./build.sh --build --image=vamp
-./build.sh --build --image=vamp-custom
-./build.sh --build --image=vamp-dcos
-./build.sh --build --image=vamp-kubernetes
+tag=${VAMP_GIT_BRANCH//\//_}
+if [ "$VAMP_GIT_BRANCH" = "master" ]; then
+  tag="katana"
+fi
+
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-custom
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-dcos
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-kubernetes
 
 
 build_external vamp-gateway-agent
@@ -134,18 +139,13 @@ build_external vamp-runner
 
 
 # Build the quick-start images
-./build.sh --build --image=clique-base
-./build.sh --build --image=clique-zookeeper
-./build.sh --build --image=clique-zookeeper-marathon
-./build.sh --build --image=quick-start
-
-tag=${VAMP_GIT_BRANCH//\//_}
-if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-  tag="katana"
-fi
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-base
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper-marathon
+./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=quick-start
 docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
 
-cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh $tag
-cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh $tag
+cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh ${VAMP_TAG_PREFIX}${tag}
+cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh ${VAMP_TAG_PREFIX}${tag}
 
 cd $OLD_PWD
