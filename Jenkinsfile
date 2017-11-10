@@ -77,7 +77,8 @@ pipeline {
             done
 
             export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
-            ./build.sh
+            mkdir -p ${WORKSPACE}/.cache/bower ${WORKSPACE}/.ivy2 ${WORKSPACE}/.node-gyp ${WORKSPACE}/.npm ${WORKSPACE}/.sbt/boot ${WORKSPACE}/.m2/repository
+            env HOME=$WORKSPACE ./build.sh
             tag=$(echo $VAMP_GIT_BRANCH | sed 's,/,_,g')
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               tag=katana
