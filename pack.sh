@@ -61,7 +61,7 @@ pack() {
     git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
     git fetch --depth=200 --prune
     git checkout ${branch}
-    git pull
+    git reset --hard origin/${branch}
     git submodule sync --recursive
     git submodule update --init --recursive
   else
