@@ -42,6 +42,7 @@ docker_images="
   magneticio/vamp-ee-lifter
   magneticio/vamp-gateway-agent
   magneticio/vamp-workflow-agent
+  magneticio/vamp-clique-zookeeper-marathon
   magneticio/vamp-docker
   magneticio/vamp-runner
 "
