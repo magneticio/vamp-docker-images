@@ -9,6 +9,9 @@ errexit() { erro "$@"; erro "Exiting!"; exit 1; }
 
 set -o errexit # Abort script at first error (command exits non-zero).
 
+root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+workspace="../../target"
+
 reset=$(tput sgr0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
@@ -38,17 +41,16 @@ ${reset}"
 
 docker_images="
   magneticio/vamp
-  magneticio/vamp-ee
-  magneticio/vamp-ee-lifter
   magneticio/vamp-gateway-agent
   magneticio/vamp-workflow-agent
   magneticio/vamp-clique-zookeeper-marathon
   magneticio/vamp-docker
   magneticio/vamp-runner
 "
+source ${workspace}/vamp-docker-images-ee/tests/push-conf.sh
 
 # Check that we have our images available
-for i in $docker_images; do
+for i in $docker_images $ee_images; do
   for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:$TAG*"); do
     echo "${green}Pushing image: ${j}${reset}"
     docker push "$j"

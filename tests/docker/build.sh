@@ -115,12 +115,12 @@ OLD_PWD=$PWD
 
 cd ../..
 source pack.sh
-# Pack ee projects
-pack vamp-ee
-pack vamp-ee-ui
-pack vamp-vault
-pack vamp-ee-lifter
-pack vamp-ee-lifter-ui
+
+source ${workspace}/vamp-docker-images-ee/tests/build-conf.sh
+for project in $ee_projects; do
+  pack $project
+done
+
 cd ${root}
 
 tag=${VAMP_GIT_BRANCH//\//_}
@@ -146,7 +146,8 @@ build_external vamp-runner
 ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=quick-start
 docker tag "magneticio/vamp-quick-start:${VAMP_TAG_PREFIX}${tag}" "magneticio/vamp-docker:${VAMP_TAG_PREFIX}${tag}"
 
-cd ${workspace}/vamp-docker-images-ee/vamp-ee && ./build.sh ${VAMP_TAG_PREFIX}${tag}
-cd ${workspace}/vamp-docker-images-ee/vamp-ee-lifter && ./build.sh ${VAMP_TAG_PREFIX}${tag}
+for image in $ee_images; do
+  cd ${workspace}/vamp-docker-images-ee/$image && ./build.sh ${VAMP_TAG_PREFIX}${tag}
+}
 
 cd $OLD_PWD
