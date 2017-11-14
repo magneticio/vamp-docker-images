@@ -148,6 +148,6 @@ docker tag "magneticio/vamp-quick-start:${VAMP_TAG_PREFIX}${tag}" "magneticio/va
 
 for image in $ee_images; do
   cd ${workspace}/vamp-docker-images-ee/$image && ./build.sh ${VAMP_TAG_PREFIX}${tag}
-}
+done
 
 cd $OLD_PWD
