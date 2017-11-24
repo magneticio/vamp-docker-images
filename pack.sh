@@ -79,6 +79,10 @@ pack() {
     cp ${root}/Makefile.local ${workspace}/${project}/
   fi
 
+  if [[ -f ${root}/local.sh ]]; then
+    cp ${root}/local.sh ${workspace}/${project}/
+  fi
+
   make pack
 }
 

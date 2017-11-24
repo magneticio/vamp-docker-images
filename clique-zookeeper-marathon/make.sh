@@ -11,7 +11,7 @@ yellow=`tput setaf 3`
 build_server="magneticio/buildserver"
 dir_sbt=${HOME}/.sbt/boot
 dir_ivy=${HOME}/.ivy2
-test -f ${dir}/local.sh && source ${dir}/local.sh
+test -f ${dir}/../local.sh && source ${dir}/../local.sh
 
 metronome_version=0.2.2
 

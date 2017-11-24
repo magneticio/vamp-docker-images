@@ -10,7 +10,7 @@ yellow=$(tput setaf 3)
 
 packer=${PACKER:-packer}
 build_server="magneticio/buildserver"
-test -f ${dir}/local.sh && source ${dir}/local.sh
+test -f ${dir}/../local.sh && source ${dir}/../local.sh
 
 docker pull $build_server
 

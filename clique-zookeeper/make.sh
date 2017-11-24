@@ -10,7 +10,7 @@ yellow=`tput setaf 3`
 
 build_server="magneticio/buildserver"
 dir_m2=${HOME}/.m2/repository
-test -f ${dir}/local.sh && source ${dir}/local.sh
+test -f ${dir}/../local.sh && source ${dir}/../local.sh
 
 docker pull $build_server
 
