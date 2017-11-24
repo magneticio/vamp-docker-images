@@ -43,7 +43,7 @@
     "GATEWAY_DRIVER_HOST": "172.17.0.1",
     "VAMP_WAIT_FOR": "http://0.0.0.0:8081/api/connections",
     "ZOOKEEPER": "172.17.0.1:2181",
-    "MESOS": "http://172.17.0.1:5050",
+    "MESOS_URL": "http://172.17.0.1:5050",
     "MARATHON": "http://172.17.0.1:8090",
     "MYSQL": "jdbc:mysql://172.17.0.1:3306",
     "VAMP_ELASTICSEARCH_URL": "http://172.17.0.1:9200"
