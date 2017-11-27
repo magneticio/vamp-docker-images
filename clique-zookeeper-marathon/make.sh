@@ -35,7 +35,6 @@ fi
 git clone https://github.com/dcos/metronome.git
 cd ${target}/metronome
 git checkout tags/v$metronome_version
-sed -i 's/DEBUG/INFO/g' src/main/resources/logback.xml
 
 docker run \
   --rm \
@@ -46,7 +45,7 @@ docker run \
   --env BUILD_UID=$(id -u) \
   --env BUILD_GID=$(id -g) \
   $build_server \
-    sbt universal:packageBin
+    "sed -i 's/DEBUG/INFO/g' src/main/resources/logback.xml && sbt universal:packageBin"
 
 mv $(find "${target}/metronome/target" -name 'metronome-*.zip' | sort | tail -1) ${target}/metronome.zip
 echo "${green}copying files...${reset}"
