@@ -59,6 +59,8 @@ pipeline {
               export VAMP_CHANGE_TARGET=$CHANGE_TARGET
               export VAMP_CHANGE_URL=$CHANGE_URL
               export VAMP_TAG_PREFIX="pr-$(echo $CHANGE_URL | sed -e 's,.*/vamp-docker-images/pull/,,g')-"
+            else
+              export VAMP_TAG_PREFIX="build-$BUILD_NUMBER-"
             fi
 
             if [ -n "$VAMP_CHANGE_TARGET" ]; then
@@ -168,6 +170,8 @@ pipeline {
       if [ -n "$CHANGE_TARGET" ]; then
         export VAMP_GIT_BRANCH=$CHANGE_TARGET
         export VAMP_TAG_PREFIX="pr-$(echo $CHANGE_URL | sed -e 's,.*/vamp-docker-images/pull/,,g')-"
+      else
+        export VAMP_TAG_PREFIX="build-$BUILD_NUMBER-"
       fi
 
       if [ -z "$VAMP_GIT_BRANCH" ]; then
