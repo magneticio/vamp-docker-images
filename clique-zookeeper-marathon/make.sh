@@ -8,10 +8,10 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-build_server="magneticio/buildserver"
+test -f ${dir}/../local.sh && source ${dir}/../local.sh
+build_server=${BUILD_SERVER:-"magneticio/buildserver"}
 dir_sbt=${HOME}/.sbt/boot
 dir_ivy=${HOME}/.ivy2
-test -f ${dir}/../local.sh && source ${dir}/../local.sh
 
 metronome_version=0.2.2
 

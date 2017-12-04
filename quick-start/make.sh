@@ -8,9 +8,9 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=$(tput setaf 3)
 
-packer=${PACKER:-packer}
-build_server="magneticio/buildserver"
 test -f ${dir}/../local.sh && source ${dir}/../local.sh
+packer=${PACKER:-packer}
+build_server=${BUILD_SERVER:-"magneticio/buildserver"}
 
 docker pull $build_server
 

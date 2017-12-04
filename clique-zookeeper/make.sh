@@ -8,9 +8,9 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-build_server="magneticio/buildserver"
-dir_m2=${HOME}/.m2/repository
 test -f ${dir}/../local.sh && source ${dir}/../local.sh
+build_server=${BUILD_SERVER:-"magneticio/buildserver"}
+dir_m2=${HOME}/.m2/repository
 
 docker pull $build_server
 
