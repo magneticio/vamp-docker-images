@@ -46,16 +46,7 @@ init_project() {
     && repo_dir="$2" \
     || repo_dir="$( basename $repo_url | sed 's/\.git$//' )"
 
-  branch="master"
-
-  check_url=$(curl -s -L -I ${repo_url} | grep HTTP | tail -n 1 | awk '{ print $2 }')
-
-  if [ ${check_url} = "200" ]; then
-    branch=$(git ls-remote ${repo_url} | awk '{ print $2 }' | grep -E "refs/heads/${VAMP_GIT_BRANCH}$" | sed -e "s/refs\/heads\///")
-    branch=${branch:-"master"}
-  else
-    repo_url="https://github.com/magneticio/$(basename $repo_url)"
-  fi
+  branch="${VAMP_GIT_BRANCH}"
 
   info "Project '$repo_url' - ${branch} at '${src_dir}/${repo_dir}'"
 
@@ -88,43 +79,6 @@ build_external() {
   cd -
 }
 
-build_ee() {
-  project="vamp-ee"
-  echo "${green}project: ${yellow}${project}${reset}"
-
-  if [[ -d ${src_dir}/${project} ]] ; then
-    echo "${green}updating existing repository${reset}"
-
-    cd "$src_dir/$project"
-    git reset --hard
-    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-    git fetch --depth=200 --prune
-
-    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
-    if [  $got_branch -gt 0 ]; then
-      git checkout ${VAMP_GIT_BRANCH}
-      git pull
-      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
-      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    fi
-
-    cd -
-  else
-    cd "$src_dir"
-    local old_pwd=$OLDPWD
-    git clone git@github.com:magneticio/vamp-ee.git "$project"
-    cd ${project}
-    declare -i got_branch=$(git branch -a --list | grep -c " remotes/origin/${VAMP_GIT_BRANCH}$")
-    if [ $got_branch -gt 0 ]; then
-      git checkout ${VAMP_GIT_BRANCH}
-      ./docker/local/make.sh - ${VAMP_GIT_BRANCH}
-      ./docker/dcos/make.sh - ${VAMP_GIT_BRANCH}
-    fi
-    cd $old_pwd
-  fi
-}
-
-init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
 
@@ -146,22 +100,5 @@ cd ${root}
 
 build_external vamp-gateway-agent
 build_external vamp-workflow-agent
-build_external vamp-runner
-
-
-# Build the quick-start images
-./build.sh --build --image=clique-base
-./build.sh --build --image=clique-zookeeper
-./build.sh --build --image=clique-zookeeper-marathon
-./build.sh --build --image=quick-start
-
-tag=$VAMP_GIT_BRANCH
-if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-  tag="katana"
-fi
-docker tag "magneticio/vamp-quick-start:${tag}" "magneticio/vamp-docker:${tag}"
 
 cd $OLD_PWD
-
-export CLEAN_BUILD=true
-build_ee

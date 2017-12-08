@@ -38,11 +38,8 @@ ${reset}"
 
 docker_images="
   magneticio/vamp
-  magneticio/vamp-ee
   magneticio/vamp-gateway-agent
   magneticio/vamp-workflow-agent
-  magneticio/vamp-docker
-  magneticio/vamp-runner
 "
 
 # Check that we have our images available

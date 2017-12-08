@@ -49,12 +49,12 @@ pipeline {
 */
           "build-images": {
             sh '''
-            if [ "$VAMP_GIT_ROOT" = "" ]; then
-              export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print $1 "//" $3 "/" $4 }')
+            if [ -z "$VAMP_GIT_ROOT" ]; then
+              export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print "git@" $3 ":" $4 }')
             fi
 
-            if [ "$VAMP_GIT_BRANCH" = "" ]; then
-              export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+            if [ -z "$VAMP_GIT_BRANCH" ]; then
+              export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
 
             git pull
@@ -64,7 +64,8 @@ pipeline {
               docker pull ${image} || true
             done
 
-            ./build.sh
+            mkdir -p ${WORKSPACE}/.cache/bower ${WORKSPACE}/.ivy2 ${WORKSPACE}/.node-gyp ${WORKSPACE}/.npm ${WORKSPACE}/.sbt/boot ${WORKSPACE}/.m2/repository
+            env HOME=$WORKSPACE ./build.sh
             ./push.sh $VAMP_GIT_BRANCH
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
               ./push.sh katana
@@ -142,8 +143,8 @@ pipeline {
       sh '''
       set +e
 
-      if [ "$VAMP_GIT_BRANCH" = "" ]; then
-        export VAMP_GIT_BRANCH=$(echo $BRANCH_NAME | sed 's/[^a-z0-9_-]/-/gi')
+      if [ -z "$VAMP_GIT_BRANCH" ]; then
+        export VAMP_GIT_BRANCH=$BRANCH_NAME
       fi
 
       tag=$VAMP_GIT_BRANCH
@@ -162,6 +163,7 @@ pipeline {
       dangling_images=$(docker image ls -f dangling=true -q)
       test -n "${dangling_images}" && docker rmi -f ${dangling_images}
 
+      docker volume rm packer 2>/dev/null
       dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
       test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
