@@ -82,8 +82,7 @@ function docker_rmi {
 }
 
 function docker_make {
-    make_file=${dir}/$1/make.sh
-    if [ -x "${make_file}" ]
+    if [ -x "${dir}/$1/make.sh" ]
     then
         echo "${green}executing make.sh from $1 ${reset}"
         ${dir}/$1/make.sh ${dir}/${target}/$1
@@ -92,6 +91,17 @@ function docker_make {
             echo "${red}make.sh failed with code: ${exit_code}${reset}"
             exit ${exit_code}
         fi
+    elif [ -e "${dir}/$1/Makefile" ]
+    then
+        echo "${green}executing make in $1 directory ${reset}"
+        make -C ${dir}/$1
+        exit_code=$?
+        if [ ${exit_code} != 0 ]; then
+            echo "${red}make failed with code: ${exit_code}${reset}"
+            exit ${exit_code}
+        fi
+        # only alpine-jdk is build with a Makefile and the build is fully contained
+        flag_build=0
     else
         echo "${green}copying files from: $1 ${reset}"
         cp -R ${dir}/$1 ${target} 2> /dev/null
@@ -125,12 +135,14 @@ function docker_make {
 
     fi
 
-    # FIXME: Workaround to work on both Linux and OSX
-    local tmpfile="${dir}/.build.tmp"
-    > "$tmpfile"
-    sed "s/VAMP_VERSION/${vamp_version}/g" "${target}/$1/Dockerfile" > "$tmpfile"
-    mv "$tmpfile" "${target}/$1/Dockerfile"
-    rm -f "$tmpfile"
+    if [ -e "${target}/$1/Dockerfile" ];
+    then
+        local tmpfile="${dir}/.build.tmp"
+        > "$tmpfile"
+        sed "s/VAMP_VERSION/${vamp_version}/g" "${target}/$1/Dockerfile" > "$tmpfile"
+        mv "$tmpfile" "${target}/$1/Dockerfile"
+        rm -f "$tmpfile"
+    fi
 }
 
 function docker_build {

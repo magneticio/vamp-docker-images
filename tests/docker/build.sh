@@ -114,6 +114,7 @@ export CLEAN_BUILD=false
 OLD_PWD=$PWD
 
 cd ../..
+./build.sh --make --image=alpine-jdk
 source pack.sh
 
 source ${workspace}/vamp-docker-images-ee/tests/build-conf.sh
