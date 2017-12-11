@@ -15,10 +15,9 @@ services:
       - "5601:5601"
       - "2181:2181"
     environment:
-      - DOCKER_HOST_IP=192.168.65.2
+      - DOCKER_HOST_IP=172.17.0.1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/bin/docker
       - /sys/fs/cgroup:/sys/fs/cgroup
     networks:
       vamp:

@@ -131,7 +131,6 @@ if [[ ${flag_clique_etcd} -eq 1 ]]; then
     docker run --net=host \
                --security-opt=seccomp:unconfined \
                -v /var/run/docker.sock:/var/run/docker.sock \
-               -v $(which docker):/bin/docker \
                -v "/sys/fs/cgroup:/sys/fs/cgroup" \
                magneticio/vamp-clique-etcd:${vamp_version}
 fi
@@ -141,7 +140,6 @@ if [[ ${flag_clique_consul} -eq 1 ]]; then
     docker run --net=host \
                --security-opt=seccomp:unconfined \
                -v /var/run/docker.sock:/var/run/docker.sock \
-               -v $(which docker):/bin/docker \
                -v "/sys/fs/cgroup:/sys/fs/cgroup" \
                magneticio/vamp-clique-consul:${vamp_version}
 fi
@@ -149,7 +147,6 @@ fi
 if [[ ${flag_clique_zookeeper} -eq 1 ]]; then
     echo "${green}Running: clique-zookeeper${reset}"
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
-               -v /usr/bin/docker:/bin/docker \
                -v "/sys/fs/cgroup:/sys/fs/cgroup" \
                -p 5050:5050 \
                -p 8989:8989 \
@@ -164,7 +161,6 @@ if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
     DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
-           -v /usr/bin/docker:/bin/docker \
            -v "/sys/fs/cgroup:/sys/fs/cgroup" \
            -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
            -p 5050:5050 \
@@ -183,7 +179,6 @@ if [[ ${flag_quick_start} -eq 1 ]]; then
     DOCKER_HOST_IP="$( get_docker_host_ip )"
 
     docker run -v /var/run/docker.sock:/var/run/docker.sock \
-           -v /usr/bin/docker:/bin/docker \
            -v "/sys/fs/cgroup:/sys/fs/cgroup" \
            -e "DOCKER_HOST_IP=${DOCKER_HOST_IP}" \
            -p 8080:8080 \

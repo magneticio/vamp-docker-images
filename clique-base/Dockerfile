@@ -7,6 +7,8 @@ ENV GOSU_VERSION 1.10
 
 ENV KIBANA_VERSION 5.5.2
 
+ENV DOCKER_CE_VERSION 17.09.1
+
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
@@ -85,7 +87,14 @@ RUN set -x \
 	&& sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /etc/kibana/kibana.yml \
 	&& grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" /etc/kibana/kibana.yml
 
+# Docker CE
 
+RUN set -ex \
+	&& curl -o /tmp/docker-ce.deb https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_${DOCKER_CE_VERSION}~ce-0~ubuntu_amd64.deb \
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends /tmp/docker-ce.deb \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm /tmp/docker-ce.deb
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
 ENV PATH /usr/share/kibana/bin:$PATH
