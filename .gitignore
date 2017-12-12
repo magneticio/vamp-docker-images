@@ -3,3 +3,5 @@ target/
 Makefile.local
 local.sh
 .log
+.env
+.data

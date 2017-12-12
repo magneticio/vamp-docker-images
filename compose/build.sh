@@ -14,4 +14,8 @@ build-vamp
 echo "${green}Building ${yellow}'vamp-compose'${reset} Docker image${reset}"
 cd ${dir} && ../build.sh --build --image=vamp-compose
 
+cat > .env <<EOF
+VAMP_VERSION=${vamp_version}
+EOF
+
 echo "${green}Done.${reset}"

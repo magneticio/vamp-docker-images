@@ -28,6 +28,7 @@ COMPOSE_SLEEP_TIME=0
 MARATON_SLEEP_TIME=10
 
 test -f ${dir}/../local.sh && source ${dir}/../local.sh
+test -f ${dir}/.env && source ${dir}/.env
 
 echo "${green}Docker compose file: ${yellow}${DOCKER_COMPOSE_FILE}${reset}"
 
@@ -52,7 +53,7 @@ function wait_for() {
 }
 
 function curl() {
-  local curl_args="-s -verbose -H Content-Type:application/json -H Accept:application/json,text/plain"
+  local curl_args="-s --verbose -H Content-Type:application/json -H Accept:application/json,text/plain"
   $(${CURL} ${curl_args} "${@}" > .log 2>&1) || {
     echo "${yellow}Retrying ${CURL} ${curl_args} ${@}${reset}"
     sleep 5
@@ -70,15 +71,17 @@ docker-compose -f ${DOCKER_COMPOSE_FILE} -p vamp up -d --force-recreate
 
 wait_for Marathon ${MARATHON}
 if [ "${MARATON_SLEEP_TIME}" -gt 0 ]; then
-  echo "${yellow}Waiting ${MARATON_SLEEP_TIME} second(s) before deploying lifter${reset}"
+  echo "${yellow}Waiting ${MARATON_SLEEP_TIME} second(s) before deploying vamp${reset}"
   sleep ${MARATON_SLEEP_TIME}
 fi
 
 echo "${green}Deploying Vamp Gateway Agent${reset}"
-curl -X POST ${MARATHON} -d @vga.json
+sed -e "s/katana/${VAMP_VERSION:-katana}/g" vga.json > .data
+curl -X POST ${MARATHON} -d @.data
 
 echo "${green}Deploying Vamp${reset}"
-curl -X POST ${MARATHON} -d @vamp.json
+sed -e "s/katana/${VAMP_VERSION:-katana}/g" vamp.json > .data
+curl -X POST ${MARATHON} -d @.data
 
 echo "${green}Running.
 Lifter UI  : http://localhost:8081

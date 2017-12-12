@@ -3,7 +3,7 @@ version: "3"
 services:
 
   clique:
-    image: magneticio/vamp-clique-zookeeper-marathon:katana
+    image: magneticio/vamp-clique-zookeeper-marathon:${VAMP_VERSION:-katana}
     privileged: true
     hostname: localhost
     ports:
