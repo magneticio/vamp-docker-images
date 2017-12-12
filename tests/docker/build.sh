@@ -12,6 +12,8 @@ set -o errexit # Abort script at first error (command exits non-zero).
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 src_dir="../../target"
 
+test -f ${root}/../../local.sh && source ${root}/../../local.sh
+
 reset=$(tput sgr0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
@@ -91,6 +93,14 @@ init_project() {
   fi
 
   popd
+
+  if [[ -f ${root}/../../Makefile.local ]]; then
+    cp ${root}/../../Makefile.local ${src_dir}/${repo_dir}/
+  fi
+
+  if [[ -f ${root}/../../local.sh ]]; then
+    cp ${root}/../../local.sh ${src_dir}/${repo_dir}/
+  fi
 }
 
 build_external() {
