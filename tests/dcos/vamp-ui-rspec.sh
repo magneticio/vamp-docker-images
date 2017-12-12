@@ -84,18 +84,17 @@ init_project() {
 
   branch="master"
 
-  remotes=($(git ls-remote ${repo_url} || echo fail))
-
-  if [ "${remotes[0]}" != "fail" ]; then
-    for x in "${remotes[@]}"; do
-      if [ "${x}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
-        branch=${VAMP_GIT_BRANCH}
-        break
-      fi
-    done
-  else
-    repo_url="git@github.com:magneticio/$(basename $repo_url)"
-  fi
+  local sha ref
+  while read sha ref; do
+    if [ "${ref}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
+      branch=${VAMP_GIT_BRANCH}
+      break
+    fi
+    if [ "${sha}" = "fail" ]; then
+      repo_url="git@github.com:magneticio/$(basename $repo_url)"
+      break
+    fi
+  done < <(git ls-remote ${repo_url} || echo fail)
 
   info "Project '$repo_url' - ${branch} at '${src_dir}/${repo_dir}'"
 

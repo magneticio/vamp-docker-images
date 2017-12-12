@@ -37,18 +37,17 @@ pack() {
   url="${VAMP_GIT_ROOT}/${project}.git"
   branch="master"
 
-  remotes=($(git ls-remote ${url} || echo fail))
-
-  if [ "${remotes[0]}" != "fail" ]; then
-    for x in "${remotes[@]}"; do
-      if [ "${x}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
-        branch=${VAMP_GIT_BRANCH}
-        break
-      fi
-    done
-  else
-    url="git@github.com:magneticio/${project}.git"
-  fi
+  local sha ref
+  while read sha ref; do
+    if [ "${ref}" = "refs/heads/${VAMP_GIT_BRANCH}" ]; then
+      branch=${VAMP_GIT_BRANCH}
+      break
+    fi
+    if [ "${sha}" = "fail" ]; then
+      url="git@github.com:magneticio/${project}.git"
+      break
+    fi
+  done < <(git ls-remote ${url} || echo fail)
 
   echo "${green}project: ${yellow}${project} - ${url} - ${branch}${reset}"
 
