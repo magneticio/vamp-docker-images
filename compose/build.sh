@@ -7,13 +7,17 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
+test -f ${dir}/../local.sh && source ${dir}/../local.sh
+
+cd ${dir}/
+
 echo "${green}Building ${yellow}'magneticio/java:openjdk-8-jre-alpine'${reset} Docker image${reset}"
-cd ${dir}/../alpine-jdk && make build
+../build.sh --make --image=alpine-jdk
 
 echo "${green}Building ${yellow}'vamp'${reset} Docker image${reset}"
-cd ${dir} && ../build.sh -b -c -i=vamp
+bash -x ../build.sh --build --image=vamp
 
 echo "${green}Building ${yellow}'vamp-compose'${reset} Docker image${reset}"
-../build.sh -b -c -i=vamp-compose
+../build.sh --build --image=vamp-compose
 
 echo "${green}Done.${reset}"

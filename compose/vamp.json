@@ -41,7 +41,7 @@
     "RUN_VAMP_LIFTER": "true",
     "VAMP_HOST": "172.17.0.1",
     "GATEWAY_DRIVER_HOST": "172.17.0.1",
-    "VAMP_WAIT_FOR": "http://0.0.0.0:8081/api/connections",
+    "VAMP_WAIT_FOR": "http://0.0.0.0:8081/api/info",
     "ZOOKEEPER": "172.17.0.1:2181",
     "MESOS_URL": "http://172.17.0.1:5050",
     "MARATHON": "http://172.17.0.1:8090",

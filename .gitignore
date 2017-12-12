@@ -2,3 +2,4 @@ target/
 
 Makefile.local
 local.sh
+.log

@@ -14,45 +14,73 @@ echo "${green}
 ╚██╗ ██╔╝██╔══██║██║╚██╔╝██║██╔═══╝
  ╚████╔╝ ██║  ██║██║ ╚═╝ ██║██║
   ╚═══╝  ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝
-                       by magnetic.io
+                      by magnetic.io
 ${reset}"
 
-set -m
+set -eu
 cd ${dir}
 
-DOCKER_COMPOSE_FILE=$1
+DOCKER_COMPOSE_FILE=${1:-docker-compose.yml}
 
-if [ -z ${DOCKER_COMPOSE_FILE} ]; then
-  DOCKER_COMPOSE_FILE=docker-compose.yml
-  echo "${green}Docker compose file not specified, using: ${yellow}${DOCKER_COMPOSE_FILE}${reset}"
-else
-  echo "${green}Docker compose file: ${yellow}${DOCKER_COMPOSE_FILE}${reset}"
-fi
+CURL=$(which curl)
+
+COMPOSE_SLEEP_TIME=0
+MARATON_SLEEP_TIME=10
+
+test -f ${dir}/../local.sh && source ${dir}/../local.sh
+
+echo "${green}Docker compose file: ${yellow}${DOCKER_COMPOSE_FILE}${reset}"
+
+function wait_for() {
+  sleep ${COMPOSE_SLEEP_TIME}
+  local id=${1:-}
+  local url=${2:-}
+  local filter=${3:-}
+  local body=""
+  while true; do
+    status=$(${CURL} -s -w '%{http_code}' ${url} -o /dev/null || true)
+    test ${status} -eq 200 -o ${status} -eq 201 && test -n "${filter}" && body=$(${CURL} -s ${url} | grep -Eve "${filter}" || true)
+    if [ ${status} -eq 200 -o ${status} -eq 201 ] && [ -z "${body}" ]; then
+      echo "${green}${id}: OK${reset}"
+      break
+    else
+      echo "${yellow}Waiting for ${id}...${reset}"
+    fi
+    sleep 1
+    test $? -gt 128 && exit
+  done
+}
+
+function curl() {
+  local curl_args="-s -verbose -H Content-Type:application/json -H Accept:application/json,text/plain"
+  $(${CURL} ${curl_args} "${@}" > .log 2>&1) || {
+    echo "${yellow}Retrying ${CURL} ${curl_args} ${@}${reset}"
+    sleep 5
+    $(${CURL} ${curl_args} "${@}" > .log 2>&1)
+  } || {
+    echo "${red}Failed to run ${CURL} ${curl_args} ${@}${reset}"
+    cat .log >&2
+  }
+}
+
+MARATHON=http://localhost:8090/v2/apps
 
 echo "${green}Running Docker compose${reset}"
 docker-compose -f ${DOCKER_COMPOSE_FILE} -p vamp up -d --force-recreate
 
-MARATHON=http://localhost:8090/v2/apps
-while true; do
-  status=$(curl -s -w '%{http_code}' ${MARATHON} -o /dev/null)
-  if [ ${status} -eq 200 ]; then
-    echo "${green}Marathon is up, starting Vamp${reset}"
-    break
-  else
-    echo "${yellow}Waiting for Marathon...${reset}"
-  fi
-  sleep 5
-  test $? -gt 128 && exit
-done
-
-echo "${green}Deploying Vamp${reset}"
-curl -X POST ${MARATHON} -d @vamp.json -H "Content-type: application/json"
-echo
-
-if [ ${DOCKER_COMPOSE_FILE} == 'docker-compose.yml' ]; then
-  echo "${green}Deploying Vamp Gateway Agent${reset}"
-  curl -X POST ${MARATHON} -d @vga.json -H "Content-type: application/json"
-  echo
+wait_for Marathon ${MARATHON}
+if [ "${MARATON_SLEEP_TIME}" -gt 0 ]; then
+  echo "${yellow}Waiting ${MARATON_SLEEP_TIME} second(s) before deploying lifter${reset}"
+  sleep ${MARATON_SLEEP_TIME}
 fi
 
-echo "${green}Running.${reset}"
+echo "${green}Deploying Vamp Gateway Agent${reset}"
+curl -X POST ${MARATHON} -d @vga.json
+
+echo "${green}Deploying Vamp${reset}"
+curl -X POST ${MARATHON} -d @vamp.json
+
+echo "${green}Running.
+Lifter UI  : http://localhost:8081
+Vamp UI    : http://localhost:8080
+${reset}"
