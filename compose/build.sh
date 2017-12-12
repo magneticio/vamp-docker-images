@@ -1,23 +1,17 @@
 #!/usr/bin/env bash
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${dir}/common.sh
 
-reset=`tput sgr0`
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
-
-test -f ${dir}/../local.sh && source ${dir}/../local.sh
-
-cd ${dir}/
-
-echo "${green}Building ${yellow}'magneticio/java:openjdk-8-jre-alpine'${reset} Docker image${reset}"
-../build.sh --make --image=alpine-jdk
+if [ "${CLEAN_BUILD:-true}" = "true" ]; then
+  echo "${green}Building ${yellow}'vamp-gateway-agent' and 'vamp-workflow-agent'${reset} Docker images${reset}"
+  build-agents
+fi
 
 echo "${green}Building ${yellow}'vamp'${reset} Docker image${reset}"
-bash -x ../build.sh --build --image=vamp
+build-vamp
 
 echo "${green}Building ${yellow}'vamp-compose'${reset} Docker image${reset}"
-../build.sh --build --image=vamp-compose
+cd ${dir} && ../build.sh --build --image=vamp-compose
 
 echo "${green}Done.${reset}"
