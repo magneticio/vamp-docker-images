@@ -74,7 +74,7 @@ pipeline {
             git pull
             cd tests/docker
 
-            for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp'); do
+            for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp' -ve 'magneticio/java'); do
               docker pull ${image} || true
             done
 
