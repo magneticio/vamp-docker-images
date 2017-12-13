@@ -38,6 +38,7 @@ target=${root}/target
 
 function init_project() {
   local project=$1
+  mkdir -p ${target}
   cd ${target}
 
   local url="${VAMP_GIT_ROOT}/${project}.git"
