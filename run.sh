@@ -95,13 +95,13 @@ fi
 if [[ ${flag_vga} -eq 1 ]]; then
     echo "${green}Running: vamp-gateway-agent${reset}"
     docker run -d --name=vamp_vga \
-               --net=host \
+               --net=${VGA_NETWORK:-host} \
                --privileged \
                -e VAMP_GATEWAY_AGENT_LOGO=0 \
                -e VAMP_KEY_VALUE_STORE_TYPE=zookeeper \
-               -e VAMP_KEY_VALUE_STORE_CONNECTION=127.0.0.1:2181 \
+               -e VAMP_KEY_VALUE_STORE_CONNECTION=${DOCKER_HOST_IP:-172.17.0.1}:2181 \
                -e VAMP_KEY_VALUE_STORE_PATH=/vamp/vamp/gateways/haproxy/1.7/configuration \
-               -e VAMP_ELASTICSEARCH_URL=http://127.0.0.1:9200 \
+               -e VAMP_ELASTICSEARCH_URL=http://${DOCKER_HOST_IP:-172.17.0.1}:9200 \
                magneticio/vamp-gateway-agent:${vamp_version}
 fi
 
@@ -144,7 +144,7 @@ if [[ ${flag_clique_zookeeper_marathon} -eq 1 ]]; then
     docker run -d --name=vamp_clique-zookeeper-marathon \
            -v /var/run/docker.sock:/var/run/docker.sock \
            -v /sys/fs/cgroup:/sys/fs/cgroup \
-           -e DOCKER_HOST_IP=172.17.0.1 \
+           -e DOCKER_HOST_IP=${DOCKER_HOST_IP:-172.17.0.1} \
            -p 5050:5050 \
            -p 5051:5051 \
            -p 5052:5052 \
@@ -164,7 +164,7 @@ if [[ ${flag_quick_start} -eq 1 ]]; then
     docker run -d --name=vamp_quick-start \
            -v /var/run/docker.sock:/var/run/docker.sock \
            -v /sys/fs/cgroup:/sys/fs/cgroup \
-           -e DOCKER_HOST_IP=172.17.0.1 \
+           -e DOCKER_HOST_IP=${DOCKER_HOST_IP:-172.17.0.1} \
            -p 8080:8080 \
            -p 8081:8081 \
            -p 5050:5050 \
