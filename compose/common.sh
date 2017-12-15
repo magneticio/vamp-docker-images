@@ -41,7 +41,7 @@ function init_project() {
   mkdir -p ${target}
   cd ${target}
 
-  local url="${VAMP_GIT_ROOT}/${project}.git"
+  local url="${vamp_git_root}/${project}.git"
   local branch="master"
 
   local sha ref
