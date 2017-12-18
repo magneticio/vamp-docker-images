@@ -109,7 +109,7 @@ function docker_make {
     fi
 
     # Change all instances of "katana" to a release, if we're on a tag
-    if [[ $vamp_version != "katana" ]] ; then
+    if [[ $vamp_version != "katana" && -d "${target}/${1}" ]] ; then
       # Whitelist of files to look for
       local whitelist
       local target_file
