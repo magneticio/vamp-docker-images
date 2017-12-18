@@ -43,9 +43,7 @@ docker_images="
   magneticio/vamp
   magneticio/vamp-gateway-agent
   magneticio/vamp-workflow-agent
-  magneticio/vamp-clique-zookeeper-marathon
   magneticio/vamp-docker
-  magneticio/vamp-runner
 "
 source ${workspace}/vamp-docker-images-ee/tests/push-conf.sh
 

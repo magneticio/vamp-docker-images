@@ -111,7 +111,6 @@ build_external() {
   cd -
 }
 
-init_project ${VAMP_GIT_ROOT}/vamp-runner.git
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
 init_project ${VAMP_GIT_ROOT}/vamp-docker-images-ee.git
@@ -143,18 +142,19 @@ fi
 ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-dcos
 ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-kubernetes
 
-
 build_external vamp-gateway-agent
 build_external vamp-workflow-agent
-build_external vamp-runner
 
+source ${workspace}/vamp-docker-images-ee/tests/push-conf.sh
 
-# Build the quick-start images
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-base
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper-marathon
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=quick-start
-docker tag "magneticio/vamp-quick-start:${VAMP_TAG_PREFIX}${tag}" "magneticio/vamp-docker:${VAMP_TAG_PREFIX}${tag}"
+# Build the quick-start images when needed
+if [ -n "${docker_images}" && -z "${docker_images/*vamp-docker*/}" ]; then
+  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-base
+  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper
+  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper-marathon
+  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=quick-start
+  docker tag "magneticio/vamp-quick-start:${VAMP_TAG_PREFIX}${tag}" "magneticio/vamp-docker:${VAMP_TAG_PREFIX}${tag}"
+fi
 
 for image in $ee_images; do
   cd ${workspace}/vamp-docker-images-ee/$image && ./build.sh ${VAMP_TAG_PREFIX}${tag}
