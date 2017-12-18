@@ -199,6 +199,8 @@ pipeline {
       dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
       test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
+      find ${WORKSPACE}/target -type d -name 'scala-2.*' | xargs -I {} rm -vf {}/*.jar
+
       exit 0
       '''
     }
