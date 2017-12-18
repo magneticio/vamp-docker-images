@@ -148,7 +148,7 @@ build_external vamp-workflow-agent
 source ${workspace}/vamp-docker-images-ee/tests/push-conf.sh
 
 # Build the quick-start images when needed
-if [ -n "${docker_images}" && -z "${docker_images/*vamp-docker*/}" ]; then
+if [ -z "${docker_images/*vamp-docker*/}" ]; then
   ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-base
   ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper
   ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper-marathon
