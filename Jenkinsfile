@@ -71,7 +71,7 @@ pipeline {
               export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
 
-            if [$VAMP_GIT_BRANCH = "master" ]; then
+            if [ $VAMP_GIT_BRANCH = "master" ]; then
               unset VAMP_TAG_PREFIX
             fi
 
@@ -182,7 +182,7 @@ pipeline {
         export VAMP_GIT_BRANCH=$BRANCH_NAME
       fi
 
-      if [$VAMP_GIT_BRANCH = "master" ]; then
+      if [ $VAMP_GIT_BRANCH = "master" ]; then
         unset VAMP_TAG_PREFIX
       fi
 
