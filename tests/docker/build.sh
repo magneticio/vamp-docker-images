@@ -132,30 +132,32 @@ done
 
 cd ${root}
 
-tag=${VAMP_GIT_BRANCH//\//_}
 if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-  tag="katana"
+  vamp_version="katana"
+else
+  vamp_version=${VAMP_GIT_BRANCH//\//_}
 fi
+vamp_version=${VAMP_TAG_PREFIX}${vamp_version}
 
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-custom
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-dcos
-./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=vamp-kubernetes
+./build.sh --build --version=${vamp_version} --image=vamp
+./build.sh --build --version=${vamp_version} --image=vamp-custom
+./build.sh --build --version=${vamp_version} --image=vamp-dcos
+./build.sh --build --version=${vamp_version} --image=vamp-kubernetes
 
 build_external vamp-gateway-agent
 build_external vamp-workflow-agent
 
 # Build the quick-start images when needed
 if [ -z "${docker_images/*vamp-docker*/}" ]; then
-  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-base
-  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper
-  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=clique-zookeeper-marathon
-  ./build.sh --build --version=${VAMP_TAG_PREFIX}${tag} --image=quick-start
-  docker tag "magneticio/vamp-quick-start:${VAMP_TAG_PREFIX}${tag}" "magneticio/vamp-docker:${VAMP_TAG_PREFIX}${tag}"
+  ./build.sh --build --version=${vamp_version} --image=clique-base
+  ./build.sh --build --version=${vamp_version} --image=clique-zookeeper
+  ./build.sh --build --version=${vamp_version} --image=clique-zookeeper-marathon
+  ./build.sh --build --version=${vamp_version} --image=quick-start
+  docker tag "magneticio/vamp-quick-start:${vamp_version}" "magneticio/vamp-docker:${vamp_version}"
 fi
 
 for image in $ee_images; do
-  cd ${workspace}/vamp-docker-images-ee/$image && ./build.sh ${VAMP_TAG_PREFIX}${tag}
+  cd ${workspace}/vamp-docker-images-ee/$image && ./build.sh ${vamp_version}
 done
 
 cd $OLD_PWD
