@@ -71,6 +71,11 @@ pipeline {
               export VAMP_GIT_BRANCH=$BRANCH_NAME
             fi
 
+            if [$VAMP_GIT_BRANCH = "master" ]; then
+              # this will also prevent removing of katana-tagged images
+              unset $VAMP_TAG_PREFIX
+            fi
+
             git pull
             cd tests/docker
 
