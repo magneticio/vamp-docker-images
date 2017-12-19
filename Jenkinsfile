@@ -73,7 +73,7 @@ pipeline {
 
             if [$VAMP_GIT_BRANCH = "master" ]; then
               # this will also prevent removing of katana-tagged images
-              unset $VAMP_TAG_PREFIX
+              unset VAMP_TAG_PREFIX
             fi
 
             git pull
