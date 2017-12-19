@@ -72,7 +72,6 @@ pipeline {
             fi
 
             if [$VAMP_GIT_BRANCH = "master" ]; then
-              # this will also prevent removing of katana-tagged images
               unset VAMP_TAG_PREFIX
             fi
 
@@ -183,9 +182,13 @@ pipeline {
         export VAMP_GIT_BRANCH=$BRANCH_NAME
       fi
 
+      if [$VAMP_GIT_BRANCH = "master" ]; then
+        unset VAMP_TAG_PREFIX
+      fi
+
       tag=$(echo $VAMP_GIT_BRANCH | sed 's,/,_,g')
       if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-        tag="katana"
+        tag="katana--"
       fi
       tag="${VAMP_TAG_PREFIX}${tag}"
 
