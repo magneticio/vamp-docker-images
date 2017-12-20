@@ -201,7 +201,10 @@ pipeline {
       test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 
       dangling_images=$(docker image ls -f dangling=true -q)
-      test -n "${dangling_images}" && docker rmi -f ${dangling_images}
+      while [ -n "${dangling_images}" ]; do
+        docker rmi -f ${dangling_images}
+        dangling_images=$(docker image ls -f dangling=true -q)
+      done
 
       docker volume rm "packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')" 2>/dev/null
       dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
