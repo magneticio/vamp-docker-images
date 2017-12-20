@@ -40,12 +40,12 @@ acs_delete() {
 }
 
 vamp_install() {
-  info "Installing MariaDB"
+  info "Installing MySQL"
 
-  dcos marathon app add "${dir}/marathon/mariadb.json" \
-    || errexit "Failed to install MariaDB"
+  dcos marathon app add "${dir}/marathon/mysql.json" \
+    || errexit "Failed to install MySQL"
 
-  wait_for_service "mariadb" 1
+  wait_for_service "mysql" 1
 
   info "Installing Elasticsearch"
 
@@ -71,9 +71,9 @@ vamp_uninstall() {
   dcos marathon app remove --force elasticsearch \
     || errexit "Failed to remove Elasticsearch"
 
-  info "Uninstalling MariaDB"
-  dcos marathon app remove --force mariadb \
-    || errexit "Failed to remove MariaDB"
+  info "Uninstalling MySQL"
+  dcos marathon app remove --force mysql \
+    || errexit "Failed to remove MySQL"
 }
 
 vamp_clean() {
@@ -85,9 +85,9 @@ vamp_clean() {
   dcos marathon app remove --force elasticsearch \
     || warn "Failed to remove Elasticsearch"
 
-  info "Uninstalling MariaDB"
-  dcos marathon app remove --force mariadb \
-    || warn "Failed to remove MariaDB"
+  info "Uninstalling MySQL"
+  dcos marathon app remove --force mysql \
+    || warn "Failed to remove MySQL"
 
   # wait for services to be removed
   REQUIRED_TASKS=0

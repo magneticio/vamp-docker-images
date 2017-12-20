@@ -1,12 +1,12 @@
 {
-  "id": "mariadb",
+  "id": "mysql",
   "cpus": 1,
   "mem": 1024,
   "instances": 1,
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "mariadb:latest",
+      "image": "mysql:5",
       "network": "HOST",
       "portMappings": [
         {

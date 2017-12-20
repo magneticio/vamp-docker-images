@@ -31,8 +31,8 @@
     "VAMP_WORKFLOW_DRIVER_VAMP_URL": "http://10.20.0.100:8080",
     "VAMP_ELASTICSEARCH_URL": "http://elasticsearch.marathon.mesos:9200",
     "VAMP_DB_TYPE": "mysql",
-    "VAMP_DB_URL": "jdbc:mysql://mariadb.marathon.mesos:3306/vamp-${namespace}?useSSL=false",
-    "VAMP_DB_CREATE_URL": "jdbc:mysql://mariadb.marathon.mesos:3306?useSSL=false",
+    "VAMP_DB_URL": "jdbc:mysql://mysql.marathon.mesos:3306/vamp-${namespace}?useSSL=false",
+    "VAMP_DB_CREATE_URL": "jdbc:mysql://mysql.marathon.mesos:3306?useSSL=false",
     "VAMP_DB_USER": "vamp",
     "VAMP_DB_PASSWORD": "secret"
   },
