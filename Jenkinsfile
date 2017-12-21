@@ -15,10 +15,9 @@ pipeline {
     stage('Deploy DCOS on Azure') {
       steps {
         sh '''
-        env
         cd tests/dcos
-        bash -x ./dcos-acs.sh create
-        bash -x ./dcos-acs.sh clean
+        ./dcos-acs.sh create
+        ./dcos-acs.sh clean
         '''
       }
     }
@@ -26,7 +25,7 @@ pipeline {
       steps {
         sh '''
         cd tests/dcos
-        bash -x ./dcos-acs.sh install
+        ./dcos-acs.sh install
         '''
       }
     }
