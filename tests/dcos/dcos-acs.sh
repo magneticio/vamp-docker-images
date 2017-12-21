@@ -28,8 +28,7 @@ acs_create() {
   terraform refresh
   fqdn=$(terraform output dcos-master-url | grep fqdn | awk -F ' = ' '{ print $2 }')
   cd -
-  ssh-keygen -R [${fqdn}]:2200 || true
-  ssh -oStrictHostKeyChecking=no -fNL 0.0.0.0:18080:localhost:80 -p 2200 dcos@${fqdn}
+  ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -fNL 0.0.0.0:18080:localhost:80 -p 2200 dcos@${fqdn}
   dcos config set core.dcos_url http://127.0.0.1:18080
 }
 
