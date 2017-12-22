@@ -15,6 +15,7 @@ pipeline {
     stage('Deploy DCOS on Azure') {
       steps {
         sh '''
+        env > ~/.jenkins.env.sh
         cd tests/dcos
         ./dcos-acs.sh create
         ./dcos-acs.sh clean
