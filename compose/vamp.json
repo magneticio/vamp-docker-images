@@ -1,7 +1,7 @@
 {
   "id": "/vamp/vamp",
   "cpus": 0.5,
-  "mem": 512,
+  "mem": 2048,
   "disk": 0,
   "instances": 1,
   "container": {
