@@ -1,23 +1,24 @@
 {
-  "id": "mariadb",
+  "id": "mysql",
+  "instances": 1,
   "cpus": 1,
   "mem": 1024,
-  "instances": 1,
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "mariadb:latest",
-      "network": "HOST",
+      "image": "mysql:5",
+      "network": "BRIDGE",
       "portMappings": [
         {
           "containerPort": 3306,
           "hostPort": 3306
         }
-      ]
+      ],
+      "forcePullImage": true
     }
   },
   "env": {
-    "MYSQL_ROOT_PASSWORD": "root",
+    "MYSQL_ROOT_PASSWORD": "secret",
     "MYSQL_USER": "vamp",
     "MYSQL_PASSWORD": "secret",
     "MYSQL_DATABASE": "vamp-vamp"
@@ -25,10 +26,10 @@
   "healthChecks": [
     {
       "protocol": "TCP",
-      "port": 3306,
       "gracePeriodSeconds": 300,
       "intervalSeconds": 60,
       "timeoutSeconds": 20,
+      "port": 3306,
       "maxConsecutiveFailures": 3,
       "ignoreHttp1xx": false
     }
