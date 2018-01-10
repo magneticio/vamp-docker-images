@@ -3,7 +3,8 @@ FROM magneticio/vamp-clique-base:VAMP_VERSION
 ENV ZOOKEEPER_VERSION 3.4.10
 
 RUN set -ex && \
-    wget -q -O - http://apache.mirrors.pair.com/zookeeper/zookeeper-$ZOOKEEPER_VERSION/zookeeper-$ZOOKEEPER_VERSION.tar.gz | tar -xzf - -C /usr/local && \
+    URL=$(curl -s 'https://www.apache.org/dyn/closer.cgi?as_json=1' | grep preferred | sed -e 's,.*preferred[^:]*:[^"]*",,g' -e 's,"$,,g' -e 's,/$,,g') && \
+    wget -q -O - ${URL}/zookeeper/zookeeper-$ZOOKEEPER_VERSION/zookeeper-$ZOOKEEPER_VERSION.tar.gz | tar -xzf - -C /usr/local && \
 		mv /usr/local/zookeeper-$ZOOKEEPER_VERSION /usr/local/zookeeper && \
 		mv /usr/local/zookeeper/bin/zkServer.sh /usr/local/zookeeper/bin/zookeeper && \
 		cp /usr/local/zookeeper/conf/zoo_sample.cfg /usr/local/zookeeper/conf/zoo.cfg && \
