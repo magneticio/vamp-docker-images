@@ -84,6 +84,7 @@ pipeline {
 
             export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
             mkdir -p ${WORKSPACE}/.cache/bower ${WORKSPACE}/.ivy2 ${WORKSPACE}/.node-gyp ${WORKSPACE}/.npm ${WORKSPACE}/.sbt/boot ${WORKSPACE}/.m2/repository
+            rm -rf ${WORKSPACE}/.ivy2/local
             env HOME=$WORKSPACE ./build.sh
             tag=$(echo $VAMP_GIT_BRANCH | sed 's,/,_,g')
             if [ "$VAMP_GIT_BRANCH" = "master" ]; then
