@@ -40,6 +40,11 @@ case ${key/\//} in
     ;;
     quick-start)
     flag_quick_start=1
+    quick_start_image=quick-start
+    ;;
+    vamp-docker)
+    flag_quick_start=1
+    quick_start_image=vamp-docker
     ;;
     -v=*|--version=*)
     vamp_version="${key#*=}"
@@ -177,5 +182,5 @@ if [[ ${flag_quick_start} -eq 1 ]]; then
            -p 9300:9300 \
            -p 5601:5601 \
            -p 2181:2181 \
-           magneticio/vamp-quick-start:${vamp_version}
+           magneticio/${quick_start_image}:${vamp_version}
 fi
