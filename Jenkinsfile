@@ -22,6 +22,14 @@ pipeline {
         '''
       }
     }
+    stage('Publish') {
+      steps {
+        sh '''
+        . tests/common.sh
+        test -z "$VAMP_CHANGE_TARGET" && ./tests/push.sh ${tag}
+        '''
+      }
+    }
   }
 
   post {

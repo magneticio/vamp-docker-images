@@ -23,7 +23,3 @@ mkdir -p ${HOME}/.cache/bower ${HOME}/.ivy2 ${HOME}/.node-gyp ${HOME}/.npm ${HOM
 rm -rf ${HOME}/.ivy2/local
 
 (cd "${root}/docker" && ./build.sh)
-
-if [ -z "$VAMP_CHANGE_TARGET" ]; then
-  ${root}/push.sh $tag
-fi
