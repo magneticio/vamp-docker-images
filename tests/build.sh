@@ -1,24 +1,29 @@
 #!/usr/bin/env bash
 
-set -ex
+set -eux -o pipefail
 
-source tests/common.sh
+function get-root-dir() {
+  local dir="$(dirname ${BASH_SOURCE[0]})"
+  (cd "${dir}" && pwd)
+}
 
-cd tests/docker
+root="$(get-root-dir)"
+source "${root}"/common.sh
 
-for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp' -ve 'magneticio/java'); do
+images=$(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp' -ve 'magneticio/java' -ve ':<none>')
+for image in ${images}; do
   docker pull ${image} || true
 done
 
-if [ -n "$WORKSPACE" ]; then
-  export HOME=$WORKSPACE
+if [ -n "${WORKSPACE:=}" ]; then
+  export HOME=${WORKSPACE}
 fi
 
 mkdir -p ${HOME}/.cache/bower ${HOME}/.ivy2 ${HOME}/.node-gyp ${HOME}/.npm ${HOME}/.sbt/boot ${HOME}/.m2/repository
 rm -rf ${HOME}/.ivy2/local
 
-./build.sh
+(cd "${root}/docker" && ./build.sh)
 
 if [ -z "$VAMP_CHANGE_TARGET" ]; then
-  ../push.sh $tag
+  ${root}/push.sh $tag
 fi
