@@ -51,8 +51,7 @@ function push() {
   for tag in ${@}; do
     for image in $(docker images --format "{{.Repository}}:{{.Tag}}" "${repo}:${tag}*"); do
       echo "${green}Pushing image: ${image}${reset}"
-      echo docker push "$image"
-      sleep 5
+      docker push "$image"
     done
   done
 }
