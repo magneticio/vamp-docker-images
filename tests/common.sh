@@ -27,3 +27,5 @@ if [ "$VAMP_GIT_BRANCH" = "master" ]; then
   tag=katana
 fi
 tag="${VAMP_TAG_PREFIX}${tag}"
+
+export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"

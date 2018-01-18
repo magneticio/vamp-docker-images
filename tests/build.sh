@@ -10,8 +10,6 @@ for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'v
   docker pull ${image} || true
 done
 
-export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
-
 if [ -n "$WORKSPACE" ]; then
   export HOME=$WORKSPACE
 fi

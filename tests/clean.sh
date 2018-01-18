@@ -20,7 +20,7 @@ while [ -n "${dangling_images}" ]; do
   dangling_images=$(docker image ls -f dangling=true -q)
 done
 
-docker volume rm "packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')" 2>/dev/null
+docker volume rm "${PACKER}" 2>/dev/null
 dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
 test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
