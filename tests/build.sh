@@ -39,9 +39,15 @@ for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'v
 done
 
 export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
-mkdir -p ${WORKSPACE}/.cache/bower ${WORKSPACE}/.ivy2 ${WORKSPACE}/.node-gyp ${WORKSPACE}/.npm ${WORKSPACE}/.sbt/boot ${WORKSPACE}/.m2/repository
-rm -rf ${WORKSPACE}/.ivy2/local
-env HOME=$WORKSPACE ./build.sh
+
+if [ -n "$WORKSPACE" ]; then
+  export HOME=$WORKSPACE
+fi
+
+mkdir -p ${HOME}/.cache/bower ${HOME}/.ivy2 ${HOME}/.node-gyp ${HOME}/.npm ${HOME}/.sbt/boot ${HOME}/.m2/repository
+rm -rf ${HOME}/.ivy2/local
+
+./build.sh
 
 if [ -z "$VAMP_CHANGE_TARGET" ]; then
   ./push.sh $tag
