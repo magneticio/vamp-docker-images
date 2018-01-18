@@ -1,32 +1,33 @@
 #!/usr/bin/env bash
 
 # Helper functions
-export TERM=xterm # XXX: To get around 'tput: No value for $TERM and no -T specified'
-info() { echo "$(date +%T): $(tput setaf 2)INFO:$(tput sgr0) $@"; }
-warn() { echo "$(date +%T): $(tput setaf 3)WARN:$(tput sgr0) $@"; }
-erro() { echo "$(date +%T): $(tput setaf 1)ERRO:$(tput sgr0) $@" >&2; }
-errexit() { erro "$@"; erro "Exiting!"; exit 1; }
+TERM=${TERM:-xterm}
+test -z "${TERM/*xterm*/}" || TERM=xterm
+export TERM
 
-set -o errexit # Abort script at first error (command exits non-zero).
+set -eu -o pipefail
 
-root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace="../../target"
+function get-root-dir() {
+  local dir="$(dirname ${BASH_SOURCE[0]})"
+  (cd "${dir}" && pwd)
+}
+
+root="$(get-root-dir)"
 
 reset=$(tput sgr0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 
-if [[ -z $1 ]] ; then
+if [ ${#} -eq 0 ]; then
   >&2 echo "Missing argument!"
   echo "Usage:"
-  echo "  test-push.sh <TAG_NAME>"
+  echo "  ${BASH_SOURCE[0]} <TAG_NAME> ..."
   echo ""
-  echo "Example:"
-  echo "  test-push.sh katana"
+  echo "Examples:"
+  echo "  ${BASH_SOURCE[0]} katana"
+  echo "  ${BASH_SOURCE[0]} katana build-101-katana"
   exit 1
-else
-  TAG="$1"
 fi
 
 echo "${green}
@@ -39,18 +40,14 @@ echo "${green}
                                                                      by magnetic.io
 ${reset}"
 
-docker_images="
-  magneticio/vamp
-  magneticio/vamp-gateway-agent
-  magneticio/vamp-workflow-agent
-  magneticio/vamp-docker
-"
-source ${workspace}/vamp-docker-images-ee/tests/push-conf.sh
+source ${root}/push-conf.sh
+source ${root}/../target/vamp-docker-images-ee/tests/push-conf.sh
 
-# Check that we have our images available
-for i in $docker_images $ee_images; do
-  for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "$i:$TAG*"); do
-    echo "${green}Pushing image: ${j}${reset}"
-    docker push "$j"
+for tag in ${@}; do
+  for i in $docker_images $ee_images; do
+    for j in $(docker images --format "{{.Repository}}:{{.Tag}}" "${i}:${tag}*"); do
+      echo "${green}Pushing image: ${j}${reset}"
+      docker push "$j"
+    done
   done
 done

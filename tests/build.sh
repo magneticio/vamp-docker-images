@@ -20,5 +20,5 @@ rm -rf ${HOME}/.ivy2/local
 ./build.sh
 
 if [ -z "$VAMP_CHANGE_TARGET" ]; then
-  ./push.sh $tag
+  ../push.sh $tag
 fi
