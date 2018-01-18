@@ -14,7 +14,7 @@ function filter-images-in-use() {
   local used=$(docker ps --format '{{.Image}}' | grep -v ':')
   local image
   while read image; do
-    test -n "${used/*${image}*/}" && echo ${image}
+    test -z "${used}" -o -n "${used/*${image}*/}" && echo ${image}
   done
 }
 
