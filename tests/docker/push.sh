@@ -20,10 +20,10 @@ yellow=$(tput setaf 3)
 if [[ -z $1 ]] ; then
   >&2 echo "Missing argument!"
   echo "Usage:"
-  echo "  test-push.sh <BRANCH_NAME>"
+  echo "  test-push.sh <TAG_NAME>"
   echo ""
   echo "Example:"
-  echo "  test-push.sh dev"
+  echo "  test-push.sh katana"
   exit 1
 else
   TAG="$1"
@@ -54,5 +54,3 @@ for i in $docker_images $ee_images; do
     docker push "$j"
   done
 done
-
-sed -i -e "s/\(\"image\": \"magneticio\/vamp:\).*\(-dcos\",\)/\1$TAG\2/g" ../dcos/marathon/vamp.json

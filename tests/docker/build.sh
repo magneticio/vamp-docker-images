@@ -147,17 +147,12 @@ vamp_version=${VAMP_TAG_PREFIX}${vamp_version}
 build_external vamp-gateway-agent
 build_external vamp-workflow-agent
 
-# Build the quick-start images when needed
-if [ -z "${docker_images/*vamp-docker*/}" ]; then
-  ./build.sh --build --version=${vamp_version} --image=clique-base
-  ./build.sh --build --version=${vamp_version} --image=clique-zookeeper
-  ./build.sh --build --version=${vamp_version} --image=clique-zookeeper-marathon
-  ./build.sh --build --version=${vamp_version} --image=quick-start
-  docker tag "magneticio/vamp-quick-start:${vamp_version}" "magneticio/vamp-docker:${vamp_version}"
-fi
+./build.sh --build --version=${vamp_version} --image=clique-base
+./build.sh --build --version=${vamp_version} --image=clique-zookeeper
+./build.sh --build --version=${vamp_version} --image=clique-zookeeper-marathon
+./build.sh --build --version=${vamp_version} --image=quick-start
+docker tag "magneticio/vamp-quick-start:${vamp_version}" "magneticio/vamp-docker:${vamp_version}"
 
 for image in $ee_images; do
   cd ${workspace}/vamp-docker-images-ee/$image && ./build.sh ${vamp_version}
 done
-
-cd $OLD_PWD
