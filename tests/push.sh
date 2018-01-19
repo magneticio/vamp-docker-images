@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-TERM=${TERM:-xterm}
-test -z "${TERM/*xterm*/}" || TERM=xterm
-export TERM
-
 set -eu -o pipefail
 
 function get-root-dir() {
@@ -12,22 +8,14 @@ function get-root-dir() {
 }
 
 root="$(get-root-dir)"
+source "${root}"/common.sh
+
+test -z "$VAMP_CHANGE_TARGET" || exit
 
 reset=$(tput sgr0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
-
-if [ ${#} -eq 0 ]; then
-  >&2 echo "Missing argument!"
-  echo "Usage:"
-  echo "  ${BASH_SOURCE[0]} <TAG_NAME> ..."
-  echo ""
-  echo "Examples:"
-  echo "  ${BASH_SOURCE[0]} katana"
-  echo "  ${BASH_SOURCE[0]} katana build-101-katana"
-  exit 1
-fi
 
 echo "${green}
 ██╗   ██╗ █████╗ ███╗   ███╗██████╗     ██████╗ ██╗   ██╗██╗██╗     ██████╗ ███████╗██████╗
@@ -56,7 +44,7 @@ function push() {
 }
 
 for i in $docker_images $ee_images; do
-  push "$i" "${@}"&
+  push "$i" ${VAMP_VERSION}&
 done
 
 wait
