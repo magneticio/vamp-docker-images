@@ -10,16 +10,24 @@ function get-root-dir() {
 root="$(get-root-dir)"
 source "${root}"/common.sh
 
-images=$(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp' -ve 'magneticio/java' -ve ':<none>')
-for image in ${images}; do
-  docker pull ${image} || true
-done
+function pull-all-other-images() {
+  local images=$(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp' -ve 'magneticio/java' -ve ':<none>')
+  local image
+  for image in ${images}; do
+    docker pull ${image} || true
+  done
+}
 
-if [ -n "${WORKSPACE:=}" ]; then
-  export HOME=${WORKSPACE}
-fi
+function setup-workspace() {
+  if [ -n "${WORKSPACE:=}" ]; then
+    export HOME=${WORKSPACE}/target
+  fi
 
-mkdir -p ${HOME}/.cache/bower ${HOME}/.ivy2 ${HOME}/.node-gyp ${HOME}/.npm ${HOME}/.sbt/boot ${HOME}/.m2/repository
-rm -rf ${HOME}/.ivy2/local
+  mkdir -p ${HOME}/.cache/bower ${HOME}/.ivy2 ${HOME}/.node-gyp ${HOME}/.npm ${HOME}/.sbt/boot ${HOME}/.m2/repository
+  rm -rf ${HOME}/.ivy2/local
+}
+
+pull-all-other-images
+setup-workspace
 
 (cd "${root}/docker" && ./build.sh)
