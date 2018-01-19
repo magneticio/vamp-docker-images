@@ -79,7 +79,7 @@ pack() {
     cp ${root}/local.sh ${workspace}/${project}/
   fi
 
-  make -C ${workspace}/${project} pack
+  ${MAKE:-make} -C ${workspace}/${project} ${BUILD_TARGET:-pack}
 }
 
 source ${root}/tests/build-conf.sh
