@@ -22,9 +22,9 @@ exited_containers=$(docker ps -a -f status=exited -q)
 dead_containers=$(docker ps -a -f status=dead -q)
 test -n "${exited_containers}" -o -n "${dead_containers}" && docker rm ${exited_containers} ${dead_containers}
 
-if [ "${tag}" != "katana" ]; then
-  remote_images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" --format '{{.Repository}}:{{.Tag}}')
-  local_images=$(docker image ls -f reference="vamp*:${tag}*" --format '{{.Repository}}:{{.Tag}}')
+if [ "${VAMP_VERSION}" != "katana" ]; then
+  remote_images=$(docker image ls -f reference="magneticio/vamp*:${VAMP_VERSION}*" --format '{{.Repository}}:{{.Tag}}')
+  local_images=$(docker image ls -f reference="vamp*:${VAMP_VERSION}*" --format '{{.Repository}}:{{.Tag}}')
   test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 fi
 

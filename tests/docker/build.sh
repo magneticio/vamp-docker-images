@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-TERM=${TERM:-xterm}
-test -z "${TERM/*xterm*/}" || TERM=xterm
-export TERM
-
 set -eu -o pipefail
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -27,9 +23,6 @@ echo "${green}
 ${reset}"
 
 mkdir -p ${workspace}
-
-VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
-VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
 init_project() {
   local repo_url=${1}
@@ -85,15 +78,6 @@ build_external() {
   make -C ${workspace}/${project}
 }
 
-export CLEAN_BUILD=false
-
-if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-  vamp_version=katana
-else
-  vamp_version=${VAMP_GIT_BRANCH//\//_}
-fi
-vamp_version=${VAMP_TAG_PREFIX:=}${vamp_version}
-
 init_project ${VAMP_GIT_ROOT}/vamp-docker-images-ee.git
 
 init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
@@ -108,17 +92,17 @@ source ${workspace}/vamp-docker-images-ee/tests/build-conf.sh
 ${root}/../../build.sh --make --image=alpine-jdk
 ${root}/../../pack.sh ${projects} ${ee_projects}
 
-${root}/../../build.sh --build --version=${vamp_version} --image=vamp
-${root}/../../build.sh --build --version=${vamp_version} --image=vamp-custom
-${root}/../../build.sh --build --version=${vamp_version} --image=vamp-dcos
-${root}/../../build.sh --build --version=${vamp_version} --image=vamp-kubernetes
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=vamp
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=vamp-custom
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=vamp-dcos
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=vamp-kubernetes
 
-${root}/../../build.sh --build --version=${vamp_version} --image=clique-base
-${root}/../../build.sh --build --version=${vamp_version} --image=clique-zookeeper
-${root}/../../build.sh --build --version=${vamp_version} --image=clique-zookeeper-marathon
-${root}/../../build.sh --build --version=${vamp_version} --image=quick-start
-docker tag "magneticio/vamp-quick-start:${vamp_version}" "magneticio/vamp-docker:${vamp_version}"
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=clique-base
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=clique-zookeeper
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=clique-zookeeper-marathon
+${root}/../../build.sh --build --version=${VAMP_VERSION} --image=quick-start
+docker tag "magneticio/vamp-quick-start:${VAMP_VERSION}" "magneticio/vamp-docker:${VAMP_VERSION}"
 
 for image in $ee_images; do
-  ${workspace}/vamp-docker-images-ee/$image/build.sh ${vamp_version}
+  ${workspace}/vamp-docker-images-ee/$image/build.sh ${VAMP_VERSION}
 done

@@ -1,3 +1,9 @@
+TERM=${TERM:-xterm}
+test -z "${TERM/*xterm*/}" || TERM=xterm
+export TERM
+
+export CLEAN_BUILD=false
+
 export VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
 
 if [ -n "${CHANGE_TARGET:=}" ]; then
@@ -19,10 +25,10 @@ if [ "${VAMP_GIT_BRANCH}" = "master" ]; then
   unset VAMP_TAG_PREFIX
 fi
 
-tag=$(echo ${VAMP_GIT_BRANCH} | sed 's,/,_,g')
+VAMP_VERSION=$(echo ${VAMP_GIT_BRANCH} | sed 's,/,_,g')
 if [ "${VAMP_GIT_BRANCH}" = "master" ]; then
-  tag=katana
+  VAMP_VERSION=katana
 fi
-tag="${VAMP_TAG_PREFIX:=}${tag}"
+export VAMP_VERSION="${VAMP_TAG_PREFIX:=}${VAMP_VERSION}"
 
 export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
