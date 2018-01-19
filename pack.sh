@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -o errexit # Abort script at first error (command exits non-zero).
+set -eu -o pipefail
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -25,17 +25,16 @@ mkdir -p ${workspace}
 VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
-if [ "$RELEASE_TAG" != "" ]; then
+if [ "${RELEASE_TAG:=}" != "" ]; then
   VAMP_GIT_BRANCH="master"
   VAMP_GIT_ROOT="git@github.com:magneticio"
 fi
 
 pack() {
-  project=$1
-  cd ${workspace}
+  local project=${1}
 
-  url="${VAMP_GIT_ROOT}/${project}.git"
-  branch="master"
+  local url="${VAMP_GIT_ROOT}/${project}.git"
+  local branch="master"
 
   local sha ref
   while read sha ref; do
@@ -51,27 +50,25 @@ pack() {
 
   echo "${green}project: ${yellow}${project} - ${url} - ${branch}${reset}"
 
-  if [[ -d ${workspace}/${project} ]] ; then
+  if [[ -d ${workspace}/${project}/.git ]] ; then
     echo "${green}updating existing repository${reset}"
 
-    cd ${workspace}/${project}
-
-    git reset --hard
-    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-    git fetch --depth=200 --prune
-    git checkout ${branch}
-    git reset --hard origin/${branch}
-    git submodule sync --recursive
-    git submodule update --init --recursive
+    git -C ${workspace}/${project} reset --hard
+    git -C ${workspace}/${project} config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+    git -C ${workspace}/${project} fetch --depth=200 --prune
+    git -C ${workspace}/${project} checkout ${branch}
+    git -C ${workspace}/${project} reset --hard origin/${branch}
+    git -C ${workspace}/${project} submodule sync --recursive
+    git -C ${workspace}/${project} submodule update --init --recursive
   else
-    git clone --recursive -b ${branch} --depth=200 "$url"
-    cd ${workspace}/${project}
+    rm -rf ${workspace}/${project}
+    git clone --recursive -b ${branch} --depth=200 "$url" ${workspace}/${project}
   fi
 
-  if [ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${project}\/pull\/*/}" ]; then
-    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/head:${branch} || \
-    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/merge:${branch}
-    git reset --hard
+  if [ -n "${VAMP_CHANGE_URL:=}" -a -z "${VAMP_CHANGE_URL/*\/${project}\/pull\/*/}" ]; then
+    git  -C ${workspace}/${project} fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/head:${branch} || \
+    git  -C ${workspace}/${project} fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${project}\/pull\//}/merge:${branch}
+    git  -C ${workspace}/${project} reset --hard
   fi
 
   if [[ -f ${root}/Makefile.local ]]; then
@@ -82,11 +79,11 @@ pack() {
     cp ${root}/local.sh ${workspace}/${project}/
   fi
 
-  make pack
+  make -C ${workspace}/${project} pack
 }
 
-pack vamp
-pack vamp-ui
-pack vamp-lifter
-pack vamp-lifter-ui
-pack vamp-artifacts
+source ${root}/tests/build-conf.sh
+
+for project in ${@:-${projects}}; do
+  pack ${project}
+done

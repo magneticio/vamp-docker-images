@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Helper functions
 TERM=${TERM:-xterm}
 test -z "${TERM/*xterm*/}" || TERM=xterm
 export TERM

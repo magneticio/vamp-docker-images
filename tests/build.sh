@@ -14,8 +14,9 @@ function pull-all-other-images() {
   local images=$(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp' -ve 'magneticio/java' -ve ':<none>')
   local image
   for image in ${images}; do
-    docker pull ${image} || true
+    docker pull ${image} || true &
   done
+  wait
 }
 
 function setup-workspace() {
@@ -30,4 +31,4 @@ function setup-workspace() {
 pull-all-other-images
 setup-workspace
 
-(cd "${root}/docker" && ./build.sh)
+${root}/docker/build.sh

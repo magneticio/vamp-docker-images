@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
-# Helper functions
-export TERM=xterm # XXX: To get around 'tput: No value for $TERM and no -T specified'
-info() { echo "$(date +%T): $(tput setaf 2)INFO:$(tput sgr0) $@"; }
-warn() { echo "$(date +%T): $(tput setaf 3)WARN:$(tput sgr0) $@"; }
-erro() { echo "$(date +%T): $(tput setaf 1)ERRO:$(tput sgr0) $@" >&2; }
-errexit() { erro "$@"; erro "Exiting!"; exit 1; }
+TERM=${TERM:-xterm}
+test -z "${TERM/*xterm*/}" || TERM=xterm
+export TERM
 
-set -o errexit # Abort script at first error (command exits non-zero).
+set -eu -o pipefail
 
 root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-src_dir="../../target"
+workspace="${root}/../../target"
 
 test -f ${root}/../../local.sh && source ${root}/../../local.sh
 
@@ -29,26 +26,15 @@ echo "${green}
                                                                      by magnetic.io
 ${reset}"
 
-workspace=${src_dir}
 mkdir -p ${workspace}
-
 
 VAMP_GIT_ROOT=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
 VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:-"master"}
 
 init_project() {
-  # Download a git repository or update it to latest master or $VAMP_GIT_BRANCH, then add the
-  # repository directory on top of the directory stack to continue work there
-  local repo_url repo_dir
-  [[ -n $1 ]] \
-    && repo_url="$1" \
-    || return 1
-
-  [[ -n $2 ]] \
-    && repo_dir="$2" \
-    || repo_dir="$( basename $repo_url | sed 's/\.git$//' )"
-
-  branch="master"
+  local repo_url=${1}
+  local repo_dir="$(basename $repo_url | sed 's/\.git$//')"
+  local branch="master"
 
   local sha ref
   while read sha ref; do
@@ -62,97 +48,77 @@ init_project() {
     fi
   done < <(git ls-remote ${repo_url} || echo fail)
 
-  info "Project '$repo_url' - ${branch} at '${src_dir}/${repo_dir}'"
+  info "Project '${repo_url}' - ${branch} at '${workspace}/${repo_dir}'"
 
-  mkdir -p "$src_dir"
-
-  pushd .
-  if [[ -d ${src_dir}/${repo_dir} ]] ; then
+  if [ -d ${workspace}/${repo_dir}/.git ] ; then
     echo "${green}updating existing repository${reset}"
 
-    cd "$src_dir/$repo_dir"
-
-    git reset --hard
-    git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-    git fetch --depth=200 --prune
-    git checkout ${branch}
-    git reset --hard origin/${branch}
-    git submodule sync --recursive
-    git submodule update --init --recursive
+    git -C "${workspace}/${repo_dir}" reset --hard
+    git -C "${workspace}/${repo_dir}" config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+    git -C "${workspace}/${repo_dir}" fetch --depth=200 --prune
+    git -C "${workspace}/${repo_dir}" checkout ${branch}
+    git -C "${workspace}/${repo_dir}" reset --hard origin/${branch}
+    git -C "${workspace}/${repo_dir}" submodule sync --recursive
+    git -C "${workspace}/${repo_dir}" submodule update --init --recursive
   else
-    cd "$src_dir"
-    git clone --recursive -b ${branch} --depth=200 "$repo_url" "$repo_dir"
-    cd "$repo_dir"
+    git clone --recursive -b ${branch} --depth=200 "${repo_url}" "${workspace}/${repo_dir}"
   fi
 
-  if [ -n "${VAMP_CHANGE_URL}" -a -z "${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\/*/}" ]; then
-    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\//}/head:${branch} || \
-    git fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\//}/merge:${branch}
-    git reset --hard
+  if [ -n "${VAMP_CHANGE_URL:=}" -a -z "${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\/*/}" ]; then
+    git -C "${workspace}/${repo_dir}" fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\//}/head:${branch} || \
+    git -C "${workspace}/${repo_dir}" fetch --update-head-ok origin pull/${VAMP_CHANGE_URL/*\/${repo_dir}\/pull\//}/merge:${branch}
+    git -C "${workspace}/${repo_dir}" reset --hard
   fi
-
-  popd
 
   if [[ -f ${root}/../../Makefile.local ]]; then
-    cp ${root}/../../Makefile.local ${src_dir}/${repo_dir}/
+    cp ${root}/../../Makefile.local ${workspace}/${repo_dir}/
   fi
 
   if [[ -f ${root}/../../local.sh ]]; then
-    cp ${root}/../../local.sh ${src_dir}/${repo_dir}/
+    cp ${root}/../../local.sh ${workspace}/${repo_dir}/
   fi
 }
 
 build_external() {
   project=$1
   echo "${green}project: ${yellow}${project}${reset}"
-
-  cd ${workspace}/${project}
-  make
-  cd -
+  make -C ${workspace}/${project}
 }
 
-init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
-init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
-init_project ${VAMP_GIT_ROOT}/vamp-docker-images-ee.git
-
-# Disable the clean builds of various sub-build scripts
 export CLEAN_BUILD=false
 
-
-OLD_PWD=$PWD
-
-cd ../..
-./build.sh --make --image=alpine-jdk
-source pack.sh
-
-source ${workspace}/vamp-docker-images-ee/tests/build-conf.sh
-for project in $ee_projects; do
-  pack $project
-done
-
-cd ${root}
-
 if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-  vamp_version="katana"
+  vamp_version=katana
 else
   vamp_version=${VAMP_GIT_BRANCH//\//_}
 fi
-vamp_version=${VAMP_TAG_PREFIX}${vamp_version}
+vamp_version=${VAMP_TAG_PREFIX:=}${vamp_version}
 
-./build.sh --build --version=${vamp_version} --image=vamp
-./build.sh --build --version=${vamp_version} --image=vamp-custom
-./build.sh --build --version=${vamp_version} --image=vamp-dcos
-./build.sh --build --version=${vamp_version} --image=vamp-kubernetes
+init_project ${VAMP_GIT_ROOT}/vamp-docker-images-ee.git
+
+init_project ${VAMP_GIT_ROOT}/vamp-gateway-agent.git
+init_project ${VAMP_GIT_ROOT}/vamp-workflow-agent.git
 
 build_external vamp-gateway-agent
 build_external vamp-workflow-agent
 
-./build.sh --build --version=${vamp_version} --image=clique-base
-./build.sh --build --version=${vamp_version} --image=clique-zookeeper
-./build.sh --build --version=${vamp_version} --image=clique-zookeeper-marathon
-./build.sh --build --version=${vamp_version} --image=quick-start
+source ${root}/../build-conf.sh
+source ${workspace}/vamp-docker-images-ee/tests/build-conf.sh
+
+${root}/../../build.sh --make --image=alpine-jdk
+${root}/../../pack.sh ${projects} ${ee_projects}
+
+${root}/../../build.sh --build --version=${vamp_version} --image=vamp
+${root}/../../build.sh --build --version=${vamp_version} --image=vamp-custom
+${root}/../../build.sh --build --version=${vamp_version} --image=vamp-dcos
+${root}/../../build.sh --build --version=${vamp_version} --image=vamp-kubernetes
+
+${root}/../../build.sh --build --version=${vamp_version} --image=clique-base
+${root}/../../build.sh --build --version=${vamp_version} --image=clique-zookeeper
+${root}/../../build.sh --build --version=${vamp_version} --image=clique-zookeeper-marathon
+${root}/../../build.sh --build --version=${vamp_version} --image=quick-start
 docker tag "magneticio/vamp-quick-start:${vamp_version}" "magneticio/vamp-docker:${vamp_version}"
 
 for image in $ee_images; do
-  cd ${workspace}/vamp-docker-images-ee/$image && ./build.sh ${vamp_version}
+  ${workspace}/vamp-docker-images-ee/$image/build.sh ${vamp_version}
 done
