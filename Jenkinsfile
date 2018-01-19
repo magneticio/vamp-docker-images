@@ -25,8 +25,7 @@ pipeline {
     stage('Publish') {
       steps {
         sh '''
-        . tests/common.sh
-        test -z "$VAMP_CHANGE_TARGET" && ./tests/push.sh ${tag}
+        bash -c "source tests/common.sh && test -z "$VAMP_CHANGE_TARGET" && ./tests/push.sh ${VAMP_VERSION}"
         '''
       }
     }
