@@ -44,5 +44,5 @@ function push() {
 }
 
 for i in ${docker_images} ${ee_images}; do
-  push "${i}" ${@:-${VAMP_VERSION}}
+  HOME=${PUSH_HOME:-${HOME}} push "${i}" ${@:-${VAMP_VERSION}}
 done
