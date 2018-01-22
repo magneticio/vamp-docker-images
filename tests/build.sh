@@ -14,7 +14,12 @@ test -f "${root}"/../local.sh && source "${root}"/../local.sh
 function pull() {
   local image
   for image in ${@}; do
-    docker pull ${image}
+    docker pull ${image}&
+  done
+
+  local i
+  for i in $(seq ${#}); do
+    wait %${i}
   done
 }
 

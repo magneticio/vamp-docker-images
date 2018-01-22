@@ -30,12 +30,14 @@ ${reset}"
 source "${root}"/push-conf.sh
 source "${root}"/../target/vamp-docker-images-ee/tests/push-conf.sh
 
-function push() {
+export VAMP_VERSIONS=${@:-${VAMP_VERSION}}
+export HOME=${PUSH_HOME:-${HOME}}
+
+function push-repo() {
   local repo=${1}
-  shift
 
   local tag image
-  for tag in ${@}; do
+  for tag in ${VAMP_VERSIONS}; do
     for image in $(docker images --format "{{.Repository}}:{{.Tag}}" "${repo}:${tag}*"); do
       echo "${green}Pushing image: ${image}${reset}"
       docker push "${image}"
@@ -43,6 +45,15 @@ function push() {
   done
 }
 
-for i in ${docker_images} ${ee_images}; do
-  HOME=${PUSH_HOME:-${HOME}} push "${i}" ${@:-${VAMP_VERSION}}
-done
+function push() {
+  local i
+  for i in ${@}; do
+    push-repo "${i}"&
+  done
+
+  for i in $(seq ${#}); do
+    wait %${i}
+  done
+}
+
+push ${docker_images} ${ee_images}
