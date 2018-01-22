@@ -18,7 +18,7 @@ echo "${green}
 ${reset}"
 
 set -eu
-cd ${dir}
+cd "${dir}"
 
 DOCKER_COMPOSE_FILE=${1:-docker-compose.yml}
 
@@ -27,8 +27,8 @@ CURL=$(which curl)
 COMPOSE_SLEEP_TIME=0
 MARATON_SLEEP_TIME=10
 
-test -f ${dir}/../local.sh && source ${dir}/../local.sh
-test -f ${dir}/.env && source ${dir}/.env
+test -f "${dir}"/../local.sh && source "${dir}"/../local.sh
+test -f "${dir}"/.env && source "${dir}"/.env
 
 echo "${green}Docker compose file: ${yellow}${DOCKER_COMPOSE_FILE}${reset}"
 

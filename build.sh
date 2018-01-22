@@ -18,8 +18,6 @@ else
   fi
 fi
 
-cd ${dir}
-
 function parse_command_line() {
     flag_help=0
     flag_list=0
@@ -82,19 +80,21 @@ function docker_rmi {
 }
 
 function docker_make {
-    if [ -x "${dir}/$1/make.sh" ]
+    rm -rf "${dir}"/${target}/$1
+    mkdir -p "${dir}"/${target}/$1
+    if [ -x "${dir}"/$1/make.sh ]
     then
         echo "${green}executing make.sh from $1 ${reset}"
-        ${dir}/$1/make.sh ${dir}/${target}/$1
+        "${dir}"/$1/make.sh "${dir}"/${target}/$1
         exit_code=$?
         if [ ${exit_code} != 0 ]; then
             echo "${red}make.sh failed with code: ${exit_code}${reset}"
             exit ${exit_code}
         fi
-    elif [ -e "${dir}/$1/Makefile" ]
+    elif [ -e "${dir}"/$1/Makefile ]
     then
         echo "${green}executing make in $1 directory ${reset}"
-        make -C ${dir}/$1
+        ${MAKE:-make} -C "${dir}"/$1
         exit_code=$?
         if [ ${exit_code} != 0 ]; then
             echo "${red}make failed with code: ${exit_code}${reset}"
@@ -104,12 +104,12 @@ function docker_make {
         flag_build=0
     else
         echo "${green}copying files from: $1 ${reset}"
-        cp -R ${dir}/$1 ${target} 2> /dev/null
-        rm -f ${target}/$1/version 2> /dev/null
+        cp -R "${dir}"/$1 "${dir}"/${target} 2> /dev/null
+        rm -f "${dir}"/${target}/$1/version 2> /dev/null
     fi
 
     # Change all instances of "katana" to a release, if we're on a tag
-    if [[ $vamp_version != "katana" && -d "${target}/${1}" ]] ; then
+    if [[ $vamp_version != "katana" && -d "${dir}"/${target}/${1} ]] ; then
       # Whitelist of files to look for
       local whitelist
       local target_file
@@ -117,15 +117,15 @@ function docker_make {
 
       for X in $whitelist ; do
         # Find path of the file we want to modify
-        target_file="$( find "${target}/${1}" -type f -name "$X" )"
-        [[ -z $target_file ]] && continue
+        target_file="$( find "${dir}"/${target}/${1} -type f -name "$X" )"
+        [[ -z "$target_file" ]] && continue
 
         # Check if we need to modify file
         grep -q katana "$target_file"
         if [[ $? -eq 0 ]] ; then
           echo "${green}changing 'katana' to '$vamp_version' in: $target_file${reset}"
 
-          local tmpfile="${dir}/.build.tmp"
+          local tmpfile="${dir}"/${target}/${1}/.build.tmp
           > "$tmpfile"
           sed "s/katana/${vamp_version}/g" "${target_file}" > "$tmpfile"
           mv "$tmpfile" "${target_file}"
@@ -135,19 +135,19 @@ function docker_make {
 
     fi
 
-    if [ -e "${target}/$1/Dockerfile" ];
+    if [ -e "${dir}"/${target}/$1/Dockerfile ];
     then
-        local tmpfile="${dir}/.build.tmp"
+        local tmpfile="${dir}"/${target}/${1}/.build.tmp
         > "$tmpfile"
-        sed "s/VAMP_VERSION/${vamp_version}/g" "${target}/$1/Dockerfile" > "$tmpfile"
-        mv "$tmpfile" "${target}/$1/Dockerfile"
+        sed "s/VAMP_VERSION/${vamp_version}/g" "${dir}"/${target}/$1/Dockerfile > "$tmpfile"
+        mv "$tmpfile" "${dir}"/${target}/$1/Dockerfile
         rm -f "$tmpfile"
     fi
 }
 
 function docker_build {
     echo "${green}building docker image: $1 ${reset}"
-    docker build -t $1 $2
+    docker build -t $1 "$2"
     retval="$?"
     if [[ $retval -ne 0 ]] ; then
       echo "${red}Error: ${1}: build failed, exiting!${reset}"
@@ -174,19 +174,18 @@ function process() {
     images=()
     image_names=()
 
-    find_in=${dir}
+    find_in="${dir}"
     if [ -n "${target_image}" ]; then
-        find_in=${dir}/${target_image}
+        find_in="${dir}"/${target_image}
     fi
 
-    for file in $(find ${find_in} -type f -name Dockerfile)
+    while IFS= read file
     do
-      [[ ${file} =~ $regex ]] && [[ ${file} != *"/"* ]]
-        image_dir="${BASH_REMATCH[1]}"
+        image_dir=$(basename "$(dirname "${file}")")
 
         if [[ ${image_dir} != *"/"* ]]; then
 
-            target_version="$(cat ${dir}/${image_dir}/version 2> /dev/null)"
+            target_version=$(cat "${dir}"/${image_dir}/version 2> /dev/null)
 
             if [ "$target_version" ]; then
                 image=magneticio/vamp-${image_dir}-${target_version}
@@ -214,10 +213,10 @@ function process() {
                 docker_rmi ${image_name}
             fi
             if [ ${flag_build} -eq 1 ]; then
-                docker_build ${image_name} ${dir}/${target}/${image_dir}
+                docker_build ${image_name} "${dir}"/${target}/${image_dir}
             fi
         fi
-    done
+    done < <(find "${find_in}" -type f -name Dockerfile)
 
     if [ ${flag_list} -eq 1 ]; then
         docker_images image_names
@@ -243,7 +242,10 @@ if [ ${flag_help} -eq 1 ] || [[ $# -eq 0 ]]; then
     print_help
 fi
 
+if [ ${flag_clean} -eq 1 ]; then
+    rm -Rf "${dir}"/${target} 2> /dev/null
+fi
+
 if [ ${flag_list} -eq 1 ] || [ ${flag_clean} -eq 1 ] || [ ${flag_make} -eq 1 ] || [ ${flag_build} -eq 1 ]; then
-    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${target}
-    process
+    mkdir -p "${dir}"/${target} && process
 fi

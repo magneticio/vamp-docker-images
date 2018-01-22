@@ -3,4 +3,4 @@
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export CLEAN_BUILD=false
-exec ${dir}/build.sh
+exec "${dir}"/build.sh
