@@ -44,7 +44,5 @@ function push() {
 }
 
 for i in ${docker_images} ${ee_images}; do
-  push "${i}" ${@:-${VAMP_VERSION}}&
+  push "${i}" ${@:-${VAMP_VERSION}}
 done
-
-wait

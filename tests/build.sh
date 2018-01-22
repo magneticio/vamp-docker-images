@@ -14,9 +14,8 @@ test -f "${root}"/../local.sh && source "${root}"/../local.sh
 function pull() {
   local image
   for image in ${@}; do
-    docker pull ${image}&
+    docker pull ${image}
   done
-  wait
 }
 
 function pull-deps() {
