@@ -46,7 +46,7 @@ docker run \
   $build_server \
     "sed -i 's/DEBUG/INFO/g' src/main/resources/logback.xml && sbt universal:packageBin"
 
-mv "${target}"/metronome/target/metronome-*.zip "${target}"/metronome.zip
+mv "${target}"/metronome/target/universal/metronome-*.zip "${target}"/metronome.zip
 echo "${green}copying files...${reset}"
 cp -f "${dir}"/chronos.sh "${target}"
 cp -f "${dir}"/Dockerfile "${target}"
