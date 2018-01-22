@@ -24,7 +24,7 @@ function pull() {
 }
 
 function pull-deps() {
-  pull alpine:3.6 ubuntu:16.04
+  pull alpine:3.6 ubuntu:16.04 ${BUILD_SERVER}
 }
 
 function pull-test-deps() {
