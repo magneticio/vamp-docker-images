@@ -8,6 +8,7 @@ pipeline {
   }
 
   parameters {
+    booleanParam(name: 'CLEAN', defaultValue: false, description: 'Clean build')
     string(name: 'VAMP_GIT_ROOT', defaultValue: '', description: 'GitHub account URL')
     string(name: 'VAMP_GIT_BRANCH', defaultValue: '', description: 'Branch name')
     string(name: 'VAMP_CHANGE_TARGET', defaultValue: '', description: 'Target branch name for a PR')
@@ -15,6 +16,14 @@ pipeline {
   }
 
   stages {
+    stage('Clean') {
+      when { expression { return params.CLEAN } }
+      steps {
+        sh '''
+        git clean -ffdx
+        '''
+      }
+    }
     stage('Build') {
       steps {
         sh '''
