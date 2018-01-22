@@ -3,7 +3,7 @@
 set -ux -o pipefail
 
 function get-root-dir() {
-  local dir="$(dirname ${BASH_SOURCE[0]})"
+  local dir=$(dirname "${BASH_SOURCE[0]}")
   (cd "${dir}" && pwd)
 }
 
@@ -38,6 +38,6 @@ docker volume rm "${PACKER}" 2>/dev/null
 dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
 test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
-test -d "${root}/../target" && find "${_}" -type d -name 'scala-2.*' | xargs -I {} find {} -maxdepth 1 -type f -name '*.jar' -print -delete
+test -d "${root}"/../target && find "${_}" -type d -name 'scala-2.*' | xargs -I {} find {} -maxdepth 1 -type f -name '*.jar' -print -delete
 
 exit 0

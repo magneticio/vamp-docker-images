@@ -1,4 +1,4 @@
-# Alpine 3.5 version of java:openjdk-8-jre-alpine
+# Alpine 3.6 version of java:openjdk-8-jre-alpine
 # From: https://github.com/docker-library/openjdk/blob/9a0822673dffd3e5ba66f18a8547aa60faed6d08/8-jre/alpine/Dockerfile
 
 # this is updated for java 9 backported features

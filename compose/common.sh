@@ -85,13 +85,13 @@ function init_project() {
 
 function build_project() {
   local project=$1
-  make VERSION=${vamp_version} -C ${target}/${project}
+  ${MAKE:-make} VERSION=${vamp_version} -C ${target}/${project}
 }
 
 function pack() {
   local project=$1
   init_project ${project}
-  make -C ${target}/${project} pack
+  ${MAKE:-make} -C ${target}/${project} pack
 }
 
 function build-vamp() {

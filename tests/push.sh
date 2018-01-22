@@ -3,14 +3,14 @@
 set -eu -o pipefail
 
 function get-root-dir() {
-  local dir="$(dirname ${BASH_SOURCE[0]})"
+  local dir=$(dirname "${BASH_SOURCE[0]}")
   (cd "${dir}" && pwd)
 }
 
 root="$(get-root-dir)"
-source "${root}"/common.sh
 
-test -z "$VAMP_CHANGE_TARGET" || exit
+test -z "${@}" && source "${root}"/common.sh
+test -z "${VAMP_CHANGE_TARGET:=}" || exit
 
 reset=$(tput sgr0)
 red=$(tput setaf 1)
@@ -27,8 +27,8 @@ echo "${green}
                                                                      by magnetic.io
 ${reset}"
 
-source ${root}/push-conf.sh
-source ${root}/../target/vamp-docker-images-ee/tests/push-conf.sh
+source "${root}"/push-conf.sh
+source "${root}"/../target/vamp-docker-images-ee/tests/push-conf.sh
 
 function push() {
   local repo=${1}
@@ -38,13 +38,13 @@ function push() {
   for tag in ${@}; do
     for image in $(docker images --format "{{.Repository}}:{{.Tag}}" "${repo}:${tag}*"); do
       echo "${green}Pushing image: ${image}${reset}"
-      docker push "$image"
+      docker push "${image}"
     done
   done
 }
 
-for i in $docker_images $ee_images; do
-  push "$i" ${VAMP_VERSION}&
+for i in ${docker_images} ${ee_images}; do
+  push "${i}" ${@:-${VAMP_VERSION}}&
 done
 
 wait

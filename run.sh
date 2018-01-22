@@ -40,7 +40,7 @@ case ${key/\//} in
     ;;
     quick-start)
     flag_quick_start=1
-    quick_start_image=quick-start
+    quick_start_image=vamp-quick-start
     ;;
     vamp-docker)
     flag_quick_start=1
