@@ -28,8 +28,8 @@ function pull-test-deps() {
 }
 
 function setup-cache-dirs() {
-  mkdir -p ${HOME}/.cache/bower ${HOME}/.ivy2 ${HOME}/.node-gyp ${HOME}/.npm ${HOME}/.sbt/boot ${HOME}/.m2/repository
-  rm -rf ${HOME}/.ivy2/local
+  mkdir -p "${HOME}"/.cache/bower "${HOME}"/.ivy2 "${HOME}"/.node-gyp "${HOME}"/.npm "${HOME}"/.sbt/boot "${HOME}"/.m2/repository
+  rm -rf "${HOME}"/.ivy2/local
 }
 
 function init-ee() {

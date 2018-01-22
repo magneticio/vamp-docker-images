@@ -118,7 +118,7 @@ function docker_make {
       for X in $whitelist ; do
         # Find path of the file we want to modify
         target_file="$( find "${dir}"/${target}/${1} -type f -name "$X" )"
-        [[ -z $target_file ]] && continue
+        [[ -z "$target_file" ]] && continue
 
         # Check if we need to modify file
         grep -q katana "$target_file"
@@ -179,10 +179,9 @@ function process() {
         find_in="${dir}"/${target_image}
     fi
 
-    for file in $(find ${find_in} -type f -name Dockerfile)
+    while IFS= read file
     do
-      [[ ${file} =~ $regex ]] && [[ ${file} != *"/"* ]]
-        image_dir="${BASH_REMATCH[1]}"
+        image_dir=$(basename "$(dirname "${file}")")
 
         if [[ ${image_dir} != *"/"* ]]; then
 
@@ -217,7 +216,7 @@ function process() {
                 docker_build ${image_name} "${dir}"/${target}/${image_dir}
             fi
         fi
-    done
+    done < <(find "${find_in}" -type f -name Dockerfile)
 
     if [ ${flag_list} -eq 1 ]; then
         docker_images image_names
