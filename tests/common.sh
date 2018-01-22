@@ -33,6 +33,8 @@ export VAMP_VERSION="${VAMP_TAG_PREFIX:=}${VAMP_VERSION}"
 
 export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
 
+export PUSH_HOME=${HOME}
+
 if [ -n "${WORKSPACE:=}" ]; then
   export HOME=${WORKSPACE}/target
 fi
