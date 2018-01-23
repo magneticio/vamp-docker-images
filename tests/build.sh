@@ -109,16 +109,16 @@ init-ee           :                                                             
 pull-deps         :                                                             ; ./build.sh $(@)
 pull-test-deps    :                                                             ; ./build.sh $(@)
 setup-cache-dirs  :                                                             ; ./build.sh $(@)
-pack              : setup-cache-dirs                                            ; ./build.sh $(@)
-pack-ui           : setup-cache-dirs                                            ; ./build.sh $(@)
+pack              : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
+pack-ui           : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
 pack-ee           : pack init-ee                                                ; ./build.sh $(@)
-pack-ee-ui        : setup-cache-dirs init-ee                                    ; ./build.sh $(@)
+pack-ee-ui        : pull-deps setup-cache-dirs init-ee                          ; ./build.sh $(@)
 build-agents      : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
-build-images      : pull-deps pack pack-ui                                      ; ./build.sh $(@)
-build-clique      : pull-deps                                                   ; ./build.sh $(@)
+build-images      : pack pack-ui                                                ; ./build.sh $(@)
+build-clique      : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
 build-quick-start : build-clique pack pack-ui                                   ; ./build.sh $(@)
 build-ee-images   : build-images pack-ee pack-ee-ui                             ; ./build.sh $(@)
-build-test-images : pull-test-deps setup-cache-dirs                             ; ./build.sh $(@)
+build-test-images : pull-deps pull-test-deps setup-cache-dirs                   ; ./build.sh $(@)
 
 EOF
 else
