@@ -27,6 +27,7 @@ pipeline {
           export VAMP_GIT_BRANCH=$BRANCH_NAME
         fi
 
+        git fetch --tags
         if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
           vamp_version="$( git describe --tags )"
         else
@@ -52,6 +53,7 @@ pipeline {
       sh '''
       set +e
 
+      git fetch --tags
       if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
         vamp_version="$( git describe --tags )"
       else
