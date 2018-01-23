@@ -112,7 +112,7 @@ setup-cache-dirs  :                                                             
 pack              : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
 pack-ui           : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
 pack-ee           : pack init-ee                                                ; ./build.sh $(@)
-pack-ee-ui        : pack-ui init-ee                                             ; ./build.sh $(@)
+pack-ee-ui        : pull-deps setup-cache-dirs init-ee                          ; ./build.sh $(@)
 build-agents      : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
 build-images      : pack pack-ui                                                ; ./build.sh $(@)
 build-clique      : pull-deps setup-cache-dirs                                  ; ./build.sh $(@)
