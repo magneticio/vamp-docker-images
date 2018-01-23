@@ -16,7 +16,7 @@ test -f "${dir}"/../local.sh && source "${dir}"/../local.sh
 build_server=${BUILD_SERVER:-"magneticio/buildserver"}
 dir_m2="$(get-home-dir)"/.m2/repository
 
-docker pull $build_server
+test "${DEPS_OK:=}" = "true" || docker pull $build_server
 
 target="$1"
 mkdir -p "${target}" && cd "${target}"

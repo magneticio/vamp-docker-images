@@ -38,3 +38,7 @@ export PUSH_HOME=${HOME}
 if [ -n "${WORKSPACE:=}" ]; then
   export HOME=${WORKSPACE}/target
 fi
+
+export BUILD_SERVER=${BUILD_SERVER:-magneticio/buildserver}
+
+export DEPS_OK=true

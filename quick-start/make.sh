@@ -12,7 +12,7 @@ test -f "${dir}"/../local.sh && source "${dir}"/../local.sh
 packer=${PACKER:-packer}
 build_server=${BUILD_SERVER:-"magneticio/buildserver"}
 
-docker pull $build_server
+test "${DEPS_OK:=}" = "true" || docker pull $build_server
 
 target="$1"
 mkdir -p "${target}" && cd "${target}"

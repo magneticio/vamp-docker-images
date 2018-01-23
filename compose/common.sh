@@ -14,7 +14,7 @@ build_server=${BUILD_SERVER:-"magneticio/buildserver"}
 packer=${PACKER:-packer}
 vamp_git_root=${VAMP_GIT_ROOT:-"git@github.com:magneticio"}
 
-docker pull $build_server
+test "${DEPS_OK:=}" = "true" || docker pull $build_server
 
 
 if [ -z "${VAMP_GIT_BRANCH}" ]; then
@@ -95,13 +95,13 @@ function pack() {
 }
 
 function build-vamp() {
-  docker pull $(grep FROM "${root}"/alpine-jdk/Dockerfile | cut -d ' ' -f2)
+  test "${DEPS_OK:=}" = "true" || docker pull $(grep FROM "${root}"/alpine-jdk/Dockerfile | cut -d ' ' -f2)
   (cd "${root}" && ./build.sh --make --image=alpine-jdk)
   (cd "${root}" && ./build.sh --build --version=${vamp_version} --image=vamp)
 }
 
 function build-clique() {
-  docker pull $(grep FROM "${root}"/clique-base/Dockerfile | cut -d ' ' -f2)
+  test "${DEPS_OK:=}" = "true" || docker pull $(grep FROM "${root}"/clique-base/Dockerfile | cut -d ' ' -f2)
   for image in clique-base clique-zookeeper clique-zookeeper-marathon; do
     (cd "${root}" && ./build.sh --build --version=${vamp_version} --image=${image})
   done
