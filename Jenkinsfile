@@ -58,7 +58,7 @@ pipeline {
         if [[ "$VAMP_GIT_BRANCH" != "" && "$VAMP_GIT_BRANCH" != "master" ]]; then
           vamp_version=$VAMP_GIT_BRANCH
         else
-          vamp_version="katana"
+          vamp_version="katana--"
         fi
       fi
 
