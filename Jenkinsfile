@@ -8,131 +8,40 @@ pipeline {
   }
 
   parameters {
-    string(name: 'RELEASE_TAG', defaultValue: '', description: 'Release tag')
+    booleanParam(name: 'BUILD', defaultValue: false, description: 'Flag that enables only manual builds')
     string(name: 'VAMP_GIT_ROOT', defaultValue: '', description: 'GitHub account URL')
     string(name: 'VAMP_GIT_BRANCH', defaultValue: '', description: 'Branch name')
-  }
-
-  environment {
-     AZURE_ADMIN_PASS = credentials('azure-test-pass')
   }
 
   stages {
 
     stage('Build images') {
-      when {
-        expression { params.RELEASE_TAG == '' }
-      }
-      steps {
-        parallel (
-/*  
-          "deploy-dcos-1.9": {
-            sh '''
-            cd tests/dcos
-            ./dcos-acs.sh create
-            ./dcos-acs.sh clean
-            '''
-          },
-          "deploy-dcos-1.10": {
-            sh '''
-              cd tests/dcos/azure
-              az group create --name ci-dcos-1.10 --location westeurope
-              az group deployment create \
-                --name ci-dcos-1.10 \
-                --resource-group ci-dcos-1.10 \
-                --template-file template.json \
-                --parameters @parameters.json \
-                  windowsAdminPassword="${AZURE_ADMIN_PASS}" \
-                  linuxAdminPassword="${AZURE_ADMIN_PASS}"
-            '''
-          },
-*/
-          "build-images": {
-            sh '''
-            if [ -z "$VAMP_GIT_ROOT" ]; then
-              export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print "git@" $3 ":" $4 }')
-            fi
-
-            if [ -z "$VAMP_GIT_BRANCH" ]; then
-              export VAMP_GIT_BRANCH=$BRANCH_NAME
-            fi
-
-            git pull
-            cd tests/docker
-
-            for image in $(docker image ls --format='{{.Repository}}:{{.Tag}}' | grep -ve 'vamp'); do
-              docker pull ${image} || true
-            done
-
-            mkdir -p ${WORKSPACE}/.cache/bower ${WORKSPACE}/.ivy2 ${WORKSPACE}/.node-gyp ${WORKSPACE}/.npm ${WORKSPACE}/.sbt/boot ${WORKSPACE}/.m2/repository
-            env HOME=$WORKSPACE ./build.sh
-            ./push.sh $VAMP_GIT_BRANCH
-            if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-              ./push.sh katana
-            fi
-
-            # cd ../dcos
-            # ./vamp-ui-rspec.sh build
-            '''
-          }
-        )
-      }
-    }
-/*
-    stage('Deploy services') {
-      when {
-        expression { params.RELEASE_TAG == '' }
-      }
+      when { expression { return params.BUILD } }
       steps {
         sh '''
-        cd tests/dcos
-        ./dcos-acs.sh install
-        '''
+        if [ -z "$VAMP_GIT_ROOT" ]; then
+          export VAMP_GIT_ROOT=$(git remote -v | grep fetch | awk '{ print $2 }' | awk -F '/' '{ print "git@" $3 ":" $4 }')
+        fi
 
-        sh '''
-        cd tests/dcos
-        fqdn="magneticio-ci-dcos-master-1-10.westeurope.cloudapp.azure.com"
-        ssh-keygen -R [${fqdn}]:2200 || true
-        ssh -oStrictHostKeyChecking=no -fNL 0.0.0.0:18081:localhost:80 -p 2200 dcos@${fqdn}
-        dcos config set core.dcos_url http://127.0.0.1:18081
-        ./dcos-acs.sh install
-        '''
-      }
-    }
+        if [ -z "$VAMP_GIT_BRANCH" ]; then
+          export VAMP_GIT_BRANCH=$BRANCH_NAME
+        fi
 
-    stage('Test') {
-      when {
-        expression { params.RELEASE_TAG == '' }
-      }
-      steps {
-        parallel (
-          "test-dcos-1.9": {
-            sh '''
-            cd tests/dcos
-            ./vamp-runner.sh run http://127.0.0.1:18080/service/vamp
-            ./vamp-ui-rspec.sh run http://127.0.0.1:18080/service/vamp
-            '''
-          },
-          "test-dcos-1.10": {
-            sh '''
-            cd tests/dcos
-            ./vamp-runner.sh run http://127.0.0.1:18081/service/vamp
-            ./vamp-ui-rspec.sh run http://127.0.0.1:18081/service/vamp
-            '''
-          }
-        )
-      }
-    }
-*/
-    stage('Release') {
-      when {
-        expression { params.RELEASE_TAG != '' }
-      }
-      steps {
-        sh '''
-        ./release-tag.sh ${RELEASE_TAG} push
-        ./release-build.sh ${RELEASE_TAG}
-        ./release-push.sh ${RELEASE_TAG}
+        if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
+          vamp_version="$( git describe --tags )"
+        else
+          if [[ "$VAMP_GIT_BRANCH" != "" && "$VAMP_GIT_BRANCH" != "master" ]]; then
+            vamp_version=$VAMP_GIT_BRANCH
+          else
+            vamp_version="katana"
+          fi
+        fi
+
+        cd tests/docker
+
+        mkdir -p ${WORKSPACE}/.cache/bower ${WORKSPACE}/.ivy2 ${WORKSPACE}/.node-gyp ${WORKSPACE}/.npm ${WORKSPACE}/.sbt/boot ${WORKSPACE}/.m2/repository
+        env HOME=$WORKSPACE ./build.sh
+        ./push.sh $vamp_version
         '''
       }
     }
@@ -143,21 +52,22 @@ pipeline {
       sh '''
       set +e
 
-      if [ -z "$VAMP_GIT_BRANCH" ]; then
-        export VAMP_GIT_BRANCH=$BRANCH_NAME
-      fi
-
-      tag=$VAMP_GIT_BRANCH
-      if [ "$VAMP_GIT_BRANCH" = "master" ]; then
-        tag="katana"
+      if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
+        vamp_version="$( git describe --tags )"
+      else
+        if [[ "$VAMP_GIT_BRANCH" != "" && "$VAMP_GIT_BRANCH" != "master" ]]; then
+          vamp_version=$VAMP_GIT_BRANCH
+        else
+          vamp_version="katana"
+        fi
       fi
 
       exited_containers=$(docker ps -a -f status=exited -q)
       dead_containers=$(docker ps -a -f status=dead -q)
       test -n "${exited_containers}" -o -n "${dead_containers}" && docker rm ${exited_containers} ${dead_containers}
 
-      remote_images=$(docker image ls -f reference="magneticio/vamp*:${tag}*" --format '{{.Repository}}:{{.Tag}}')
-      local_images=$(docker image ls -f reference="vamp*:${tag}*" --format '{{.Repository}}:{{.Tag}}')
+      remote_images=$(docker image ls -f reference="magneticio/vamp*:${vamp_version}*" --format '{{.Repository}}:{{.Tag}}')
+      local_images=$(docker image ls -f reference="vamp*:${vamp_version}*" --format '{{.Repository}}:{{.Tag}}')
       test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 
       dangling_images=$(docker image ls -f dangling=true -q)
