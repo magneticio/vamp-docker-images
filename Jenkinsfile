@@ -28,10 +28,10 @@ pipeline {
         fi
 
         git fetch --tags
-        if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
+        if [ "$( git describe --tags --abbrev=0 )" = "$( git describe --tags )" ] ; then
           vamp_version="$( git describe --tags )"
         else
-          if [[ "$VAMP_GIT_BRANCH" != "" && "$VAMP_GIT_BRANCH" != "master" ]]; then
+          if [ "$VAMP_GIT_BRANCH" != "" -a "$VAMP_GIT_BRANCH" != "master" ]; then
             vamp_version=$VAMP_GIT_BRANCH
           else
             vamp_version="katana"
@@ -54,10 +54,10 @@ pipeline {
       set +e
 
       git fetch --tags
-      if [[ $( git describe --tags --abbrev=0 ) = $( git describe --tags ) ]] ; then
+      if [ "$( git describe --tags --abbrev=0 )" = "$( git describe --tags )" ] ; then
         vamp_version="$( git describe --tags )"
       else
-        if [[ "$VAMP_GIT_BRANCH" != "" && "$VAMP_GIT_BRANCH" != "master" ]]; then
+        if [ "$VAMP_GIT_BRANCH" != "" -a "$VAMP_GIT_BRANCH" != "master" ]; then
           vamp_version=$VAMP_GIT_BRANCH
         else
           vamp_version="katana--"
