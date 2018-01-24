@@ -42,3 +42,5 @@ fi
 export BUILD_SERVER=${BUILD_SERVER:-magneticio/buildserver}
 
 export DEPS_OK=true
+
+export PRUNE_DURATION=1h
