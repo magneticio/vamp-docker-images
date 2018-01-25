@@ -8,8 +8,8 @@ function get-root-dir() {
 }
 
 root="$(get-root-dir)"
-source "${root}"/common.sh
 test -f "${root}"/../local.sh && source "${root}"/../local.sh
+source "${root}"/common.sh
 
 docker container prune --force --filter "until=${PRUNE_DURATION}"
 

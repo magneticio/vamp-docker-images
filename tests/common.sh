@@ -31,7 +31,7 @@ if [ "${VAMP_GIT_BRANCH}" = "master" ]; then
 fi
 export VAMP_VERSION="${VAMP_TAG_PREFIX:=}${VAMP_VERSION}"
 
-export PACKER="packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')"
+export PACKER=${PACKER:=packer-${VAMP_TAG_PREFIX}$(git describe --all | sed 's,/,_,g')}
 
 export PUSH_HOME=${HOME}
 
@@ -43,4 +43,4 @@ export BUILD_SERVER=${BUILD_SERVER:-magneticio/buildserver}
 
 export DEPS_OK=true
 
-export PRUNE_DURATION=1h
+export PRUNE_DURATION=${PRUNE_DURATION:=1h}
