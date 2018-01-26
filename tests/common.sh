@@ -20,7 +20,6 @@ fi
 
 export VAMP_GIT_BRANCH=${VAMP_GIT_BRANCH:=${BRANCH_NAME:-master}}
 
-# TODO: remove this
 if [ "${VAMP_GIT_BRANCH}" = "master" ]; then
   unset VAMP_TAG_PREFIX
 fi
