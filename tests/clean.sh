@@ -14,7 +14,7 @@ source "${root}"/common.sh
 docker container prune --force --filter "until=${PRUNE_DURATION}"
 
 if [ "${VAMP_VERSION}" != "katana" ]; then
-  remote_images=$(docker image ls -f reference="magneticio/vamp*:${VAMP_VERSION}*" --format '{{.Repository}}:{{.Tag}}')
+  remote_images=$(docker image ls -f reference="magneticio/vamp*:${VAMP_VERSION/build-${BUILD_NUMBER:=}-/build-*-}*" --format '{{.Repository}}:{{.Tag}}')
   local_images=$(docker image ls -f reference="vamp*:${VAMP_VERSION}*" --format '{{.Repository}}:{{.Tag}}')
   test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 fi
