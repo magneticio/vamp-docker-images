@@ -31,6 +31,7 @@ function build() {
 
   if [[ -d "${workspace}"/${project}/.git ]] ; then
     git -C "${workspace}"/${project} config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+    git -C "${workspace}"/${project} reset --hard
     git -C "${workspace}"/${project} fetch --depth=200 --prune
     git -C "${workspace}"/${project} checkout ${branch}
     git -C "${workspace}"/${project} reset --hard origin/${branch}

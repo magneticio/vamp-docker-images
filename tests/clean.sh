@@ -8,19 +8,10 @@ function get-root-dir() {
 }
 
 root="$(get-root-dir)"
+test -f "${root}"/../local.sh && source "${root}"/../local.sh
 source "${root}"/common.sh
 
-function filter-images-in-use() {
-  local used=$(docker ps --format '{{.Image}}' | grep -v ':')
-  local image
-  while read image; do
-    test -z "${used}" -o -n "${used/*${image}*/}" && echo ${image}
-  done
-}
-
-exited_containers=$(docker ps -a -f status=exited -q)
-dead_containers=$(docker ps -a -f status=dead -q)
-test -n "${exited_containers}" -o -n "${dead_containers}" && docker rm ${exited_containers} ${dead_containers}
+docker container prune --force --filter "until=${PRUNE_DURATION}"
 
 if [ "${VAMP_VERSION}" != "katana" ]; then
   remote_images=$(docker image ls -f reference="magneticio/vamp*:${VAMP_VERSION}*" --format '{{.Repository}}:{{.Tag}}')
@@ -28,13 +19,10 @@ if [ "${VAMP_VERSION}" != "katana" ]; then
   test -n "${remote_images}" -o -n "${local_images}" && docker rmi -f ${remote_images} ${local_images}
 fi
 
-dangling_images=$(docker image ls -qf dangling=true | filter-images-in-use)
-while [ -n "${dangling_images}" ]; do
-  docker rmi -f ${dangling_images}
-  dangling_images=$(docker image ls -qf dangling=true | filter-images-in-use)
-done
+docker image prune --force --filter "until=${PRUNE_DURATION}"
 
-docker volume rm "${PACKER}" 2>/dev/null
+test ${KEEP_PACKER:-false} = "true" || docker volume rm "${PACKER}"
+
 dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
 test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
 
