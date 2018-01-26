@@ -22,7 +22,7 @@ fi
 docker image prune --force --filter "until=${PRUNE_DURATION}"
 
 volumes=$(docker volume ls -qf name="${PACKER/build-${BUILD_NUMBER:=}-/build-.*-}")
-test ${KEEP_PACKER:-false} = "true" || docker volume rm "${volumes}"
+test ${KEEP_PACKER:-false} = "true" || docker volume rm ${volumes}
 
 dangling_volumes=$(docker volume ls -f dangling=true -q | grep -vEe '^packer')
 test -n "${dangling_volumes}" && docker volume rm ${dangling_volumes}
